@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Men's Formula
 
-## Getting Started
+Production baseline built with Next.js 16 App Router, React 19, TypeScript strict mode, Tailwind CSS 4, and Supabase.
 
-First, run the development server:
+## Setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Copy `.env.example` to `.env.local` and provide the public Supabase URL and publishable key.
+2. Run `volta run --pnpm 11.27.0 pnpm dev`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is safe to expose. Never add a Supabase secret or service-role key to a `NEXT_PUBLIC_` variable or client component.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `src/app`: App Router pages and external Route Handlers.
+- `src/actions`: Server Actions for internal mutations; inputs are validated with Zod.
+- `src/components`: reusable UI components, Server Components by default.
+- `src/lib/supabase/client.ts`: browser-only Supabase client.
+- `src/lib/supabase/server.ts`: server client using request cookies.
+- `src/proxy.ts`: refreshes Supabase Auth cookies with `getClaims()` before routes render.
+- `src/lib/supabase/auth.ts`: trusted server-side identity checks with verified JWT claims.
+- `src/types/database.ts`: generated-shaped database types. Regenerate it after schema changes.
 
-## Learn More
+Always authorize inside Server Actions and Route Handlers; `proxy.ts` only maintains the authentication cookie. Enable RLS and add explicit policies to every table or storage bucket exposed through Supabase.
 
-To learn more about Next.js, take a look at the following resources:
+## Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `pnpm lint` — ESLint 9
+- `pnpm format` — checks Prettier with Tailwind class ordering
+- `pnpm format:fix` — applies formatting
+- `pnpm type-check` — strict TypeScript validation
+- `pnpm check-all` — type-check, lint, and formatting checks
+- `pnpm fix-all` — formatting, lint, and snapshot updates
+- `pnpm supabase:types` — generates public-schema types safely
+- `pnpm test` — Vitest + React Testing Library
+- `pnpm test:e2e` — Playwright
+- `pnpm build` — production build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Install Playwright browsers once with `pnpm exec playwright install`.
