@@ -101,7 +101,7 @@ h3 {
 .eyebrow {
   color: var(--color-brand);
   font-family: var(--font-mono), monospace;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -138,7 +138,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  font-size: 0.92rem;
+  font-size: 1rem;
   font-weight: 650;
 }
 .header-nav a {
@@ -267,7 +267,7 @@ h3 {
   align-items: center;
   gap: var(--space-2);
   color: var(--color-brand-deep);
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 750;
   white-space: nowrap;
   transition:
@@ -353,22 +353,22 @@ h3 {
 }
 .product-copy p {
   color: var(--color-muted);
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   font-weight: 650;
   line-height: 1.35;
 }
 .product-copy h3 {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   letter-spacing: -0.03em;
   line-height: 1.12;
 }
 .product-copy strong {
   color: var(--color-brand-deep);
-  font-size: 0.98rem;
+  font-size: 1.1rem;
 }
 .product-copy .text-link {
   margin-top: var(--space-2);
-  font-size: 0.88rem;
+  font-size: 0.98rem;
 }
 
 .catalog-page {
@@ -389,7 +389,7 @@ h3 {
 .catalog-intro > p:last-child,
 .contact-page > div > p:last-child {
   color: var(--color-muted);
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1.65;
 }
 .catalog-controls {
@@ -419,14 +419,14 @@ h3 {
   display: grid;
   gap: var(--space-1);
   color: var(--color-muted);
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 .catalog-count {
   color: var(--color-muted);
-  font-size: 0.8rem;
+  font-size: 0.98rem;
   margin-block: var(--space-5);
 }
 .empty-state {
@@ -711,7 +711,7 @@ h3 {
   list-style: none;
   padding: var(--space-4);
   color: var(--color-ink);
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 750;
 }
 .mobile-filters summary::-webkit-details-marker {
@@ -719,7 +719,7 @@ h3 {
 }
 .mobile-filters summary span {
   color: var(--color-brand);
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
 }
 .mobile-filters > div {
@@ -746,13 +746,13 @@ h3 {
   background: var(--color-surface);
   color: var(--color-ink);
   padding-inline: var(--space-3);
-  font-size: 0.78rem;
+  font-size: 0.96rem;
   font-weight: 650;
 }
 .clear-filters {
   justify-self: start;
   color: var(--color-brand-deep);
-  font-size: 0.8rem;
+  font-size: 0.94rem;
   font-weight: 750;
   text-decoration: underline;
   text-underline-offset: 0.2em;
@@ -784,12 +784,12 @@ h3 {
 }
 .card-price span {
   color: var(--color-muted);
-  font-size: 0.65rem;
+  font-size: 0.82rem;
   font-weight: 650;
 }
 .card-price strong {
   color: var(--color-brand-deep);
-  font-size: 0.92rem;
+  font-size: 1.1rem;
 }
 .volume-badge {
   width: fit-content;
@@ -797,7 +797,7 @@ h3 {
   background: color-mix(in oklch, var(--color-brand), transparent 88%);
   color: var(--color-brand-deep);
   padding: 0.28rem 0.5rem;
-  font-size: 0.61rem;
+  font-size: 0.76rem;
   font-weight: 750;
   line-height: 1;
 }
@@ -814,7 +814,7 @@ h3 {
   border-radius: var(--radius-pill);
   background: var(--color-surface);
   padding-inline: var(--space-3);
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   font-weight: 750;
   white-space: nowrap;
   transition:
@@ -846,7 +846,7 @@ h3 {
   border-radius: var(--radius-pill);
   background: var(--color-surface);
   padding-inline: var(--space-3);
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   font-weight: 750;
   white-space: nowrap;
 }
@@ -1008,7 +1008,7 @@ h3 {
   }
   .sidebar-title {
     color: var(--color-ink);
-    font-size: 0.92rem;
+    font-size: 1.05rem;
     font-weight: 750;
   }
   .mobile-filters {
