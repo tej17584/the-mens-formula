@@ -134,6 +134,12 @@
     "password": "Contraseña",
     "signIn": "Ingresar",
     "accessDenied": "Tu cuenta no tiene acceso administrativo.",
-    "formError": "No se pudo guardar. Revisa los campos e inténtalo otra vez."
+    "formError": "No se pudo guardar. Revisa los campos e inténtalo otra vez.",
+    "settings": "Configuración",
+    "whatsappNumber": "Número de WhatsApp",
+    "whatsappHelp": "Usa el número local de Guatemala o inclúyelo con código de país.",
+    "whatsappMessage": "Mensaje para consultas de producto",
+    "saveSettings": "Guardar configuración",
+    "settingsSaved": "Configuración guardada."
   }
 }

@@ -32,53 +32,50 @@ export function ProductGrid({
     return `/catalogo${params.size ? `?${params}` : ""}`;
   };
   return (
-    <div className="catalog-layout">
-      <CatalogControls categories={categories} brands={brands} />
-      <section className="catalog-results catalog-result-content">
-        <p className="catalog-count">
-          {total}{" "}
-          {total === 1
-            ? translate("catalog.product")
-            : translate("catalog.products")}{" "}
-          · {translate("catalog.page")} {page} {translate("catalog.of")}{" "}
-          {totalPages}
-        </p>
-        {products.length ? (
-          <div className="product-grid">
-            {products.map((product, index) => (
-              <ProductCard
-                product={product}
-                priority={index < 2}
-                key={product.id}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="empty-state">
-            <p>{translate("common.noResults")}</p>
-            <Link href="/catalogo">{translate("catalog.clearFilters")}</Link>
-          </div>
-        )}
-        <nav className="pagination" aria-label={translate("catalog.page")}>
-          <Link
-            aria-disabled={page <= 1}
-            className={page <= 1 ? "disabled" : ""}
-            href={hrefForPage(Math.max(1, page - 1))}
-          >
-            {translate("catalog.previous")}
-          </Link>
-          <span>
-            {page} {translate("catalog.of")} {totalPages}
-          </span>
-          <Link
-            aria-disabled={page >= totalPages}
-            className={page >= totalPages ? "disabled" : ""}
-            href={hrefForPage(Math.min(totalPages, page + 1))}
-          >
-            {translate("catalog.next")}
-          </Link>
-        </nav>
-      </section>
-    </div>
+    <CatalogControls categories={categories} brands={brands}>
+      <p className="catalog-count">
+        {total}{" "}
+        {total === 1
+          ? translate("catalog.product")
+          : translate("catalog.products")}{" "}
+        · {translate("catalog.page")} {page} {translate("catalog.of")}{" "}
+        {totalPages}
+      </p>
+      {products.length ? (
+        <div className="product-grid">
+          {products.map((product, index) => (
+            <ProductCard
+              product={product}
+              priority={index < 2}
+              key={product.id}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="empty-state">
+          <p>{translate("common.noResults")}</p>
+          <Link href="/catalogo">{translate("catalog.clearFilters")}</Link>
+        </div>
+      )}
+      <nav className="pagination" aria-label={translate("catalog.page")}>
+        <Link
+          aria-disabled={page <= 1}
+          className={page <= 1 ? "disabled" : ""}
+          href={hrefForPage(Math.max(1, page - 1))}
+        >
+          {translate("catalog.previous")}
+        </Link>
+        <span>
+          {page} {translate("catalog.of")} {totalPages}
+        </span>
+        <Link
+          aria-disabled={page >= totalPages}
+          className={page >= totalPages ? "disabled" : ""}
+          href={hrefForPage(Math.min(totalPages, page + 1))}
+        >
+          {translate("catalog.next")}
+        </Link>
+      </nav>
+    </CatalogControls>
   );
 }

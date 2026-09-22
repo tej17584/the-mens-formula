@@ -1018,9 +1018,6 @@ h3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-5);
   }
-  .catalog-result-content {
-    grid-column: 2;
-  }
   .product-card:hover {
     border-color: color-mix(
       in oklch,

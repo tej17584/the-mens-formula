@@ -13,6 +13,9 @@ export function DashboardNav() {
           {translate("dashboard.products")}
         </Link>
         <Link href="/dashboard/contact">{translate("dashboard.messages")}</Link>
+        <Link href="/dashboard/settings">
+          {translate("dashboard.settings")}
+        </Link>
       </nav>
       <Link className="text-link" href="/catalogo">
         {translate("common.backToCatalog")} <span aria-hidden="true">→</span>

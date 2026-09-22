@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type { ReactNode } from "react";
 import { useTranslations } from "@/i18n";
 
 type Option = { slug: string; name: string };
@@ -8,9 +9,11 @@ type Option = { slug: string; name: string };
 export function CatalogControls({
   categories,
   brands,
+  children,
 }: {
   categories: Option[];
   brands: Option[];
+  children: ReactNode;
 }) {
   const t = useTranslations();
   const router = useRouter();
@@ -70,7 +73,7 @@ export function CatalogControls({
   );
   const hasFilters = Boolean(params.get("categoria") || params.get("marca"));
   return (
-    <>
+    <div className="catalog-layout">
       <aside className="catalog-sidebar">
         <p className="sidebar-title">{t("catalog.filters")}</p>
         {filters}
@@ -107,7 +110,8 @@ export function CatalogControls({
             </select>
           </label>
         </div>
+        {children}
       </section>
-    </>
+    </div>
   );
 }

@@ -131,6 +131,19 @@ export async function getDashboardReferences() {
   return { brands: brands.data ?? [], categories: categories.data ?? [] };
 }
 
+export async function getDashboardSiteSettings() {
+  const { data, error } = await createAdminClient()
+    .from("site_settings")
+    .select("whatsapp_number,whatsapp_product_message")
+    .eq("id", 1)
+    .maybeSingle();
+  if (error) {
+    sentryErrorReport(error, "SITE_SETTINGS_QUERY - DASHBOARD");
+    return null;
+  }
+  return data;
+}
+
 export async function getDashboardProduct(id: string) {
   const { data, error } = await createAdminClient()
     .from("products")
