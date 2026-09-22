@@ -69,7 +69,7 @@ for (const brand of book.SheetNames) {
       })
       .webp({ quality: 82 })
       .toFile(destination);
-    preparedUrls.push(`/catalogo/${slugify(brand)}/${productSlug}.webp`);
+    preparedUrls.push(destination);
     prepared += 1;
   }
 }

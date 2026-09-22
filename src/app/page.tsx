@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { translate } from "@/i18n";
 import { getCatalogProducts, getDiverseProducts } from "@/lib/catalog";
 
 export default async function Home() {
@@ -19,15 +20,11 @@ export default async function Home() {
         <section className="hero hero-catalog">
           <div className="shell hero-grid">
             <div className="hero-copy">
-              <p className="eyebrow">The Men&apos;s Formula</p>
-              <h1>Todo para tu barbería, en un solo catálogo.</h1>
-              <p>
-                Productos profesionales para cabello, barba, afeitado y cuidado
-                personal. Consulta precios por unidad y por volumen y encuentra
-                lo que necesitas para tu barbería.
-              </p>
+              <p className="eyebrow">{translate("home.eyebrow")}</p>
+              <h1>{translate("home.title")}</h1>
+              <p>{translate("home.description")}</p>
               <Link className="button button-primary" href="/catalogo">
-                Explorar catálogo <span aria-hidden="true">→</span>
+                {translate("home.explore")} <span aria-hidden="true">→</span>
               </Link>
             </div>
             <div className="hero-product-composition" aria-hidden="true">
@@ -41,7 +38,8 @@ export default async function Home() {
                     alt=""
                     fill
                     sizes="(min-width: 1024px) 260px, 1px"
-                    priority={index < 2}
+                    quality={82}
+                    priority={index === 0}
                   />
                 </div>
               ))}
@@ -57,9 +55,13 @@ export default async function Home() {
         </section>
         <section className="catalog-facts">
           <div className="shell">
-            <span>{products.length} productos</span>
-            <span>{brands} marcas</span>
-            <span>Precios por volumen</span>
+            <span>
+              {products.length} {translate("home.products")}
+            </span>
+            <span>
+              {brands} {translate("home.brands")}
+            </span>
+            <span>{translate("home.volumePrices")}</span>
           </div>
         </section>
         <section
@@ -68,12 +70,12 @@ export default async function Home() {
         >
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Catálogo</p>
-              <h2 id="products-title">Explora nuestros productos</h2>
-              <p>Una selección del catálogo para tu barbería.</p>
+              <p className="eyebrow">{translate("home.catalogEyebrow")}</p>
+              <h2 id="products-title">{translate("home.catalogTitle")}</h2>
+              <p>{translate("home.catalogDescription")}</p>
             </div>
             <Link className="text-link" href="/catalogo">
-              Ver catálogo <span aria-hidden="true">→</span>
+              {translate("home.viewCatalog")} <span aria-hidden="true">→</span>
             </Link>
           </div>
           <div className="product-grid home-grid">

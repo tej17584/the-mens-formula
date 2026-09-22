@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact-form";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { translate } from "@/i18n";
+
 export const metadata: Metadata = {
-  title: "Contacto",
-  description:
-    "Consulta productos profesionales de barbería con The Men's Formula.",
+  title: translate("contact.metaTitle"),
+  description: translate("contact.metaDescription"),
 };
 export default function ContactPage() {
   return (
@@ -13,12 +14,9 @@ export default function ContactPage() {
       <SiteHeader />
       <main className="contact-page shell">
         <div>
-          <p className="eyebrow">Contacto</p>
-          <h1>Hablemos de tu próxima compra.</h1>
-          <p>
-            Cuéntanos qué producto o herramienta buscas. Te ayudaremos a
-            ubicarlo dentro del catálogo.
-          </p>
+          <p className="eyebrow">{translate("contact.eyebrow")}</p>
+          <h1>{translate("contact.title")}</h1>
+          <p>{translate("contact.description")}</p>
         </div>
         <ContactForm />
       </main>

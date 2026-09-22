@@ -1,51 +1,45 @@
 "use client";
 
-import { useState } from "react";
-import { siteConfig } from "@/lib/site-config";
+import { useActionState } from "react";
+import { createContactMessage } from "@/actions/contact";
+import { useTranslations } from "@/i18n";
 
 export function ContactForm() {
-  const [sent, setSent] = useState(false);
-  function submit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const message = `Hola, soy ${form.get("name")}. ${form.get("message")}`;
-    if (siteConfig.contact.whatsapp)
-      window.open(
-        `https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent(message)}`,
-        "_blank",
-        "noopener,noreferrer",
-      );
-    else if (siteConfig.contact.email)
-      window.location.href = `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent("Consulta desde el catálogo")}&body=${encodeURIComponent(message)}`;
-    setSent(true);
-  }
+  const t = useTranslations();
+  const [state, formAction, pending] = useActionState(createContactMessage, {});
+
   return (
-    <form className="contact-form" onSubmit={submit}>
+    <form className="contact-form" action={formAction}>
       <label>
-        Nombre
+        {t("contact.name")}
         <input required name="name" autoComplete="name" />
       </label>
       <label>
-        Correo o teléfono
+        {t("contact.contact")}
         <input required name="contact" autoComplete="email" />
       </label>
       <label>
-        ¿Qué producto buscas?
+        {t("contact.message")}
         <textarea
           required
           name="message"
           rows={4}
-          placeholder="Cuéntanos qué necesitas para tu barbería."
+          placeholder={t("contact.placeholder")}
         />
       </label>
-      <button className="button button-primary" type="submit">
-        Enviar consulta
+      <button
+        className="button button-primary"
+        disabled={pending}
+        type="submit"
+      >
+        {t("contact.submit")}
       </button>
-      {sent ? (
+      {state.success ? (
         <p className="form-success" role="status">
-          Abrimos tu canal de contacto.
+          {t("contact.success")}
         </p>
       ) : null}
+      {state.error ? <p className="form-error">{state.error}</p> : null}
     </form>
   );
 }

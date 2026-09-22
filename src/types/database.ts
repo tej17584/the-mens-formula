@@ -14,6 +14,21 @@ export type Database = {
   };
   public: {
     Tables: {
+      admin_users: {
+        Row: {
+          created_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       brands: {
         Row: {
           created_at: string;
@@ -79,6 +94,47 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [];
+      };
+      contact_messages: {
+        Row: {
+          contact: string;
+          created_at: string;
+          id: string;
+          message: string;
+          name: string;
+          product_id: string | null;
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          contact: string;
+          created_at?: string;
+          id?: string;
+          message: string;
+          name: string;
+          product_id?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          contact?: string;
+          created_at?: string;
+          id?: string;
+          message?: string;
+          name?: string;
+          product_id?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "contact_messages_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       product_images: {
         Row: {

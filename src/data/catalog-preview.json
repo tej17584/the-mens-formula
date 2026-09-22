@@ -8,7 +8,6 @@
     "price": 99,
     "description": "Fragancia MIDNIGHT con notas de limón, menta y verbena de la India. Ideal para finalizar el afeitado dejando una sensación fresca y perfumada.",
     "shortDescription": "Fragancia MIDNIGHT con notas de limón, menta y verbena de la India. Ideal para finalizar el afeitado dejando una sensación fresca y perfumada.",
-    "mainImageUrl": "/catalogo/level3/level3-after-shave-midnight.webp",
     "isAvailable": true
   },
   {
@@ -20,7 +19,6 @@
     "price": 99,
     "description": "Fragancia FRESH con notas de bergamota de Calabria y pimienta. Ayuda a calmar la piel después del afeitado y deja un aroma limpio y elegante.",
     "shortDescription": "Fragancia FRESH con notas de bergamota de Calabria y pimienta. Ayuda a calmar la piel después del afeitado y deja un aroma limpio y elegante.",
-    "mainImageUrl": "/catalogo/level3/level3-after-shave-fresh.webp",
     "isAvailable": true
   },
   {
@@ -32,7 +30,6 @@
     "price": 99,
     "description": "Fragancia FROST con notas de nuez moscada, vainilla, bayas de enebro y maderas ambaradas. Aporta frescura y una terminación aromática intensa.",
     "shortDescription": "Fragancia FROST con notas de nuez moscada, vainilla, bayas de enebro y maderas ambaradas. Aporta frescura y una terminación aromática intensa.",
-    "mainImageUrl": "/catalogo/level3/level3-after-shave-frost.webp",
     "isAvailable": true
   },
   {
@@ -44,7 +41,6 @@
     "price": 99,
     "description": "Fragancia ROYALE con notas de pomelo, jengibre, ambrox y cítricos. Ideal para completar el servicio de afeitado con un aroma moderno y sofisticado.",
     "shortDescription": "Fragancia ROYALE con notas de pomelo, jengibre, ambrox y cítricos. Ideal para completar el servicio de afeitado con un aroma moderno y sofisticado.",
-    "mainImageUrl": "/catalogo/level3/level3-after-shave-royale.webp",
     "isAvailable": true
   },
   {
@@ -56,7 +52,6 @@
     "price": 99,
     "description": "Fragancia AQUA con notas de pomelo, limón, menta y pimienta rosa. Brinda una sensación fresca y revitalizante después del afeitado.",
     "shortDescription": "Fragancia AQUA con notas de pomelo, limón, menta y pimienta rosa. Brinda una sensación fresca y revitalizante después del afeitado.",
-    "mainImageUrl": "/catalogo/level3/level3-after-shave-aqua.webp",
     "isAvailable": true
   },
   {
@@ -68,7 +63,6 @@
     "price": 99,
     "description": "Fragancia VIBRANT con notas verdes, pomelo, especias, bergamota, lavanda y petitgrain. Deja la piel suave, fresca y agradablemente perfumada.",
     "shortDescription": "Fragancia VIBRANT con notas verdes, pomelo, especias, bergamota, lavanda y petitgrain. Deja la piel suave, fresca y agradablemente perfumada.",
-    "mainImageUrl": "/catalogo/level3/level3-after-shave-vibrant.webp",
     "isAvailable": true
   },
   {
@@ -80,7 +74,6 @@
     "price": 99,
     "description": "Fragancia ROSÉ con notas de maracuyá, melocotón y frambuesa. Ofrece un aroma frutal y fresco para finalizar el afeitado.",
     "shortDescription": "Fragancia ROSÉ con notas de maracuyá, melocotón y frambuesa. Ofrece un aroma frutal y fresco para finalizar el afeitado.",
-    "mainImageUrl": "/catalogo/level3/level3-after-shave-rose.webp",
     "isAvailable": true
   },
   {
@@ -92,7 +85,6 @@
     "price": 99,
     "description": "Su fórmula permite ver claramente la zona de trabajo, lubrica e hidrata la piel y ayuda a reducir la irritación y los pequeños cortes. Fragancia AQUA.",
     "shortDescription": "Su fórmula permite ver claramente la zona de trabajo, lubrica e hidrata la piel y ayuda a reducir la irritación y los pequeños cortes. Fragancia AQUA.",
-    "mainImageUrl": "/catalogo/level3/level3-shaving-gel-aqua.webp",
     "isAvailable": true
   },
   {
@@ -104,7 +96,6 @@
     "price": 99,
     "description": "Facilita el deslizamiento de la cuchilla, protege e hidrata la piel y permite delineados precisos al mantener visible la zona de afeitado. Fragancia ICE.",
     "shortDescription": "Facilita el deslizamiento de la cuchilla, protege e hidrata la piel y permite delineados precisos al mantener visible la zona de afeitado. Fragancia ICE.",
-    "mainImageUrl": "/catalogo/level3/level3-shaving-gel-ice.webp",
     "isAvailable": true
   },
   {
@@ -116,7 +107,6 @@
     "price": 90,
     "description": "Ayuda a retirar puntos negros, suciedad, células muertas y exceso de grasa. Limpia los poros y deja la piel más suave, limpia y fresca.",
     "shortDescription": "Ayuda a retirar puntos negros, suciedad, células muertas y exceso de grasa. Limpia los poros y deja la piel más suave, limpia y fresca.",
-    "mainImageUrl": "/catalogo/level3/level3-black-mask.webp",
     "isAvailable": true
   },
   {
@@ -128,7 +118,6 @@
     "price": 90,
     "description": "Ayuda a remover impurezas y puntos negros, absorbe el exceso de grasa y favorece una apariencia más limpia, equilibrada y luminosa.",
     "shortDescription": "Ayuda a remover impurezas y puntos negros, absorbe el exceso de grasa y favorece una apariencia más limpia, equilibrada y luminosa.",
-    "mainImageUrl": "/catalogo/level3/level3-pink-mask.webp",
     "isAvailable": true
   },
   {
@@ -140,7 +129,6 @@
     "price": 120,
     "description": "Ayuda a suavizar, controlar el frizz y mejorar el brillo y la manejabilidad del cabello. Apto para todo tipo de cabello y práctico para uso profesional o en casa.",
     "shortDescription": "Ayuda a suavizar, controlar el frizz y mejorar el brillo y la manejabilidad del cabello. Apto para todo tipo de cabello y práctico para uso profesional o en casa.",
-    "mainImageUrl": "/catalogo/level3/level3-shampoo-2en-1.webp",
     "isAvailable": true
   },
   {
@@ -152,7 +140,6 @@
     "price": 99,
     "description": "Proporciona color negro de aspecto natural, fijación fuerte, volumen, textura y brillo. Fórmula a base de agua, sin escamas y fácil de retirar con el lavado.",
     "shortDescription": "Proporciona color negro de aspecto natural, fijación fuerte, volumen, textura y brillo. Fórmula a base de agua, sin escamas y fácil de retirar con el lavado.",
-    "mainImageUrl": "/catalogo/level3/level3-tinted-gel.webp",
     "isAvailable": true
   },
   {
@@ -164,7 +151,6 @@
     "price": 110,
     "description": "Se aplica directamente en raíces o cabello seco para crear textura y elevar el cabello sin necesidad de productos pesados. Ideal para estilos con volumen y acabado natural.",
     "shortDescription": "Se aplica directamente en raíces o cabello seco para crear textura y elevar el cabello sin necesidad de productos pesados. Ideal para estilos con volumen y acabado natural.",
-    "mainImageUrl": "/catalogo/level3/level3-styling-powder.webp",
     "isAvailable": true
   },
   {
@@ -176,7 +162,6 @@
     "price": 99,
     "description": "Ideal para peinados clásicos o pulidos. Permite moldear y dar definición al cabello, proporcionando fijación y un acabado brillante de apariencia profesional.",
     "shortDescription": "Ideal para peinados clásicos o pulidos. Permite moldear y dar definición al cabello, proporcionando fijación y un acabado brillante de apariencia profesional.",
-    "mainImageUrl": "/catalogo/level3/level3-pomade.webp",
     "isAvailable": true
   },
   {
@@ -188,7 +173,6 @@
     "price": 99,
     "description": "Aporta volumen y textura sin dejar el cabello rígido o pegajoso. Su consistencia ligera permite remodelar el peinado y funciona especialmente bien en cabello fino o delgado.",
     "shortDescription": "Aporta volumen y textura sin dejar el cabello rígido o pegajoso. Su consistencia ligera permite remodelar el peinado y funciona especialmente bien en cabello fino o delgado.",
-    "mainImageUrl": "/catalogo/level3/level3-forming-cream.webp",
     "isAvailable": true
   },
   {
@@ -200,7 +184,6 @@
     "price": 99,
     "description": "Aporta textura, definición y volumen sin brillo. Su fórmula a base de agua es fácil de aplicar, permite retocar el estilo y se enjuaga sin dejar residuos.",
     "shortDescription": "Aporta textura, definición y volumen sin brillo. Su fórmula a base de agua es fácil de aplicar, permite retocar el estilo y se enjuaga sin dejar residuos.",
-    "mainImageUrl": "/catalogo/level3/level3-paste.webp",
     "isAvailable": true
   },
   {
@@ -212,7 +195,6 @@
     "price": 99,
     "description": "Su efecto fibroso facilita moldear estilos texturizados con control flexible. Ideal para marcar mechones, aportar estructura y crear acabados modernos.",
     "shortDescription": "Su efecto fibroso facilita moldear estilos texturizados con control flexible. Ideal para marcar mechones, aportar estructura y crear acabados modernos.",
-    "mainImageUrl": "/catalogo/level3/level3-spider-wax.webp",
     "isAvailable": true
   },
   {
@@ -224,7 +206,6 @@
     "price": 99,
     "description": "Ofrece fijación duradera con flexibilidad para remodelar el cabello. Su textura suave ayuda a mejorar la definición y el brillo sin dejar residuos visibles.",
     "shortDescription": "Ofrece fijación duradera con flexibilidad para remodelar el cabello. Su textura suave ayuda a mejorar la definición y el brillo sin dejar residuos visibles.",
-    "mainImageUrl": "/catalogo/level3/level3-brillant-cream.webp",
     "isAvailable": true
   },
   {
@@ -236,7 +217,6 @@
     "price": 99,
     "description": "Aporta volumen suave, textura ligera y control flexible. Mantiene el cabello manejable y permite ajustar el peinado durante el día sin sensación pegajosa ni brillo.",
     "shortDescription": "Aporta volumen suave, textura ligera y control flexible. Mantiene el cabello manejable y permite ajustar el peinado durante el día sin sensación pegajosa ni brillo.",
-    "mainImageUrl": "/catalogo/level3/level3-matte-putty.webp",
     "isAvailable": true
   },
   {
@@ -248,7 +228,6 @@
     "price": 75,
     "description": "Aporta definición, volumen y control sin sensación grasosa. Fórmula a base de agua y sin escamas, fácil de lavar y adecuada para estilos estructurados.",
     "shortDescription": "Aporta definición, volumen y control sin sensación grasosa. Fórmula a base de agua y sin escamas, fácil de lavar y adecuada para estilos estructurados.",
-    "mainImageUrl": "/catalogo/level3/level3-hair-gel.webp",
     "isAvailable": true
   },
   {
@@ -260,7 +239,6 @@
     "price": 75,
     "description": "Ayuda a nutrir y proteger el cabello mientras aporta volumen, definición y control. Fórmula a base de agua, sin escamas y adecuada para definir rizos o estilos con brillo natural.",
     "shortDescription": "Ayuda a nutrir y proteger el cabello mientras aporta volumen, definición y control. Fórmula a base de agua, sin escamas y adecuada para definir rizos o estilos con brillo natural.",
-    "mainImageUrl": "/catalogo/level3/level3-cream-gel.webp",
     "isAvailable": true
   },
   {
@@ -272,7 +250,6 @@
     "price": 120,
     "description": "Con arcilla de caolín y extracto de manzanilla. Ayuda a retirar suciedad, exceso de grasa, impurezas, células muertas y puntos negros, dejando la piel más limpia y luminosa.",
     "shortDescription": "Con arcilla de caolín y extracto de manzanilla. Ayuda a retirar suciedad, exceso de grasa, impurezas, células muertas y puntos negros, dejando la piel más limpia y luminosa.",
-    "mainImageUrl": "/catalogo/level3/level3-mud-scrub-mask.webp",
     "isAvailable": true
   },
   {
@@ -284,7 +261,6 @@
     "price": 105,
     "description": "Ideal para crear textura, levantar la raíz y dar cuerpo al cabello sin aspecto húmedo. Se aplica en pequeñas cantidades sobre cabello seco y se moldea con los dedos.",
     "shortDescription": "Ideal para crear textura, levantar la raíz y dar cuerpo al cabello sin aspecto húmedo. Se aplica en pequeñas cantidades sobre cabello seco y se moldea con los dedos.",
-    "mainImageUrl": "/catalogo/immortal/immortal-inmortal-styling-powder.webp",
     "isAvailable": true
   },
   {
@@ -296,7 +272,6 @@
     "price": 90,
     "description": "Ayuda a mantener la barba más manejable y con aspecto cuidado, reduciendo la sensación de resequedad. Aplicar unas gotas y distribuir de raíz a puntas.",
     "shortDescription": "Ayuda a mantener la barba más manejable y con aspecto cuidado, reduciendo la sensación de resequedad. Aplicar unas gotas y distribuir de raíz a puntas.",
-    "mainImageUrl": "/catalogo/immortal/immortal-inmortal-beard-care-srerum.webp",
     "isAvailable": true
   },
   {
@@ -308,7 +283,6 @@
     "price": 90,
     "description": "Permite ordenar cabellos rebeldes, definir la forma y dar un acabado pulido sin necesidad de usar grandes cantidades. Trabajar entre las manos antes de aplicar.",
     "shortDescription": "Permite ordenar cabellos rebeldes, definir la forma y dar un acabado pulido sin necesidad de usar grandes cantidades. Trabajar entre las manos antes de aplicar.",
-    "mainImageUrl": "/catalogo/immortal/immortal-inmortal-beard-pomade-wax.webp",
     "isAvailable": true
   },
   {
@@ -320,7 +294,6 @@
     "price": 85,
     "description": "Ayuda a retirar impurezas, exceso de grasa y residuos superficiales, dejando una sensación de limpieza. Aplicar una capa uniforme evitando ojos, labios y zonas con vello.",
     "shortDescription": "Ayuda a retirar impurezas, exceso de grasa y residuos superficiales, dejando una sensación de limpieza. Aplicar una capa uniforme evitando ojos, labios y zonas con vello.",
-    "mainImageUrl": "/catalogo/immortal/immortal-black-mask.webp",
     "isAvailable": true
   },
   {
@@ -332,7 +305,6 @@
     "price": 95,
     "description": "Limpia el cabello y el cuero cabelludo mientras ayuda a mantener suavidad y una apariencia fresca. Adecuado para el lavado habitual en barbería o en casa.",
     "shortDescription": "Limpia el cabello y el cuero cabelludo mientras ayuda a mantener suavidad y una apariencia fresca. Adecuado para el lavado habitual en barbería o en casa.",
-    "mainImageUrl": "/catalogo/immortal/immortal-shampoo-immortal-infuse.webp",
     "isAvailable": true
   },
   {
@@ -344,7 +316,6 @@
     "price": 95,
     "description": "Limpia el cuero cabelludo y ayuda a controlar la acumulación visible de escamas y grasa. Usar con masaje suave y enjuagar completamente.",
     "shortDescription": "Limpia el cuero cabelludo y ayuda a controlar la acumulación visible de escamas y grasa. Usar con masaje suave y enjuagar completamente.",
-    "mainImageUrl": "/catalogo/immortal/immortal-shampoo-immortal-anti-caspa.webp",
     "isAvailable": true
   },
   {
@@ -356,7 +327,6 @@
     "price": 95,
     "description": "Proporciona limpieza del cabello y cuero cabelludo y está orientado a fortalecer la apariencia de la fibra capilar. Utilizar de acuerdo con las indicaciones del envase.",
     "shortDescription": "Proporciona limpieza del cabello y cuero cabelludo y está orientado a fortalecer la apariencia de la fibra capilar. Utilizar de acuerdo con las indicaciones del envase.",
-    "mainImageUrl": "/catalogo/immortal/immortal-shampoo-immortal-anti-caida-de-cabello.webp",
     "isAvailable": true
   },
   {
@@ -368,7 +338,6 @@
     "price": 95,
     "description": "Permite realizar la limpieza diaria en un solo producto, con enjuague fácil y sensación de frescura. Útil para casa, gimnasio o viaje.",
     "shortDescription": "Permite realizar la limpieza diaria en un solo producto, con enjuague fácil y sensación de frescura. Útil para casa, gimnasio o viaje.",
-    "mainImageUrl": "/catalogo/immortal/immortal-shampoo-immortal-3-en-1.webp",
     "isAvailable": true
   },
   {
@@ -380,7 +349,6 @@
     "price": 55,
     "description": "Su textura facilita la distribución y el moldeado del cabello. Ideal para estilos pulidos que necesitan control y definición durante el día.",
     "shortDescription": "Su textura facilita la distribución y el moldeado del cabello. Ideal para estilos pulidos que necesitan control y definición durante el día.",
-    "mainImageUrl": "/catalogo/agiva/agiva-agiva-01-orange.webp",
     "isAvailable": true
   },
   {
@@ -392,7 +360,6 @@
     "price": 55,
     "description": "Permite dar forma, definir y mantener el peinado con un acabado brillante. Aplicar una pequeña cantidad sobre cabello seco o ligeramente húmedo.",
     "shortDescription": "Permite dar forma, definir y mantener el peinado con un acabado brillante. Aplicar una pequeña cantidad sobre cabello seco o ligeramente húmedo.",
-    "mainImageUrl": "/catalogo/agiva/agiva-agiva-02-blue.webp",
     "isAvailable": true
   },
   {
@@ -404,7 +371,6 @@
     "price": 55,
     "description": "Indicada para peinados naturales, texturizados o con volumen. Se trabaja fácilmente con los dedos y ayuda a mantener el estilo sin brillo marcado.",
     "shortDescription": "Indicada para peinados naturales, texturizados o con volumen. Se trabaja fácilmente con los dedos y ayuda a mantener el estilo sin brillo marcado.",
-    "mainImageUrl": "/catalogo/agiva/agiva-agiva-03-green.webp",
     "isAvailable": true
   },
   {
@@ -416,7 +382,6 @@
     "price": 55,
     "description": "Se distribuye con facilidad y permite moldear distintos estilos, desde peinados clásicos hasta acabados más modernos. Se retira con lavado.",
     "shortDescription": "Se distribuye con facilidad y permite moldear distintos estilos, desde peinados clásicos hasta acabados más modernos. Se retira con lavado.",
-    "mainImageUrl": "/catalogo/agiva/agiva-agiva-04-yellow.webp",
     "isAvailable": true
   },
   {
@@ -428,7 +393,6 @@
     "price": 55,
     "description": "Ayuda a mantener cabellos difíciles en su lugar y a crear peinados definidos y duraderos. Usar poca cantidad y distribuir uniformemente.",
     "shortDescription": "Ayuda a mantener cabellos difíciles en su lugar y a crear peinados definidos y duraderos. Usar poca cantidad y distribuir uniformemente.",
-    "mainImageUrl": "/catalogo/agiva/agiva-agiva-05-red.webp",
     "isAvailable": true
   },
   {
@@ -440,7 +404,6 @@
     "price": 55,
     "description": "Su consistencia permite repartir el producto de forma uniforme, definir mechones y retocar el peinado durante la aplicación.",
     "shortDescription": "Su consistencia permite repartir el producto de forma uniforme, definir mechones y retocar el peinado durante la aplicación.",
-    "mainImageUrl": "/catalogo/agiva/agiva-agiva-06-cream-wax.webp",
     "isAvailable": true
   },
   {
@@ -452,7 +415,6 @@
     "price": 55,
     "description": "Al trabajarla entre las manos forma fibras que ayudan a repartir el producto, separar mechones y dar textura al peinado con un acabado moderno.",
     "shortDescription": "Al trabajarla entre las manos forma fibras que ayudan a repartir el producto, separar mechones y dar textura al peinado con un acabado moderno.",
-    "mainImageUrl": "/catalogo/agiva/agiva-agiva-10-grey-tela-de-arana.webp",
     "isAvailable": true
   },
   {
@@ -464,7 +426,6 @@
     "price": 99,
     "description": "Se aplica sobre cabello seco, especialmente en la raíz, para aumentar el cuerpo y facilitar el moldeado. Usar poco producto y añadir más si es necesario.",
     "shortDescription": "Se aplica sobre cabello seco, especialmente en la raíz, para aumentar el cuerpo y facilitar el moldeado. Usar poco producto y añadir más si es necesario.",
-    "mainImageUrl": "/catalogo/agiva/agiva-agiva-styling-dust.webp",
     "isAvailable": true
   },
   {
@@ -476,7 +437,6 @@
     "price": 89,
     "description": "Ayuda a lubricar e hidratar la piel durante el afeitado y permite ver el contorno mientras se trabaja. Aplicar una capa fina antes de pasar la navaja o rasuradora.",
     "shortDescription": "Ayuda a lubricar e hidratar la piel durante el afeitado y permite ver el contorno mientras se trabaja. Aplicar una capa fina antes de pasar la navaja o rasuradora.",
-    "mainImageUrl": "/catalogo/agiva/agiva-shaving-gel.webp",
     "isAvailable": true
   },
   {
@@ -488,7 +448,6 @@
     "price": 60,
     "description": "Su textura fibrosa permite distribuir el producto entre los mechones y crear peinados definidos con movimiento. Ideal para acabados modernos y texturizados.",
     "shortDescription": "Su textura fibrosa permite distribuir el producto entre los mechones y crear peinados definidos con movimiento. Ideal para acabados modernos y texturizados.",
-    "mainImageUrl": "/catalogo/4x4/4x4-cera-telarana-aroma-chicle.webp",
     "isAvailable": true
   },
   {
@@ -500,7 +459,6 @@
     "price": 60,
     "description": "Forma fibras al trabajarla con las manos, facilitando la definición de mechones y el control del peinado. Aplicar en pequeñas cantidades.",
     "shortDescription": "Forma fibras al trabajarla con las manos, facilitando la definición de mechones y el control del peinado. Aplicar en pequeñas cantidades.",
-    "mainImageUrl": "/catalogo/4x4/4x4-cera-telarana-aroma-banana.webp",
     "isAvailable": true
   },
   {
@@ -512,7 +470,6 @@
     "price": 60,
     "description": "Adecuada para crear peinados definidos y trabajables. Distribuir una pequeña cantidad entre las manos y aplicar sobre cabello seco o ligeramente húmedo.",
     "shortDescription": "Adecuada para crear peinados definidos y trabajables. Distribuir una pequeña cantidad entre las manos y aplicar sobre cabello seco o ligeramente húmedo.",
-    "mainImageUrl": "/catalogo/4x4/4x4-pasta-4x4-profesional-100g.webp",
     "isAvailable": true
   },
   {
@@ -524,7 +481,6 @@
     "price": 60,
     "description": "Ayuda a ordenar el cabello, definir líneas y mantener la forma del peinado. Ideal para estilos clásicos, laterales controlados y acabados de barbería.",
     "shortDescription": "Ayuda a ordenar el cabello, definir líneas y mantener la forma del peinado. Ideal para estilos clásicos, laterales controlados y acabados de barbería.",
-    "mainImageUrl": "/catalogo/4x4/4x4-pomada-4x4-profesional-100g.webp",
     "isAvailable": true
   },
   {
@@ -536,7 +492,6 @@
     "price": 75,
     "description": "Combina la manejabilidad de una cera con la aplicación de un gel, permitiendo crear estilos definidos y con buena presencia. Aplicar uniformemente sobre el cabello.",
     "shortDescription": "Combina la manejabilidad de una cera con la aplicación de un gel, permitiendo crear estilos definidos y con buena presencia. Aplicar uniformemente sobre el cabello.",
-    "mainImageUrl": "/catalogo/4x4/4x4-cera-gel-4x4-profesional-280g.webp",
     "isAvailable": true
   },
   {
@@ -548,7 +503,6 @@
     "price": 95,
     "description": "Ayuda a reducir la temperatura de la cuchilla entre servicios o durante jornadas continuas. Aplicar siguiendo las instrucciones del envase y evitando el contacto con la piel y los ojos.",
     "shortDescription": "Ayuda a reducir la temperatura de la cuchilla entre servicios o durante jornadas continuas. Aplicar siguiendo las instrucciones del envase y evitando el contacto con la piel y los ojos.",
-    "mainImageUrl": "/catalogo/4x4/4x4-enfriador-para-maquinas.webp",
     "isAvailable": true
   },
   {
@@ -560,7 +514,6 @@
     "price": 55,
     "description": "Ayuda a absorber humedad y a retirar pequeños residuos de cabello, dejando una sensación seca y cómoda después del corte o afeitado.",
     "shortDescription": "Ayuda a absorber humedad y a retirar pequeños residuos de cabello, dejando una sensación seca y cómoda después del corte o afeitado.",
-    "mainImageUrl": "/catalogo/4x4/4x4-talco-dorado-invensible-4x4-profesional.webp",
     "isAvailable": true
   },
   {
@@ -572,7 +525,6 @@
     "price": 100,
     "description": "Limpia el cabello y el cuero cabelludo y está orientado al cuidado de cabellos que requieren una rutina fortalecedora. Utilizar únicamente según las indicaciones del envase.",
     "shortDescription": "Limpia el cabello y el cuero cabelludo y está orientado al cuidado de cabellos que requieren una rutina fortalecedora. Utilizar únicamente según las indicaciones del envase.",
-    "mainImageUrl": "/catalogo/4x4/4x4-shampoo-cbd-minoxidil.webp",
     "isAvailable": true
   },
   {
@@ -584,7 +536,6 @@
     "price": 86,
     "description": "Ideal para elevar la raíz, dar cuerpo y mejorar el agarre del cabello sin apariencia húmeda. Aplicar poco a poco sobre cabello seco y moldear con los dedos.",
     "shortDescription": "Ideal para elevar la raíz, dar cuerpo y mejorar el agarre del cabello sin apariencia húmeda. Aplicar poco a poco sobre cabello seco y moldear con los dedos.",
-    "mainImageUrl": "/catalogo/4x4/4x4-polvo-voluminizador-seco.webp",
     "isAvailable": true
   },
   {
@@ -596,7 +547,6 @@
     "price": 80,
     "description": "Permite sombrear, rellenar y marcar visualmente contornos de cabello o barba. Aplicar en capas ligeras y uniformes hasta lograr el efecto deseado.",
     "shortDescription": "Permite sombrear, rellenar y marcar visualmente contornos de cabello o barba. Aplicar en capas ligeras y uniformes hasta lograr el efecto deseado.",
-    "mainImageUrl": "/catalogo/4x4/4x4-balsamo-negro-liquido-para-aerografo.webp",
     "isAvailable": true
   },
   {
@@ -608,7 +558,6 @@
     "price": 100,
     "description": "Producto de uso externo. Aplicar únicamente conforme a la concentración, modo de uso y advertencias indicadas en el envase; evitar ojos y piel irritada.",
     "shortDescription": "Producto de uso externo. Aplicar únicamente conforme a la concentración, modo de uso y advertencias indicadas en el envase; evitar ojos y piel irritada.",
-    "mainImageUrl": "/catalogo/4x4/4x4-minoxidil-liquido-4x4.webp",
     "isAvailable": true
   },
   {
@@ -620,7 +569,6 @@
     "price": 30,
     "description": "Ayuda a dar forma, brillo y control al peinado con una textura fácil de trabajar. Su aroma a coco aporta una sensación agradable durante el uso.",
     "shortDescription": "Ayuda a dar forma, brillo y control al peinado con una textura fácil de trabajar. Su aroma a coco aporta una sensación agradable durante el uso.",
-    "mainImageUrl": "/catalogo/evok/evok-evoc-coco.webp",
     "isAvailable": true
   },
   {
@@ -632,7 +580,6 @@
     "price": 30,
     "description": "Permite controlar y definir el peinado mientras aporta brillo y manejabilidad. Su aroma a fresa complementa el acabado del producto.",
     "shortDescription": "Permite controlar y definir el peinado mientras aporta brillo y manejabilidad. Su aroma a fresa complementa el acabado del producto.",
-    "mainImageUrl": "/catalogo/evok/evok-evoc-fresa.webp",
     "isAvailable": true
   },
   {
@@ -644,7 +591,6 @@
     "price": 30,
     "description": "Facilita la creación de estilos definidos, ayuda a controlar cabellos rebeldes y aporta un acabado brillante con aroma a manzana.",
     "shortDescription": "Facilita la creación de estilos definidos, ayuda a controlar cabellos rebeldes y aporta un acabado brillante con aroma a manzana.",
-    "mainImageUrl": "/catalogo/evok/evok-evoc-manzana.webp",
     "isAvailable": true
   },
   {
@@ -656,7 +602,6 @@
     "price": 30,
     "description": "Ofrece fijación y manejabilidad para distintos estilos, dejando el cabello definido y con buena apariencia. Se aplica en pequeñas cantidades.",
     "shortDescription": "Ofrece fijación y manejabilidad para distintos estilos, dejando el cabello definido y con buena apariencia. Se aplica en pequeñas cantidades.",
-    "mainImageUrl": "/catalogo/evok/evok-evoc-sabila.webp",
     "isAvailable": true
   },
   {
@@ -668,7 +613,6 @@
     "price": 35,
     "description": "Su textura permite moldear el cabello y mantener estilos bien estructurados. Ideal para peinados que requieren mayor control y acabado definido.",
     "shortDescription": "Su textura permite moldear el cabello y mantener estilos bien estructurados. Ideal para peinados que requieren mayor control y acabado definido.",
-    "mainImageUrl": "/catalogo/evok/evok-evoc-negro.webp",
     "isAvailable": true
   },
   {
@@ -680,7 +624,6 @@
     "price": 35,
     "description": "Ayuda a mantener el cabello en su lugar y facilita el moldeado de estilos clásicos o modernos. Aplicar una pequeña cantidad y distribuir uniformemente.",
     "shortDescription": "Ayuda a mantener el cabello en su lugar y facilita el moldeado de estilos clásicos o modernos. Aplicar una pequeña cantidad y distribuir uniformemente.",
-    "mainImageUrl": "/catalogo/evok/evok-evoc-azul.webp",
     "isAvailable": true
   },
   {
@@ -692,7 +635,6 @@
     "price": 35,
     "description": "Permite crear peinados definidos con buena manejabilidad y control. Puede aplicarse sobre cabello seco o ligeramente húmedo.",
     "shortDescription": "Permite crear peinados definidos con buena manejabilidad y control. Puede aplicarse sobre cabello seco o ligeramente húmedo.",
-    "mainImageUrl": "/catalogo/evok/evok-evoc-blanco.webp",
     "isAvailable": true
   },
   {
@@ -704,7 +646,6 @@
     "price": 35,
     "description": "Indicada para estilos que necesitan definición y control. Trabajar una pequeña cantidad entre las manos antes de distribuir en el cabello.",
     "shortDescription": "Indicada para estilos que necesitan definición y control. Trabajar una pequeña cantidad entre las manos antes de distribuir en el cabello.",
-    "mainImageUrl": "/catalogo/evok/evok-evoc-rojo.webp",
     "isAvailable": true
   },
   {
@@ -716,7 +657,6 @@
     "price": 59,
     "description": "Ayuda a dejar una sensación fresca y una fragancia agradable al finalizar el servicio. Aplicar sobre piel limpia evitando ojos y zonas irritadas.",
     "shortDescription": "Ayuda a dejar una sensación fresca y una fragancia agradable al finalizar el servicio. Aplicar sobre piel limpia evitando ojos y zonas irritadas.",
-    "mainImageUrl": "/catalogo/evok/evok-after-shave-evok.webp",
     "isAvailable": true
   },
   {
@@ -728,7 +668,6 @@
     "price": 59,
     "description": "Su transparencia permite visualizar los contornos mientras se afeita y ayuda a reducir la fricción de la cuchilla. Aplicar una capa uniforme antes del afeitado.",
     "shortDescription": "Su transparencia permite visualizar los contornos mientras se afeita y ayuda a reducir la fricción de la cuchilla. Aplicar una capa uniforme antes del afeitado.",
-    "mainImageUrl": "/catalogo/evok/evok-shaving-gel-evok.webp",
     "isAvailable": true
   },
   {
@@ -740,7 +679,6 @@
     "price": 70,
     "description": "Se coloca alrededor del cuello antes de la capa para mejorar la higiene y evitar el contacto directo con cabellos sueltos, productos o la tela de la capa.",
     "shortDescription": "Se coloca alrededor del cuello antes de la capa para mejorar la higiene y evitar el contacto directo con cabellos sueltos, productos o la tela de la capa.",
-    "mainImageUrl": "/catalogo/evok/evok-tubo-de-papel-cuello-color-negro.webp",
     "isAvailable": true
   },
   {
@@ -752,7 +690,6 @@
     "price": 60,
     "description": "Crea una barrera higiénica entre la piel y la capa de corte, ayudando a evitar el contacto con residuos de cabello y productos durante el servicio.",
     "shortDescription": "Crea una barrera higiénica entre la piel y la capa de corte, ayudando a evitar el contacto con residuos de cabello y productos durante el servicio.",
-    "mainImageUrl": "/catalogo/evok/evok-tubo-de-papel-cuello-color-blanco.webp",
     "isAvailable": true
   },
   {
@@ -764,7 +701,6 @@
     "price": 45,
     "description": "Al trabajarla entre las manos forma fibras que facilitan la distribución, separación de mechones y creación de peinados con textura y movimiento.",
     "shortDescription": "Al trabajarla entre las manos forma fibras que facilitan la distribución, separación de mechones y creación de peinados con textura y movimiento.",
-    "mainImageUrl": "/catalogo/xiomara/xiomara-tela-de-arana-xiomara.webp",
     "isAvailable": true
   },
   {
@@ -776,7 +712,6 @@
     "price": 40,
     "description": "Adecuada para distintos estilos de peinado; permite trabajar y ordenar el cabello aplicando una pequeña cantidad y distribuyéndola de manera uniforme.",
     "shortDescription": "Adecuada para distintos estilos de peinado; permite trabajar y ordenar el cabello aplicando una pequeña cantidad y distribuyéndola de manera uniforme.",
-    "mainImageUrl": "/catalogo/xiomara/xiomara-cera-moldeadora-xiomara.webp",
     "isAvailable": true
   },
   {
@@ -788,7 +723,6 @@
     "price": 185,
     "description": "Catrin Gel de Crecimiento está diseñado para estimular los folículos y favorecer una barba con apariencia más densa y uniforme. Su fórmula incluye minoxidil, bergamota y gotu kola; algunas presentaciones también incorporan aloe vera, vitamina E y aceites nutritivos. Tiene textura en gel de fácil aplicación y rápida absorción",
     "shortDescription": "Catrin Gel de Crecimiento está diseñado para estimular los folículos y favorecer una barba con apariencia más densa y uniforme. Su fórmula incluye minoxidil, bergamota y gotu kola; algunas presentaciones también incorporan aloe vera, vitamina E y aceites nutritivos. Tiene textura en gel de fácil aplicación y rápida absorción",
-    "mainImageUrl": "/catalogo/catrin/catrin-minoxidil-en-gel-marca-catrin.webp",
     "isAvailable": true
   }
 ]

@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useTranslations } from "@/i18n";
 import type { CatalogProduct } from "@/lib/catalog";
 
 export function ProductGallery({ product }: { product: CatalogProduct }) {
+  const t = useTranslations();
   const images = [
     ...new Set(
       [
@@ -22,7 +24,8 @@ export function ProductGallery({ product }: { product: CatalogProduct }) {
             src={selected}
             alt={product.name}
             fill
-            sizes="(max-width: 900px) 100vw, 50vw"
+            sizes="(max-width: 1023px) calc(100vw - 2rem), 38rem"
+            quality={82}
             priority
           />
         ) : (
@@ -37,9 +40,9 @@ export function ProductGallery({ product }: { product: CatalogProduct }) {
               type="button"
               key={image}
               onClick={() => setSelected(image)}
-              aria-label={`Ver imagen ${index + 1} de ${product.name}`}
+              aria-label={`${t("catalog.viewProduct")}: ${index + 1} de ${product.name}`}
             >
-              <Image src={image} alt="" fill sizes="80px" />
+              <Image src={image} alt="" fill sizes="72px" quality={70} />
             </button>
           ))}
         </div>

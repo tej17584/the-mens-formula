@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { translate } from "@/i18n";
 import {
   getCatalogProduct,
   getCatalogProducts,
@@ -37,19 +38,31 @@ export default async function ProductPage({ params }: Props) {
     getSiteSettings(),
   ]);
   const productUrl = `${siteConfig.url}/catalogo/${product.slug}`;
-  const whatsappMessage = settings.whatsappProductMessage
+  const message = settings.whatsappProductMessage
     .replaceAll("{{product_name}}", product.name)
     .replaceAll("{{product_url}}", productUrl)
     .replace(/\s+/g, " ")
     .trim();
   const whatsappHref = settings.whatsappNumber
-    ? `https://wa.me/${settings.whatsappNumber.replace(/\D/g, "")}?text=${encodeURIComponent(whatsappMessage)}`
+    ? `https://wa.me/${settings.whatsappNumber.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`
     : null;
   const priceLevels = [
-    { label: "1 unidad", price: product.consumer_price, suffix: "" },
-    { label: "3 unidades o más", price: product.price_3_plus, suffix: " c/u" },
-    { label: "6 unidades o más", price: product.price_6_plus, suffix: " c/u" },
-    { label: "Por caja", price: product.box_price, suffix: "" },
+    {
+      label: translate("product.oneUnit"),
+      price: product.consumer_price,
+      suffix: "",
+    },
+    {
+      label: translate("product.threePlus"),
+      price: product.price_3_plus,
+      suffix: " c/u",
+    },
+    {
+      label: translate("product.sixPlus"),
+      price: product.price_6_plus,
+      suffix: " c/u",
+    },
+    { label: translate("product.box"), price: product.box_price, suffix: "" },
   ].filter((level) => level.price !== null);
   const related = getRelatedProducts(products, product);
   return (
@@ -57,7 +70,7 @@ export default async function ProductPage({ params }: Props) {
       <SiteHeader />
       <main className="shell product-page">
         <Link className="back-link" href="/catalogo">
-          ← Volver al catálogo
+          ← {translate("common.backToCatalog")}
         </Link>
         <div className="product-layout">
           <ProductGallery product={product} />
@@ -70,7 +83,7 @@ export default async function ProductPage({ params }: Props) {
               <p className="product-description">{product.description}</p>
             ) : null}
             <div className="price-levels">
-              <h2>Precios</h2>
+              <h2>{translate("product.prices")}</h2>
               {priceLevels.map((level) => (
                 <div className="price-level" key={level.label}>
                   <span>{level.label}</span>
@@ -83,7 +96,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
             {product.detail_points.length ? (
               <div className="detail-points">
-                <h2>Detalles del producto</h2>
+                <h2>{translate("product.details")}</h2>
                 <ul>
                   {product.detail_points.map((point) => (
                     <li key={point}>{point}</li>
@@ -98,11 +111,12 @@ export default async function ProductPage({ params }: Props) {
                 target="_blank"
                 rel="noreferrer"
               >
-                Consultar por WhatsApp <span aria-hidden="true">→</span>
+                {translate("product.whatsapp")}{" "}
+                <span aria-hidden="true">→</span>
               </a>
             ) : (
               <span className="whatsapp-unavailable">
-                WhatsApp pendiente de configuración
+                {translate("product.whatsappUnavailable")}
               </span>
             )}
           </div>
@@ -111,11 +125,12 @@ export default async function ProductPage({ params }: Props) {
           <section className="related-products" aria-labelledby="related-title">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">También te puede interesar</p>
-                <h2 id="related-title">Productos relacionados</h2>
+                <p className="eyebrow">{translate("product.relatedEyebrow")}</p>
+                <h2 id="related-title">{translate("product.relatedTitle")}</h2>
               </div>
               <Link className="text-link" href="/catalogo">
-                Ver catálogo <span aria-hidden="true">→</span>
+                {translate("home.viewCatalog")}{" "}
+                <span aria-hidden="true">→</span>
               </Link>
             </div>
             <div className="product-grid related-grid">

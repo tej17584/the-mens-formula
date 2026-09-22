@@ -109,7 +109,7 @@ const uniqueBrands = [
 const productRows = records
   .map(
     (record) =>
-      `  (${sql(record.name)}, ${sql(record.slug)}, ${sql(record.description)}, ${sql(record.shortDescription)}, (select id from categories where slug = ${sql(record.category)}), (select id from brands where slug = ${sql(record.brandSlug)}), ${record.price ?? "null"}, ${sql(`/catalogo/${record.brandSlug}/${record.slug}.webp`)}, true, true)`,
+      `  (${sql(record.name)}, ${sql(record.slug)}, ${sql(record.description)}, ${sql(record.shortDescription)}, (select id from categories where slug = ${sql(record.category)}), (select id from brands where slug = ${sql(record.brandSlug)}), ${record.price ?? "null"}, null, true, true)`,
   )
   .join(",\n");
 
@@ -123,7 +123,6 @@ if (previewPath) {
     JSON.stringify(
       records.map((record) => ({
         ...record,
-        mainImageUrl: `/catalogo/${record.brandSlug}/${record.slug}.webp`,
         isAvailable: true,
       })),
       null,

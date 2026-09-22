@@ -12,7 +12,7 @@ export const siteConfig = {
 } as const;
 
 export function formatPrice(price: number | null) {
-  if (price === null) return "Consultar precio";
+  if (price === null) return translate("catalog.priceOnRequest");
 
   return new Intl.NumberFormat(siteConfig.locale, {
     style: "currency",
@@ -21,3 +21,4 @@ export function formatPrice(price: number | null) {
     minimumFractionDigits: 2,
   }).format(price);
 }
+import { translate } from "@/i18n";

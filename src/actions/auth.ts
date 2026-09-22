@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { translate } from "@/i18n";
 import { createClient } from "@/lib/supabase/server";
 
 const credentialsSchema = z.object({
@@ -20,13 +21,12 @@ export async function signIn(
   });
 
   if (!parsed.success) {
-    return { error: "Enter a valid email and password." };
+    return { error: translate("dashboard.formError") };
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
-  return error
-    ? { error: "Unable to sign in with those credentials." }
-    : { success: true };
+  if (error) return { error: translate("dashboard.formError") };
+  return { success: true };
 }

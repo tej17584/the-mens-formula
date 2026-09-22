@@ -17,8 +17,8 @@
   --color-focus: oklch(57% 0.16 151);
   --color-on-brand: oklch(99% 0.006 80);
 
-  --font-display: var(--font-geist-sans);
-  --font-body: var(--font-geist-sans);
+  --font-display: var(--font-oswald);
+  --font-body: var(--font-oswald);
   --font-mono: var(--font-geist-mono);
 
   --space-1: 0.25rem;
