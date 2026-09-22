@@ -106,7 +106,8 @@ export function ProductForm({
         </label>
         <label>
           <span>{t("dashboard.sku")}</span>
-          <input name="sku" defaultValue={product?.sku ?? ""} />
+          <input name="sku" required defaultValue={product?.sku ?? ""} />
+          <small>{t("dashboard.skuHelp")}</small>
         </label>
         <label>
           <span>{t("dashboard.stock")}</span>

@@ -20,7 +20,10 @@ const productSchema = z.object({
   description: textField.max(5000),
   shortDescription: textField.max(280),
   details: textField.max(5000),
-  sku: textField.max(120),
+  sku: textField
+    .min(3)
+    .max(120)
+    .regex(/[a-zA-Z0-9]/),
   stock: textField.max(32),
   consumerPrice: textField.max(64),
   distributorPrice: textField.max(64),
@@ -176,7 +179,6 @@ async function updateMainImage(productId: string) {
 function productValues(input: z.infer<typeof productSchema>) {
   return {
     name: input.name,
-    slug: slugify(input.name),
     brand_id: input.brandId,
     category_id: input.categoryId,
     description: input.description || null,
@@ -185,7 +187,7 @@ function productValues(input: z.infer<typeof productSchema>) {
       .split("\n")
       .map((point) => point.trim())
       .filter(Boolean),
-    sku: input.sku || null,
+    sku: input.sku,
     stock: numberOrNull(input.stock),
     consumer_price: numberOrNull(input.consumerPrice),
     price: numberOrNull(input.consumerPrice),
@@ -215,7 +217,10 @@ export async function createProductAction(
   if (!parsed.success || !files.length || files.length > 3) return message();
 
   const supabase = createAdminClient();
-  const values = productValues(parsed.data);
+  const values = {
+    ...productValues(parsed.data),
+    slug: slugify(parsed.data.sku),
+  };
   const { data: product, error } = await supabase
     .from("products")
     .insert(values)

@@ -885,14 +885,47 @@ h3 {
 }
 .detail-points ul {
   display: grid;
-  gap: var(--space-2);
+  gap: var(--space-3);
   margin: var(--space-4) 0 0;
-  padding-left: 1.2rem;
+  padding: 0;
   color: var(--color-muted);
-  line-height: 1.55;
+  list-style: none;
+  line-height: 1.5;
 }
-.detail-points li::marker {
-  color: var(--color-brand);
+.detail-points li {
+  position: relative;
+  border: var(--rule) solid
+    color-mix(in oklch, var(--color-border), transparent 18%);
+  border-radius: var(--radius-sm);
+  background: color-mix(
+    in oklch,
+    var(--color-paper-warm),
+    var(--color-surface) 35%
+  );
+  padding: var(--space-3) var(--space-4) var(--space-3) 2.65rem;
+}
+.detail-points li::before {
+  position: absolute;
+  top: 0.95rem;
+  left: 1rem;
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand);
+  box-shadow: 0 0 0 0.26rem
+    color-mix(in oklch, var(--color-brand), transparent 82%);
+  content: "";
+}
+.product-brand-link {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in oklch, currentColor, transparent 62%);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.product-brand-link:hover {
+  color: var(--color-brand-deep);
 }
 .whatsapp-unavailable {
   color: var(--color-muted);
@@ -1058,13 +1091,13 @@ h3 {
   }
 }
 
-/* Dashboard: deliberately compact and operational, while sharing TMF tokens. */
+/* Dashboard: a focused TMF control room, without departing from the storefront. */
 .dashboard-page {
   min-height: 100dvh;
   background: var(--color-paper-warm);
 }
 .dashboard-shell {
-  width: min(100% - 2rem, 92rem);
+  width: min(100% - 2rem, 96rem);
   margin-inline: auto;
   display: grid;
   gap: var(--space-8);
@@ -1074,31 +1107,67 @@ h3 {
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  padding-bottom: var(--space-4);
-  border-bottom: var(--rule) solid var(--color-border);
+  border: var(--rule) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-ink);
+  padding: var(--space-4);
+  color: var(--color-on-brand);
+  box-shadow: 0 1.2rem 2.8rem
+    color-mix(in oklch, var(--color-ink), transparent 83%);
 }
 .dashboard-nav .brand-logo {
   width: 7.5rem;
 }
 .dashboard-nav .eyebrow {
   margin-left: auto;
+  color: color-mix(in oklch, var(--color-on-brand), transparent 32%);
 }
 .dashboard-nav nav {
   display: flex;
   gap: var(--space-3);
-  font-size: 0.9rem;
-  font-weight: 650;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+.dashboard-nav nav a {
+  border-radius: var(--radius-sm);
+  color: color-mix(in oklch, var(--color-on-brand), transparent 22%);
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.dashboard-nav nav a:hover {
+  background: color-mix(in oklch, var(--color-on-brand), transparent 90%);
+  color: var(--color-on-brand);
 }
 .dashboard-nav .text-link {
   display: none;
+  color: var(--color-on-brand);
 }
 .dashboard-main {
   min-width: 0;
+  display: grid;
+  align-content: start;
 }
 .dashboard-heading {
   display: grid;
   gap: var(--space-3);
+  position: relative;
+  overflow: hidden;
+  border: var(--rule) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  padding: var(--space-6);
   margin-bottom: var(--space-7);
+  box-shadow: 0 1.15rem 2.6rem
+    color-mix(in oklch, var(--color-ink), transparent 92%);
+}
+.dashboard-heading::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.45rem;
+  background: var(--color-brand);
+  content: "";
 }
 .dashboard-heading h1 {
   font-size: clamp(2.25rem, 4vw, 4rem);
@@ -1129,29 +1198,63 @@ h3 {
   border: var(--rule) solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
+  box-shadow: 0 0.85rem 2rem
+    color-mix(in oklch, var(--color-ink), transparent 94%);
 }
 .dashboard-shortcuts a {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--space-3);
+  min-height: 8.2rem;
   padding: var(--space-5);
+  border-top: 0.24rem solid var(--color-brand);
   transition:
     transform var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out);
 }
 .dashboard-shortcuts a:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-brand);
+  transform: translateY(-3px);
+  border-color: color-mix(
+    in oklch,
+    var(--color-brand),
+    var(--color-border) 28%
+  );
+  box-shadow: 0 1.15rem 2.45rem
+    color-mix(in oklch, var(--color-ink), transparent 88%);
 }
 .dashboard-shortcuts strong {
+  font-size: 1.28rem;
+  line-height: 1;
+}
+.dashboard-shortcuts span {
+  display: grid;
+  width: 2.3rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: color-mix(in oklch, var(--color-brand), transparent 86%);
+  color: var(--color-brand-deep);
   font-size: 1.15rem;
 }
 .dashboard-stats {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .dashboard-stats article {
+  position: relative;
+  overflow: hidden;
   padding: var(--space-5);
+}
+.dashboard-stats article::after {
+  position: absolute;
+  right: -0.5rem;
+  bottom: -1.2rem;
+  width: 4rem;
+  aspect-ratio: 1;
+  border: var(--rule) solid
+    color-mix(in oklch, var(--color-brand), transparent 72%);
+  border-radius: 50%;
+  content: "";
 }
 .dashboard-stats p {
   color: var(--color-muted);
@@ -1163,13 +1266,14 @@ h3 {
   margin-top: var(--space-2);
   color: var(--color-brand-deep);
   font-family: var(--font-display), sans-serif;
-  font-size: 2rem;
+  font-size: 2.3rem;
 }
 .dashboard-filters {
   display: grid;
   gap: var(--space-3);
-  padding: var(--space-4);
+  padding: var(--space-5);
   margin-bottom: var(--space-6);
+  border-left: 0.24rem solid var(--color-brand);
 }
 .dashboard-filters input,
 .dashboard-filters select,
@@ -1181,7 +1285,8 @@ h3 {
   border: var(--rule) solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-paper);
-  padding: 0.72rem 0.8rem;
+  min-height: 2.9rem;
+  padding: 0.72rem 0.85rem;
   color: var(--color-ink);
 }
 .dashboard-table-wrap {
@@ -1189,6 +1294,8 @@ h3 {
   border: var(--rule) solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
+  box-shadow: 0 1rem 2.3rem
+    color-mix(in oklch, var(--color-ink), transparent 94%);
 }
 .dashboard-table {
   width: 100%;
@@ -1204,8 +1311,9 @@ h3 {
   border-bottom: var(--rule) solid var(--color-border);
 }
 .dashboard-table th {
-  color: var(--color-muted);
-  font-size: 0.74rem;
+  background: color-mix(in oklch, var(--color-ink), var(--color-surface) 8%);
+  color: color-mix(in oklch, var(--color-on-brand), transparent 22%);
+  font-size: 0.78rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -1213,6 +1321,12 @@ h3 {
   display: block;
   margin-top: 0.15rem;
   color: var(--color-muted);
+}
+.dashboard-table tbody tr {
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+.dashboard-table tbody tr:hover {
+  background: color-mix(in oklch, var(--color-brand), transparent 94%);
 }
 .dashboard-table-image {
   position: relative;
@@ -1235,7 +1349,7 @@ h3 {
   border-radius: var(--radius-pill);
   background: var(--color-border);
   padding: 0.25rem 0.55rem;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 .status-pill.active {
@@ -1253,7 +1367,7 @@ h3 {
   border: 0;
   background: transparent;
   color: var(--color-brand-deep);
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   font-weight: 700;
   padding: 0;
 }
@@ -1281,7 +1395,8 @@ h3 {
 .dashboard-product-form {
   display: grid;
   gap: var(--space-5);
-  padding: var(--space-5);
+  padding: var(--space-6);
+  border-top: 0.24rem solid var(--color-brand);
 }
 .dashboard-product-form > label,
 .dashboard-form-grid > label,
@@ -1289,7 +1404,7 @@ h3 {
   display: grid;
   gap: var(--space-2);
   color: var(--color-muted);
-  font-size: 0.84rem;
+  font-size: 0.9rem;
   font-weight: 650;
 }
 .dashboard-form-grid {
@@ -1298,7 +1413,7 @@ h3 {
 }
 .dashboard-product-form small {
   color: var(--color-muted);
-  font-size: 0.78rem;
+  font-size: 0.84rem;
 }
 .dashboard-image-list {
   display: flex;
@@ -1347,6 +1462,7 @@ h3 {
   display: grid;
   gap: var(--space-3);
   padding: var(--space-5);
+  border-left: 0.24rem solid var(--color-brand);
 }
 .dashboard-message header,
 .dashboard-message footer,
@@ -1418,8 +1534,8 @@ h3 {
     height: max-content;
     display: grid;
     gap: var(--space-6);
-    padding: 0;
-    border: 0;
+    padding: var(--space-6) var(--space-4);
+    min-height: min(42rem, calc(100dvh - 5rem));
   }
   .dashboard-nav .eyebrow {
     margin: 0;
@@ -1429,7 +1545,7 @@ h3 {
     gap: var(--space-2);
   }
   .dashboard-nav nav a {
-    padding-block: var(--space-2);
+    padding: var(--space-3) var(--space-3);
   }
   .dashboard-nav .text-link {
     display: inline-flex;

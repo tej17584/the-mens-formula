@@ -33,7 +33,13 @@ export function ProductCard({
       </Link>
       <div className="product-copy">
         <p>
-          {product.brand.name} · {product.category.name}
+          <Link
+            className="product-brand-link"
+            href={`/catalogo?marca=${product.brand.slug}`}
+          >
+            {product.brand.name}
+          </Link>{" "}
+          · {product.category.name}
         </p>
         <h3>
           <Link href={`/catalogo/${product.slug}`}>{product.name}</Link>

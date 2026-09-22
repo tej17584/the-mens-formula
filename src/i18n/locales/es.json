@@ -117,6 +117,7 @@
     "description": "Descripción",
     "details": "Detalles, uno por línea",
     "sku": "SKU",
+    "skuHelp": "Identificador interno. Define la URL al crear y no cambia al editar el nombre.",
     "stock": "Inventario",
     "availability": "Disponible",
     "priceMin": "Precio público mínimo",

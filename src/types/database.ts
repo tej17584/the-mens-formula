@@ -224,7 +224,7 @@ export type Database = {
           price_6_plus: number | null;
           sale_price: number | null;
           short_description: string | null;
-          sku: string | null;
+          sku: string;
           slug: string;
           specifications: Json;
           stock: number | null;
@@ -253,7 +253,7 @@ export type Database = {
           price_6_plus?: number | null;
           sale_price?: number | null;
           short_description?: string | null;
-          sku?: string | null;
+          sku: string;
           slug: string;
           specifications?: Json;
           stock?: number | null;
@@ -282,7 +282,7 @@ export type Database = {
           price_6_plus?: number | null;
           sale_price?: number | null;
           short_description?: string | null;
-          sku?: string | null;
+          sku?: string;
           slug?: string;
           specifications?: Json;
           stock?: number | null;

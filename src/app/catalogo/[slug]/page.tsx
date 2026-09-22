@@ -76,7 +76,13 @@ export default async function ProductPage({ params }: Props) {
           <ProductGallery product={product} />
           <div className="product-detail">
             <p className="eyebrow">
-              {product.brand.name} · {product.category.name}
+              <Link
+                className="product-brand-link"
+                href={`/catalogo?marca=${product.brand.slug}`}
+              >
+                {product.brand.name}
+              </Link>{" "}
+              · {product.category.name}
             </p>
             <h1>{product.name}</h1>
             {product.description ? (

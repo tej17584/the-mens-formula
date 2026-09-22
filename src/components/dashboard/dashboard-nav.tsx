@@ -5,7 +5,7 @@ import { translate } from "@/i18n";
 export function DashboardNav() {
   return (
     <aside className="dashboard-nav">
-      <BrandLogo />
+      <BrandLogo inverted />
       <p className="eyebrow">{translate("dashboard.title")}</p>
       <nav aria-label={translate("dashboard.title")}>
         <Link href="/dashboard">{translate("dashboard.welcome")}</Link>
