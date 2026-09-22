@@ -16,7 +16,7 @@
     "supabase:types": "node scripts/generate-supabase-types.mjs",
     "catalog:generate-migration": "node scripts/generate-catalog-migration.mjs",
     "catalog:prepare-images": "node scripts/prepare-product-images.mjs",
-    "catalog:upload-images": "node scripts/upload-product-images.mjs",
+    "catalog:upload-images": "node --env-file=.env.local scripts/upload-product-images.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
