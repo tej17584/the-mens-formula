@@ -17,13 +17,22 @@ export const metadata: Metadata = {
     default: "The Men's Formula",
     template: "%s | The Men's Formula",
   },
-  description: "A production-ready Next.js application.",
+  description: "Productos profesionales para barbería.",
+  applicationName: "The Men's Formula",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  ),
+  openGraph: {
+    type: "website",
+    locale: "es_GT",
+    siteName: "The Men's Formula",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">{children}</body>
