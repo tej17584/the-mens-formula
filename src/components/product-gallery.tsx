@@ -6,9 +6,13 @@ import type { CatalogProduct } from "@/lib/catalog";
 
 export function ProductGallery({ product }: { product: CatalogProduct }) {
   const images = [
-    product.main_image_url,
-    ...product.images.map((image) => image.image_url),
-  ].filter((image): image is string => Boolean(image));
+    ...new Set(
+      [
+        product.main_image_url,
+        ...product.images.map((image) => image.image_url),
+      ].filter((image): image is string => Boolean(image)),
+    ),
+  ];
   const [selected, setSelected] = useState(images[0]);
   return (
     <div className="product-gallery">

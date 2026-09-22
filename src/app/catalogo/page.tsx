@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ProductGrid } from "@/components/product-grid";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -19,7 +20,11 @@ export default async function CatalogPage() {
           <h1>Catálogo profesional</h1>
           <p>Productos organizados para que encuentres rápido lo que buscas.</p>
         </div>
-        <ProductGrid products={products} />
+        <Suspense
+          fallback={<div className="catalog-loading">Cargando catálogo…</div>}
+        >
+          <ProductGrid products={products} />
+        </Suspense>
       </main>
       <SiteFooter />
     </div>

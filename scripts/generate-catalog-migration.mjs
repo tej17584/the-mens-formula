@@ -21,6 +21,22 @@ const slugify = (value) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
+const normalizedHeader = (value) =>
+  String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toUpperCase();
+
+const valueForHeader = (row, header) => {
+  const desired = normalizedHeader(header);
+  const key = Object.keys(row).find(
+    (candidate) => normalizedHeader(candidate) === desired,
+  );
+  return key ? row[key] : null;
+};
+
 const sql = (value) => `'${String(value).replaceAll("'", "''")}'`;
 const categoryFor = (name) => {
   const value = name.toLowerCase();
@@ -66,26 +82,14 @@ for (const sheetName of book.SheetNames) {
   });
   const brandSlug = slugify(sheetName);
   for (const row of rows) {
-    const name = row["NOMBRE DE PRODUCTOS"];
+    const name = valueForHeader(row, "NOMBRE DE PRODUCTOS");
     if (!name) continue;
-    const price = Number(
-      row["PRECIO A CONSUMIDOR FINAL"] ?? row["PRECIO A CONSUMIDOR FINAL "],
+    const publicPrice = Number(
+      valueForHeader(row, "PRECIO A CONSUMIDOR FINAL"),
     );
-    const publicPrice = Number.isFinite(price)
-      ? price
-      : Number(row["PRECIO A CONSUMIDOR FINAL"]);
-    const resolvedPrice = Number.isFinite(publicPrice)
-      ? publicPrice
-      : Number(
-          row["PRECIO A CONSUMIDOR FINAL"] ?? row["PRECIO A CONSUMIDOR FINAL "],
-        );
-    const sheetFourByFour = sheetName === "4x4";
-    const fallbackPrice = sheetFourByFour
-      ? Number(row["PRECIO A CONSUMIDOR FINAL"])
-      : resolvedPrice;
-    const finalPrice = Number.isFinite(fallbackPrice) ? fallbackPrice : null;
-    const summary = row["__EMPTY"] ?? row["System.Xml.XmlElement"] ?? "";
-    const details = row["DETALLE"] ?? "";
+    const finalPrice = Number.isFinite(publicPrice) ? publicPrice : null;
+    const summary = valueForHeader(row, "DESCRIPCIÓN") ?? "";
+    const details = valueForHeader(row, "DETALLE") ?? "";
     records.push({
       brand: sheetName,
       brandSlug,

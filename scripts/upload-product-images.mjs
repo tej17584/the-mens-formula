@@ -3,6 +3,31 @@ import path from "node:path";
 import process from "node:process";
 import { createClient } from "@supabase/supabase-js";
 
+async function loadLocalEnvironment() {
+  try {
+    const contents = await fs.readFile(
+      path.join(process.cwd(), ".env.local"),
+      "utf8",
+    );
+    for (const line of contents.split(/\r?\n/u)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const separator = trimmed.indexOf("=");
+      if (separator < 1) continue;
+      const key = trimmed.slice(0, separator).trim();
+      const value = trimmed
+        .slice(separator + 1)
+        .trim()
+        .replace(/^['"]|['"]$/gu, "");
+      if (!(key in process.env)) process.env[key] = value;
+    }
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+}
+
+await loadLocalEnvironment();
+
 const [preparedDirectory] = process.argv.slice(2);
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -29,6 +54,7 @@ const supabase = createClient(url, serviceRoleKey, {
 });
 const files = await filesIn(preparedDirectory);
 let uploaded = 0;
+const unmatched = [];
 for (const file of files.filter((candidate) => candidate.endsWith(".webp"))) {
   const relative = path.relative(preparedDirectory, file).replaceAll("\\", "/");
   const slug = path.basename(relative, ".webp");
@@ -37,7 +63,11 @@ for (const file of files.filter((candidate) => candidate.endsWith(".webp"))) {
     .select("id,name")
     .eq("slug", slug)
     .maybeSingle();
-  if (lookupError || !product) continue;
+  if (lookupError) throw lookupError;
+  if (!product) {
+    unmatched.push(relative);
+    continue;
+  }
   const objectPath = `${product.id}/main.webp`;
   const content = await fs.readFile(file);
   const { error: uploadError } = await supabase.storage
@@ -51,12 +81,19 @@ for (const file of files.filter((candidate) => candidate.endsWith(".webp"))) {
   const { data: publicUrl } = supabase.storage
     .from("products")
     .getPublicUrl(objectPath);
+  const verification = await fetch(publicUrl.publicUrl);
+  if (!verification.ok) {
+    throw new Error(
+      `The uploaded image for ${product.name} is not publicly reachable (${verification.status}).`,
+    );
+  }
+  await verification.body?.cancel();
   const { error: updateError } = await supabase
     .from("products")
     .update({ main_image_url: publicUrl.publicUrl })
     .eq("id", product.id);
   if (updateError) throw updateError;
-  await supabase.from("product_images").upsert(
+  const { error: imageError } = await supabase.from("product_images").upsert(
     {
       product_id: product.id,
       image_url: publicUrl.publicUrl,
@@ -65,6 +102,14 @@ for (const file of files.filter((candidate) => candidate.endsWith(".webp"))) {
     },
     { onConflict: "product_id,sort_order" },
   );
+  if (imageError) throw imageError;
   uploaded += 1;
 }
-console.log(`Uploaded ${uploaded} optimized images to the products bucket.`);
+if (unmatched.length > 0) {
+  console.warn(
+    `Skipped ${unmatched.length} file(s) without a matching product slug: ${unmatched.join(", ")}`,
+  );
+}
+console.log(
+  `Uploaded and verified ${uploaded} optimized images in the products bucket.`,
+);

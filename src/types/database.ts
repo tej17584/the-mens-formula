@@ -115,14 +115,46 @@ export type Database = {
           },
         ];
       };
+      product_internal: {
+        Row: {
+          created_at: string;
+          distributor_unit_price: number | null;
+          product_id: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          distributor_unit_price?: number | null;
+          product_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          distributor_unit_price?: number | null;
+          product_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "product_internal_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: true;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       products: {
         Row: {
+          box_price: number | null;
           brand_id: string;
           category_id: string;
           color: string | null;
+          consumer_price: number | null;
           cost: number | null;
           created_at: string;
           description: string | null;
+          detail_points: string[];
           featured: boolean;
           id: string;
           is_active: boolean;
@@ -132,6 +164,8 @@ export type Database = {
           model: string | null;
           name: string;
           price: number | null;
+          price_3_plus: number | null;
+          price_6_plus: number | null;
           sale_price: number | null;
           short_description: string | null;
           sku: string | null;
@@ -141,12 +175,15 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          box_price?: number | null;
           brand_id: string;
           category_id: string;
           color?: string | null;
+          consumer_price?: number | null;
           cost?: number | null;
           created_at?: string;
           description?: string | null;
+          detail_points?: string[];
           featured?: boolean;
           id?: string;
           is_active?: boolean;
@@ -156,6 +193,8 @@ export type Database = {
           model?: string | null;
           name: string;
           price?: number | null;
+          price_3_plus?: number | null;
+          price_6_plus?: number | null;
           sale_price?: number | null;
           short_description?: string | null;
           sku?: string | null;
@@ -165,12 +204,15 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          box_price?: number | null;
           brand_id?: string;
           category_id?: string;
           color?: string | null;
+          consumer_price?: number | null;
           cost?: number | null;
           created_at?: string;
           description?: string | null;
+          detail_points?: string[];
           featured?: boolean;
           id?: string;
           is_active?: boolean;
@@ -180,6 +222,8 @@ export type Database = {
           model?: string | null;
           name?: string;
           price?: number | null;
+          price_3_plus?: number | null;
+          price_6_plus?: number | null;
           sale_price?: number | null;
           short_description?: string | null;
           sku?: string | null;
@@ -204,6 +248,27 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      site_settings: {
+        Row: {
+          id: number;
+          updated_at: string;
+          whatsapp_number: string | null;
+          whatsapp_product_message: string;
+        };
+        Insert: {
+          id?: number;
+          updated_at?: string;
+          whatsapp_number?: string | null;
+          whatsapp_product_message?: string;
+        };
+        Update: {
+          id?: number;
+          updated_at?: string;
+          whatsapp_number?: string | null;
+          whatsapp_product_message?: string;
+        };
+        Relationships: [];
       };
     };
     Views: {
