@@ -9,9 +9,12 @@ export default async function DashboardSettingsPage() {
   const settings = await getDashboardSiteSettings();
   return (
     <DashboardLayout>
-      <header className="dashboard-heading">
-        <p className="eyebrow">{translate("dashboard.title")}</p>
-        <h1>{translate("dashboard.settings")}</h1>
+      <header className="dashboard-heading dashboard-page-header">
+        <div>
+          <p className="eyebrow">{translate("dashboard.title")}</p>
+          <h1>{translate("dashboard.settings")}</h1>
+          <p>{translate("dashboard.settingsSubtitle")}</p>
+        </div>
       </header>
       <DashboardSettingsForm
         whatsappNumber={settings?.whatsapp_number ?? null}

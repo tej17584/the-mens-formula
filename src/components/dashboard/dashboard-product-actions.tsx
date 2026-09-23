@@ -13,10 +13,12 @@ export function ProductActions({
   editHref,
   id,
   isActive,
+  productHref,
 }: {
   editHref: string;
   id: string;
   isActive: boolean;
+  productHref: string;
 }) {
   const t = useTranslations();
   const router = useRouter();
@@ -48,22 +50,39 @@ export function ProductActions({
       >
         {t("common.edit")}
       </Link>
-      <button
-        type="button"
-        className="dashboard-action-button dashboard-action-visibility"
-        disabled={pending}
-        onClick={setVisibility}
-      >
-        {isActive ? t("dashboard.hideFromWeb") : t("dashboard.showOnWeb")}
-      </button>
-      <button
-        type="button"
-        className="dashboard-action-button dashboard-action-delete"
-        disabled={pending}
-        onClick={() => dialog.current?.showModal()}
-      >
-        {t("common.delete")}
-      </button>
+      <details className="dashboard-product-menu">
+        <summary aria-label={t("dashboard.moreActions")}>
+          <span aria-hidden="true">•••</span>
+        </summary>
+        <div role="menu">
+          <Link
+            href={productHref}
+            rel="noreferrer"
+            role="menuitem"
+            target="_blank"
+          >
+            {t("dashboard.viewProduct")}
+          </Link>
+          <button
+            type="button"
+            disabled={pending}
+            role="menuitem"
+            onClick={setVisibility}
+          >
+            {isActive ? t("dashboard.hideFromWeb") : t("dashboard.showOnWeb")}
+          </button>
+          <span aria-hidden="true" className="dashboard-menu-divider" />
+          <button
+            type="button"
+            className="dashboard-menu-danger"
+            disabled={pending}
+            role="menuitem"
+            onClick={() => dialog.current?.showModal()}
+          >
+            {t("dashboard.deleteProduct")}
+          </button>
+        </div>
+      </details>
       {error ? <p role="alert">{error}</p> : null}
       <dialog className="confirm-dialog" ref={dialog}>
         <p>{t("dashboard.deleteConfirmation")}</p>

@@ -19,10 +19,11 @@ export default async function DashboardContactPage({
   const totalPages = Math.max(1, Math.ceil(result.total / result.pageSize));
   return (
     <DashboardLayout>
-      <header className="dashboard-heading dashboard-heading-row">
+      <header className="dashboard-heading dashboard-heading-row dashboard-page-header">
         <div>
           <p className="eyebrow">{translate("dashboard.title")}</p>
           <h1>{translate("dashboard.messages")}</h1>
+          <p>{translate("dashboard.messagesSubtitle")}</p>
         </div>
         <nav className="dashboard-status-links">
           <Link href="/dashboard/contact">
@@ -38,7 +39,10 @@ export default async function DashboardContactPage({
       </header>
       <div className="dashboard-messages">
         {result.messages.map((message) => (
-          <article key={message.id} className="dashboard-message">
+          <article
+            key={message.id}
+            className={`dashboard-message${message.status === "new" ? "is-new" : ""}`}
+          >
             <header>
               <div>
                 <strong>{message.name}</strong>

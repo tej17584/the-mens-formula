@@ -102,195 +102,226 @@ export function ProductForm({
 
   return (
     <form className="dashboard-product-form" action={formAction}>
-      <div className="dashboard-form-grid">
-        <label>
-          <span>{t("dashboard.productName")}</span>
-          <input name="name" required defaultValue={product?.name} />
-        </label>
-        <label>
-          <span>{t("catalog.brand")}</span>
-          <select name="brandId" required defaultValue={product?.brand?.id}>
-            <option value="">{t("catalog.brand")}</option>
-            {brands.map((brand) => (
-              <option key={brand.id} value={brand.id}>
-                {brand.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <span>{t("catalog.category")}</span>
-          <select
-            name="categoryId"
-            required
-            defaultValue={product?.category?.id}
-          >
-            <option value="">{t("catalog.category")}</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="dashboard-static-field">
-          <span>{t("dashboard.sku")}</span>
-          <strong>{product?.sku ?? t("dashboard.skuGenerated")}</strong>
-          <small>{t("dashboard.skuHelp")}</small>
-        </div>
-        <label>
-          <span>{t("dashboard.stock")}</span>
-          <input
-            name="stock"
-            type="number"
-            min="0"
-            defaultValue={product?.stock ?? ""}
-          />
-        </label>
-        <label>
-          <span>{t("dashboard.publicPrice")}</span>
-          <input
-            name="consumerPrice"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={product?.consumer_price ?? ""}
-          />
-        </label>
-        <label>
-          <span>{t("dashboard.distributorPrice")}</span>
-          <input
-            name="distributorPrice"
-            type="number"
-            min="0"
-            step="0.00000001"
-            defaultValue={product?.internal?.distributor_unit_price ?? ""}
-          />
-        </label>
-        <label>
-          <span>{t("product.threePlus")}</span>
-          <input
-            name="price3Plus"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={product?.price_3_plus ?? ""}
-          />
-        </label>
-        <label>
-          <span>{t("product.sixPlus")}</span>
-          <input
-            name="price6Plus"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={product?.price_6_plus ?? ""}
-          />
-        </label>
-        <label>
-          <span>{t("product.box")}</span>
-          <input
-            name="boxPrice"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={product?.box_price ?? ""}
-          />
-        </label>
-      </div>
-      <label>
-        <span>{t("dashboard.description")}</span>
-        <textarea
-          name="description"
-          rows={4}
-          defaultValue={product?.description ?? ""}
-        />
-      </label>
-      <label>
-        <span>{t("dashboard.details")}</span>
-        <textarea
-          name="details"
-          rows={5}
-          defaultValue={product?.detail_points.join("\n") ?? ""}
-        />
-      </label>
-      <label>
-        <span>{t("dashboard.images")}</span>
-        <input
-          ref={imageInput}
-          type="file"
-          name="images"
-          accept="image/jpeg,image/png,image/webp"
-          multiple
-          disabled={imageSlots === 0}
-          onChange={selectImages}
-        />
-        <small>
-          {imageSlots === 0
-            ? t("dashboard.imagesMaxReached")
-            : t("dashboard.imagesHelp")}
-        </small>
-        {imageError ? (
-          <small className="form-helper-error" role="alert">
-            {imageError}
-          </small>
-        ) : null}
-      </label>
-      <div className="dashboard-image-list">
-        {remainingImages.map((image) => (
-          <div className="dashboard-image-preview" key={image.id}>
-            <Image
-              src={image.image_url}
-              alt={image.alt_text ?? ""}
-              fill
-              sizes="96px"
-              quality={70}
+      <section className="dashboard-form-section">
+        <header>
+          <h2>{t("dashboard.productInformation")}</h2>
+        </header>
+        <div className="dashboard-form-grid">
+          <label>
+            <span>{t("dashboard.productName")}</span>
+            <input name="name" required defaultValue={product?.name} />
+          </label>
+          <label>
+            <span>{t("catalog.brand")}</span>
+            <select name="brandId" required defaultValue={product?.brand?.id}>
+              <option value="">{t("catalog.brand")}</option>
+              {brands.map((brand) => (
+                <option key={brand.id} value={brand.id}>
+                  {brand.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>{t("catalog.category")}</span>
+            <select
+              name="categoryId"
+              required
+              defaultValue={product?.category?.id}
+            >
+              <option value="">{t("catalog.category")}</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="dashboard-static-field">
+            <span>{t("dashboard.sku")}</span>
+            <strong>{product?.sku ?? t("dashboard.skuGenerated")}</strong>
+            <small>{t("dashboard.skuHelp")}</small>
+          </div>
+          <label>
+            <span>{t("dashboard.stock")}</span>
+            <input
+              name="stock"
+              type="number"
+              min="0"
+              defaultValue={product?.stock ?? ""}
             />
-            <button
-              type="button"
-              onClick={() => setRemoved((ids) => [...ids, image.id])}
-            >
-              {t("dashboard.remove")}
-            </button>
-          </div>
-        ))}
-        {previews.map((preview, index) => (
-          <div className="dashboard-image-preview" key={preview.url}>
-            {/* Previews are object URLs, so native img avoids remote optimization. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={preview.url} alt={preview.name} />
-            <button
-              type="button"
-              onClick={() =>
-                syncFiles(files.filter((_, itemIndex) => itemIndex !== index))
-              }
-            >
-              {t("dashboard.remove")}
-            </button>
-          </div>
-        ))}
-      </div>
+          </label>
+          <label>
+            <span>{t("dashboard.publicPrice")}</span>
+            <input
+              name="consumerPrice"
+              type="number"
+              min="0"
+              step="0.01"
+              defaultValue={product?.consumer_price ?? ""}
+            />
+          </label>
+          <label>
+            <span>{t("dashboard.distributorPrice")}</span>
+            <input
+              name="distributorPrice"
+              type="number"
+              min="0"
+              step="0.00000001"
+              defaultValue={product?.internal?.distributor_unit_price ?? ""}
+            />
+          </label>
+          <label>
+            <span>{t("product.threePlus")}</span>
+            <input
+              name="price3Plus"
+              type="number"
+              min="0"
+              step="0.01"
+              defaultValue={product?.price_3_plus ?? ""}
+            />
+          </label>
+          <label>
+            <span>{t("product.sixPlus")}</span>
+            <input
+              name="price6Plus"
+              type="number"
+              min="0"
+              step="0.01"
+              defaultValue={product?.price_6_plus ?? ""}
+            />
+          </label>
+          <label>
+            <span>{t("product.box")}</span>
+            <input
+              name="boxPrice"
+              type="number"
+              min="0"
+              step="0.01"
+              defaultValue={product?.box_price ?? ""}
+            />
+          </label>
+        </div>
+      </section>
+      <section className="dashboard-form-section">
+        <header>
+          <h2>{t("dashboard.productContent")}</h2>
+        </header>
+        <label>
+          <span>{t("dashboard.description")}</span>
+          <textarea
+            name="description"
+            rows={4}
+            defaultValue={product?.description ?? ""}
+          />
+        </label>
+        <label>
+          <span>{t("dashboard.details")}</span>
+          <textarea
+            name="details"
+            rows={5}
+            defaultValue={product?.detail_points.join("\n") ?? ""}
+          />
+        </label>
+      </section>
+      <section className="dashboard-form-section">
+        <header>
+          <h2>{t("dashboard.imagesSection")}</h2>
+          <p>{t("dashboard.imagesHelp")}</p>
+        </header>
+        <label>
+          <span>{t("dashboard.images")}</span>
+          <input
+            ref={imageInput}
+            type="file"
+            name="images"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+            disabled={imageSlots === 0}
+            onChange={selectImages}
+          />
+          <small>
+            {imageSlots === 0
+              ? t("dashboard.imagesMaxReached")
+              : t("dashboard.imagesHelp")}
+          </small>
+          {imageError ? (
+            <small className="form-helper-error" role="alert">
+              {imageError}
+            </small>
+          ) : null}
+        </label>
+        <div className="dashboard-image-list">
+          {remainingImages.map((image, index) => (
+            <div className="dashboard-image-preview" key={image.id}>
+              <Image
+                src={image.image_url}
+                alt={image.alt_text ?? ""}
+                fill
+                sizes="96px"
+                quality={70}
+              />
+              {index === 0 ? (
+                <span className="dashboard-image-primary">
+                  {t("dashboard.mainImage")}
+                </span>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => setRemoved((ids) => [...ids, image.id])}
+              >
+                {t("dashboard.remove")}
+              </button>
+            </div>
+          ))}
+          {previews.map((preview, index) => (
+            <div className="dashboard-image-preview" key={preview.url}>
+              {/* Previews are object URLs, so native img avoids remote optimization. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={preview.url} alt={preview.name} />
+              {remainingImages.length === 0 && index === 0 ? (
+                <span className="dashboard-image-primary">
+                  {t("dashboard.mainImage")}
+                </span>
+              ) : null}
+              <button
+                type="button"
+                onClick={() =>
+                  syncFiles(files.filter((_, itemIndex) => itemIndex !== index))
+                }
+              >
+                {t("dashboard.remove")}
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
       {removed.map((id) => (
         <input key={id} type="hidden" name="removeImageId" value={id} />
       ))}
-      <div className="dashboard-switches">
-        <label>
-          <input
-            name="isAvailable"
-            type="checkbox"
-            defaultChecked={product?.is_available ?? true}
-          />{" "}
-          {t("dashboard.availability")}
-        </label>
-        <label>
-          <input
-            name="isActive"
-            type="checkbox"
-            defaultChecked={product?.is_active ?? true}
-          />{" "}
-          {t("dashboard.visible")}
-        </label>
-      </div>
+      <section className="dashboard-form-section dashboard-visibility-section">
+        <header>
+          <h2>{t("dashboard.visibilitySection")}</h2>
+        </header>
+        <div className="dashboard-switches">
+          <label>
+            <input
+              name="isAvailable"
+              type="checkbox"
+              defaultChecked={product?.is_available ?? true}
+            />{" "}
+            {t("dashboard.availability")}
+          </label>
+          <label>
+            <input
+              name="isActive"
+              type="checkbox"
+              defaultChecked={product?.is_active ?? true}
+            />{" "}
+            {t("dashboard.visible")}
+          </label>
+        </div>
+      </section>
       {state.error ? (
         <p className="form-error" role="alert">
           {state.error}

@@ -17,9 +17,10 @@ export default async function EditProductPage({
   if (!product) notFound();
   return (
     <DashboardLayout>
-      <header className="dashboard-heading">
+      <header className="dashboard-heading dashboard-page-header">
         <p className="eyebrow">{translate("dashboard.products")}</p>
         <h1>{translate("dashboard.updateProduct")}</h1>
+        <p>{translate("dashboard.productsSubtitle")}</p>
       </header>
       <ProductForm
         brands={references.brands}

@@ -42,6 +42,7 @@ export default async function DashboardProductsPage({
   ]);
   const totalPages = Math.max(1, Math.ceil(result.total / result.pageSize));
   const page = Math.min(result.page, totalPages);
+  const firstProduct = result.total ? (page - 1) * result.pageSize + 1 : 0;
   const params = new URLSearchParams();
   Object.entries(raw).forEach(([key, value]) => {
     if (typeof value === "string" && key !== "page") params.set(key, value);
@@ -57,6 +58,7 @@ export default async function DashboardProductsPage({
         <div>
           <p className="eyebrow">{translate("dashboard.title")}</p>
           <h1>{translate("dashboard.products")}</h1>
+          <p>{translate("dashboard.productsSubtitle")}</p>
         </div>
         <Link className="button button-primary" href="/dashboard/products/new">
           {translate("dashboard.newProduct")}
@@ -65,12 +67,12 @@ export default async function DashboardProductsPage({
       <DashboardProductFilters
         brands={references.brands}
         categories={references.categories}
+        resultCount={result.total}
       />
       <div className="dashboard-table-wrap">
         <table className="dashboard-table dashboard-inventory-table">
           <thead>
             <tr>
-              <th>{translate("dashboard.image")}</th>
               <th>{translate("dashboard.productName")}</th>
               <th>{translate("catalog.brand")}</th>
               <th>{translate("catalog.category")}</th>
@@ -84,8 +86,8 @@ export default async function DashboardProductsPage({
             {result.products.map((product) => (
               <tr key={product.id}>
                 <td
-                  className="inventory-cell inventory-image-cell"
-                  data-label={translate("dashboard.image")}
+                  className="inventory-cell inventory-product-cell"
+                  data-label={translate("dashboard.productName")}
                 >
                   <div className="dashboard-table-image">
                     {product.main_image_url ? (
@@ -100,11 +102,6 @@ export default async function DashboardProductsPage({
                       "TMF"
                     )}
                   </div>
-                </td>
-                <td
-                  className="inventory-cell inventory-name-cell"
-                  data-label={translate("dashboard.productName")}
-                >
                   <Link href={`/dashboard/products/${product.id}`}>
                     <strong>{product.name}</strong>
                     <small>{product.sku ?? product.slug}</small>
@@ -156,6 +153,7 @@ export default async function DashboardProductsPage({
                     editHref={`/dashboard/products/${product.id}`}
                     id={product.id}
                     isActive={product.is_active}
+                    productHref={`/catalogo/${product.slug}`}
                   />
                 </td>
               </tr>
@@ -166,25 +164,32 @@ export default async function DashboardProductsPage({
       {result.products.length === 0 ? (
         <p className="empty-state">{translate("common.noResults")}</p>
       ) : null}
-      <nav className="pagination" aria-label={translate("catalog.page")}>
-        <Link
-          aria-disabled={page <= 1}
-          className={page <= 1 ? "disabled" : ""}
-          href={hrefForPage(Math.max(1, page - 1))}
-        >
-          {translate("catalog.previous")}
-        </Link>
-        <span>
-          {page} {translate("catalog.of")} {totalPages}
-        </span>
-        <Link
-          aria-disabled={page >= totalPages}
-          className={page >= totalPages ? "disabled" : ""}
-          href={hrefForPage(Math.min(totalPages, page + 1))}
-        >
-          {translate("catalog.next")}
-        </Link>
-      </nav>
+      <div className="dashboard-pagination-bar">
+        <p>
+          {translate("dashboard.showing")} {firstProduct}–
+          {Math.min(page * result.pageSize, result.total)}{" "}
+          {translate("catalog.of")} {result.total}
+        </p>
+        <nav className="pagination" aria-label={translate("catalog.page")}>
+          <Link
+            aria-disabled={page <= 1}
+            className={page <= 1 ? "disabled" : ""}
+            href={hrefForPage(Math.max(1, page - 1))}
+          >
+            {translate("catalog.previous")}
+          </Link>
+          <span>
+            {page} {translate("catalog.of")} {totalPages}
+          </span>
+          <Link
+            aria-disabled={page >= totalPages}
+            className={page >= totalPages ? "disabled" : ""}
+            href={hrefForPage(Math.min(totalPages, page + 1))}
+          >
+            {translate("catalog.next")}
+          </Link>
+        </nav>
+      </div>
     </DashboardLayout>
   );
 }
