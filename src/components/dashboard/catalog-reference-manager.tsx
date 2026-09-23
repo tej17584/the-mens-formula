@@ -121,27 +121,58 @@ function ReferencePanel({
           </li>
         ))}
       </ul>
-      <dialog className="confirm-dialog" ref={dialog}>
-        <p>{t("dashboard.deleteReferenceConfirmation")}</p>
-        <strong>{pendingDelete?.name}</strong>
-        <form action={formAction}>
-          <input name="id" type="hidden" value={pendingDelete?.id ?? ""} />
-          <input name="intent" type="hidden" value="delete" />
-          <button
-            className="button button-primary"
-            disabled={pending}
-            type="submit"
-          >
-            {t("common.delete")}
-          </button>
-          <button
-            className="button button-secondary"
-            type="button"
-            onClick={() => dialog.current?.close()}
-          >
-            {t("common.cancel")}
-          </button>
-        </form>
+      <dialog
+        aria-labelledby={`reference-delete-title-${kind}`}
+        className="confirm-dialog"
+        ref={dialog}
+      >
+        <div className="confirm-dialog-content">
+          <div className="confirm-dialog-heading">
+            <span aria-hidden="true" className="confirm-dialog-icon">
+              <svg fill="none" viewBox="0 0 24 24">
+                <path d="M12 8v4m0 4h.01M10.3 3.9 2.7 17.1A2 2 0 0 0 4.4 20h15.2a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+              </svg>
+            </span>
+            <div>
+              <h3 id={`reference-delete-title-${kind}`}>
+                {t("dashboard.deleteReferenceTitle")}
+              </h3>
+              <p>{t("dashboard.deleteReferenceConfirmation")}</p>
+            </div>
+            <button
+              aria-label={t("common.cancel")}
+              className="confirm-dialog-close"
+              type="button"
+              onClick={() => dialog.current?.close()}
+            >
+              <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                <path d="m6 6 12 12M18 6 6 18" />
+              </svg>
+            </button>
+          </div>
+          <strong className="confirm-dialog-value">
+            {pendingDelete?.name}
+          </strong>
+          <form action={formAction}>
+            <input name="id" type="hidden" value={pendingDelete?.id ?? ""} />
+            <input name="intent" type="hidden" value="delete" />
+            <button
+              className="button danger-button"
+              disabled={pending}
+              type="submit"
+            >
+              {t("common.delete")}
+            </button>
+            <button
+              className="button button-secondary"
+              disabled={pending}
+              type="button"
+              onClick={() => dialog.current?.close()}
+            >
+              {t("common.cancel")}
+            </button>
+          </form>
+        </div>
       </dialog>
     </section>
   );

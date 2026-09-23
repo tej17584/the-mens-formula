@@ -50,6 +50,7 @@ export function ProductForm({
   const [removed, setRemoved] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [imageError, setImageError] = useState<string>();
+  const [isDraggingImages, setIsDraggingImages] = useState(false);
   const action = product
     ? updateProductAction.bind(null, product.id)
     : createProductAction;
@@ -57,7 +58,7 @@ export function ProductForm({
   const remainingImages =
     product?.images.filter((image) => !removed.includes(image.id)) ?? [];
   const totalImages = remainingImages.length + files.length;
-  const imageSlots = Math.max(0, 3 - remainingImages.length);
+  const imageSlots = Math.max(0, 3 - totalImages);
   const previews = useMemo(
     () =>
       files.map((file) => ({
@@ -82,22 +83,39 @@ export function ProductForm({
     if (imageInput.current) imageInput.current.files = transfer.files;
   };
 
-  const selectImages = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(event.currentTarget.files ?? []);
-    const invalidCount = selected.length > imageSlots;
+  const addImages = (selected: File[]) => {
+    const invalidType = selected.some(
+      (file) => !["image/jpeg", "image/png", "image/webp"].includes(file.type),
+    );
     const invalidSize = selected.some((file) => file.size > maxUploadBytes);
-    if (invalidCount || invalidSize) {
-      event.currentTarget.value = "";
-      setFiles([]);
+    const uniqueSelected = selected.filter(
+      (file) =>
+        !files.some(
+          (existing) =>
+            existing.name === file.name &&
+            existing.size === file.size &&
+            existing.lastModified === file.lastModified,
+        ),
+    );
+    if (invalidType || invalidSize || uniqueSelected.length > imageSlots) {
       setImageError(
-        invalidCount
-          ? t("dashboard.imagesMaxReached")
-          : t("dashboard.imagesTooLarge"),
+        invalidType
+          ? t("dashboard.imagesInvalidType")
+          : invalidSize
+            ? t("dashboard.imagesTooLarge")
+            : t("dashboard.imagesMaxReached"),
       );
       return;
     }
+    if (uniqueSelected.length === 0) return;
     setImageError(undefined);
-    setFiles(selected);
+    syncFiles([...files, ...uniqueSelected]);
+  };
+
+  const selectImages = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(event.currentTarget.files ?? []);
+    event.currentTarget.value = "";
+    addImages(selected);
   };
 
   return (
@@ -229,10 +247,11 @@ export function ProductForm({
           <h2>{t("dashboard.imagesSection")}</h2>
           <p>{t("dashboard.imagesHelp")}</p>
         </header>
-        <label>
-          <span>{t("dashboard.images")}</span>
+        <div className="dashboard-image-uploader">
           <input
             ref={imageInput}
+            className="dashboard-image-input"
+            id="product-images"
             type="file"
             name="images"
             accept="image/jpeg,image/png,image/webp"
@@ -240,17 +259,54 @@ export function ProductForm({
             disabled={imageSlots === 0}
             onChange={selectImages}
           />
-          <small>
-            {imageSlots === 0
-              ? t("dashboard.imagesMaxReached")
-              : t("dashboard.imagesHelp")}
-          </small>
+          <label
+            aria-disabled={imageSlots === 0}
+            className="dashboard-image-dropzone"
+            data-dragging={isDraggingImages || undefined}
+            data-disabled={imageSlots === 0 || undefined}
+            htmlFor="product-images"
+            onDragEnter={(event) => {
+              event.preventDefault();
+              if (imageSlots > 0) setIsDraggingImages(true);
+            }}
+            onDragLeave={(event) => {
+              event.preventDefault();
+              setIsDraggingImages(false);
+            }}
+            onDragOver={(event) => event.preventDefault()}
+            onDrop={(event) => {
+              event.preventDefault();
+              setIsDraggingImages(false);
+              addImages(Array.from(event.dataTransfer.files));
+            }}
+          >
+            <span aria-hidden="true" className="dashboard-image-upload-icon">
+              <svg fill="none" viewBox="0 0 24 24">
+                <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
+              </svg>
+            </span>
+            <span>
+              <strong>{t("dashboard.imageUploadPrompt")}</strong>
+              <small>{t("dashboard.imageUploadDropHint")}</small>
+            </span>
+            <small>{t("dashboard.imagesFormatHelp")}</small>
+          </label>
+          <div aria-live="polite" className="dashboard-image-upload-status">
+            <strong>
+              {totalImages}/3 {t("dashboard.imagesConfigured")}
+            </strong>
+            <span>
+              {imageSlots === 0
+                ? t("dashboard.imagesMaxReached")
+                : `${imageSlots} ${t("dashboard.imagesSlotsAvailable")}`}
+            </span>
+          </div>
           {imageError ? (
             <small className="form-helper-error" role="alert">
               {imageError}
             </small>
           ) : null}
-        </label>
+        </div>
         <div className="dashboard-image-list">
           {remainingImages.map((image, index) => (
             <div className="dashboard-image-preview" key={image.id}>
@@ -292,6 +348,12 @@ export function ProductForm({
               >
                 {t("dashboard.remove")}
               </button>
+            </div>
+          ))}
+          {Array.from({ length: imageSlots }, (_, index) => (
+            <div className="dashboard-image-empty-slot" key={`empty-${index}`}>
+              <span aria-hidden="true">+</span>
+              <small>{t("dashboard.imagesAvailable")}</small>
             </div>
           ))}
         </div>
