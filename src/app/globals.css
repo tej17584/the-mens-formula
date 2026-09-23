@@ -2844,10 +2844,59 @@ h3 {
 .dashboard-reference-panel li strong {
   font-size: 1rem;
 }
+.dashboard-reference-panel li > div:first-child {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-1);
+}
 .dashboard-reference-panel li small {
   color: var(--color-muted);
   font-family: var(--font-mono), monospace;
   font-size: 0.74rem;
+}
+.dashboard-reference-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+.dashboard-reference-actions > span {
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  text-align: right;
+}
+.dashboard-reference-delete,
+.dashboard-sign-out button {
+  min-height: 2.15rem;
+  border: var(--rule) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  padding-inline: var(--space-3);
+  color: var(--color-danger);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+.dashboard-reference-delete:hover:not(:disabled),
+.dashboard-sign-out button:hover {
+  border-color: color-mix(
+    in oklch,
+    var(--color-danger),
+    var(--color-border) 50%
+  );
+  background: color-mix(in oklch, var(--color-danger), transparent 94%);
+}
+.dashboard-reference-delete:disabled {
+  cursor: not-allowed;
+  border-color: transparent;
+  color: var(--color-muted);
+  opacity: 0.72;
+}
+.dashboard-sign-out {
+  margin-top: var(--space-2);
+}
+.dashboard-sign-out button {
+  width: 100%;
+  color: var(--color-ink-soft);
 }
 
 .not-found-page {
@@ -2890,7 +2939,7 @@ h3 {
     padding: var(--space-5);
   }
   .dashboard-nav-brand .brand-logo {
-    width: 9.5rem;
+    width: 11.25rem;
   }
   .dashboard-nav nav {
     display: grid;
@@ -2936,6 +2985,9 @@ h3 {
     color: var(--color-brand-deep);
     font-size: 0.94rem;
     font-weight: 700;
+  }
+  .dashboard-sign-out {
+    margin-top: 0;
   }
 }
 
@@ -3001,7 +3053,7 @@ h3 {
     gap: var(--space-4);
   }
   .dashboard-nav-brand .brand-logo {
-    width: 9rem;
+    width: 11.25rem;
   }
   .dashboard-nav-close {
     display: grid;
@@ -3055,6 +3107,9 @@ h3 {
     padding-top: var(--space-4);
     color: var(--color-brand-deep);
     font-weight: 700;
+  }
+  .dashboard-sign-out {
+    margin-top: 0;
   }
   .dashboard-table,
   .dashboard-table tbody {
@@ -3188,6 +3243,17 @@ h3 {
   }
   .dashboard-reference-panel form .button {
     justify-self: start;
+  }
+  .dashboard-reference-panel li {
+    align-items: start;
+  }
+  .dashboard-reference-actions {
+    align-items: end;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .dashboard-reference-actions > span {
+    max-width: 8rem;
   }
 }
 

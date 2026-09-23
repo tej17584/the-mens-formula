@@ -136,6 +136,27 @@ export type Database = {
           },
         ];
       };
+      dashboard_sessions: {
+        Row: {
+          created_at: string;
+          expires_at: string;
+          session_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          expires_at: string;
+          session_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          expires_at?: string;
+          session_id?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       product_images: {
         Row: {
           alt_text: string | null;

@@ -12,7 +12,7 @@ export function BrandLogo({ inverted = false }: { inverted?: boolean }) {
         src={inverted ? "/logo-header-dark.png" : "/logo-header-light.png"}
         alt="The Men's Formula"
         width={180}
-        height={50}
+        height={60}
         priority
       />
     </Link>

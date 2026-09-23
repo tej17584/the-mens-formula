@@ -121,14 +121,44 @@ export async function getDashboardProductPage(
 
 export async function getDashboardReferences() {
   const supabase = createAdminClient();
-  const [brands, categories] = await Promise.all([
+  const [brands, categories, productReferences] = await Promise.all([
     supabase.from("brands").select("id,name,slug").order("name"),
     supabase.from("categories").select("id,name,slug").order("sort_order"),
+    supabase.from("products").select("brand_id,category_id"),
   ]);
   if (brands.error) sentryErrorReport(brands.error, "DASHBOARD_QUERY - BRANDS");
   if (categories.error)
     sentryErrorReport(categories.error, "DASHBOARD_QUERY - CATEGORIES");
-  return { brands: brands.data ?? [], categories: categories.data ?? [] };
+  if (productReferences.error) {
+    sentryErrorReport(
+      productReferences.error,
+      "DASHBOARD_QUERY - REFERENCE_USAGE",
+    );
+  }
+
+  const brandUsage = new Map<string, number>();
+  const categoryUsage = new Map<string, number>();
+  for (const product of productReferences.data ?? []) {
+    brandUsage.set(
+      product.brand_id,
+      (brandUsage.get(product.brand_id) ?? 0) + 1,
+    );
+    categoryUsage.set(
+      product.category_id,
+      (categoryUsage.get(product.category_id) ?? 0) + 1,
+    );
+  }
+
+  return {
+    brands: (brands.data ?? []).map((brand) => ({
+      ...brand,
+      productCount: brandUsage.get(brand.id) ?? 0,
+    })),
+    categories: (categories.data ?? []).map((category) => ({
+      ...category,
+      productCount: categoryUsage.get(category.id) ?? 0,
+    })),
+  };
 }
 
 export async function getDashboardSiteSettings() {

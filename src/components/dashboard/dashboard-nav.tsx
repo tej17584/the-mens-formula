@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOutDashboard } from "@/actions/auth";
 import { BrandLogo } from "@/components/brand-logo";
 import { useTranslations } from "@/i18n";
 
@@ -138,6 +139,9 @@ export function DashboardNav() {
           {t("common.backToCatalog")}
           <span aria-hidden="true">→</span>
         </Link>
+        <form action={signOutDashboard} className="dashboard-sign-out">
+          <button type="submit">{t("dashboard.signOut")}</button>
+        </form>
       </aside>
     </>
   );

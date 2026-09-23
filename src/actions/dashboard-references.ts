@@ -11,7 +11,10 @@ const referenceSchema = z.object({
   name: z.string().trim().min(2).max(100),
 });
 
-export type ReferenceActionState = { success?: true; error?: string };
+export type ReferenceActionState = {
+  success?: "created" | "deleted";
+  error?: string;
+};
 
 function slugify(value: string) {
   return value
@@ -23,12 +26,15 @@ function slugify(value: string) {
     .slice(0, 100);
 }
 
-async function createReference(
+async function referenceAction(
   kind: "brand" | "category",
   _previous: ReferenceActionState,
   formData: FormData,
 ): Promise<ReferenceActionState> {
   await requireAdmin();
+  const intent = formData.get("intent");
+  if (intent === "delete") return deleteReference(kind, formData);
+
   const parsed = referenceSchema.safeParse({ name: formData.get("name") });
   if (!parsed.success)
     return { error: translate("dashboard.referenceInvalid") };
@@ -53,8 +59,68 @@ async function createReference(
 
   revalidatePath("/dashboard/catalog");
   revalidatePath("/dashboard/products/new");
-  return { success: true };
+  revalidatePath("/dashboard/products");
+  return { success: "created" };
 }
 
-export const createBrandAction = createReference.bind(null, "brand");
-export const createCategoryAction = createReference.bind(null, "category");
+async function deleteReference(kind: "brand" | "category", formData: FormData) {
+  const id = z.string().uuid().safeParse(formData.get("id"));
+  if (!id.success) return { error: translate("dashboard.referenceInvalid") };
+
+  const supabase = createAdminClient();
+  const foreignKey = kind === "brand" ? "brand_id" : "category_id";
+  const { count, error: countError } = await supabase
+    .from("products")
+    .select("id", { count: "exact", head: true })
+    .eq(foreignKey, id.data);
+
+  if (countError) {
+    sentryErrorReport(
+      countError,
+      kind === "brand"
+        ? "BRAND_QUERY - PRODUCT_USAGE"
+        : "CATEGORY_QUERY - PRODUCT_USAGE",
+    );
+    return { error: translate("dashboard.referenceDeleteFailed") };
+  }
+  if ((count ?? 0) > 0) return { error: translate("dashboard.referenceInUse") };
+
+  const table = kind === "brand" ? "brands" : "categories";
+  const { error } = await supabase.from(table).delete().eq("id", id.data);
+  if (error) {
+    sentryErrorReport(
+      error,
+      kind === "brand" ? "BRAND_ACTION - DELETE" : "CATEGORY_ACTION - DELETE",
+    );
+    return {
+      error:
+        error.code === "23503"
+          ? translate("dashboard.referenceInUse")
+          : translate("dashboard.referenceDeleteFailed"),
+    };
+  }
+
+  revalidatePath("/dashboard/catalog");
+  revalidatePath("/dashboard/products/new");
+  revalidatePath("/dashboard/products");
+  return { success: "deleted" as const };
+}
+
+/**
+ * Keep the actions as named exports instead of bound functions. Besides making
+ * their server-action manifest entries explicit, this leaves a clearer trace in
+ * production diagnostics and avoids relying on a runtime-bound reference.
+ */
+export async function manageBrandAction(
+  previousState: ReferenceActionState,
+  formData: FormData,
+): Promise<ReferenceActionState> {
+  return referenceAction("brand", previousState, formData);
+}
+
+export async function manageCategoryAction(
+  previousState: ReferenceActionState,
+  formData: FormData,
+): Promise<ReferenceActionState> {
+  return referenceAction("category", previousState, formData);
+}
