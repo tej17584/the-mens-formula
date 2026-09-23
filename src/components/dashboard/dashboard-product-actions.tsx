@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   deleteProductAction,
@@ -9,9 +10,11 @@ import {
 import { useTranslations } from "@/i18n";
 
 export function ProductActions({
+  editHref,
   id,
   isActive,
 }: {
+  editHref: string;
   id: string;
   isActive: boolean;
 }) {
@@ -39,12 +42,23 @@ export function ProductActions({
 
   return (
     <div className="dashboard-row-actions">
-      <button type="button" disabled={pending} onClick={setVisibility}>
+      <Link
+        className="dashboard-action-button dashboard-action-edit"
+        href={editHref}
+      >
+        {t("common.edit")}
+      </Link>
+      <button
+        type="button"
+        className="dashboard-action-button dashboard-action-visibility"
+        disabled={pending}
+        onClick={setVisibility}
+      >
         {isActive ? t("dashboard.hideFromWeb") : t("dashboard.showOnWeb")}
       </button>
       <button
         type="button"
-        className="danger-button"
+        className="dashboard-action-button dashboard-action-delete"
         disabled={pending}
         onClick={() => dialog.current?.showModal()}
       >

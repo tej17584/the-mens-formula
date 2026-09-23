@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useEffect, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   createProductAction,
@@ -33,6 +33,7 @@ type ProductValues = {
 };
 
 const initialState: DashboardActionState = {};
+const maxUploadBytes = 5 * 1024 * 1024;
 
 export function ProductForm({
   brands,
@@ -45,8 +46,10 @@ export function ProductForm({
 }) {
   const t = useTranslations();
   const router = useRouter();
+  const imageInput = useRef<HTMLInputElement>(null);
   const [removed, setRemoved] = useState<string[]>([]);
   const [files, setFiles] = useState<File[]>([]);
+  const [imageError, setImageError] = useState<string>();
   const action = product
     ? updateProductAction.bind(null, product.id)
     : createProductAction;
@@ -54,6 +57,7 @@ export function ProductForm({
   const remainingImages =
     product?.images.filter((image) => !removed.includes(image.id)) ?? [];
   const totalImages = remainingImages.length + files.length;
+  const imageSlots = Math.max(0, 3 - remainingImages.length);
   const previews = useMemo(
     () =>
       files.map((file) => ({
@@ -70,6 +74,31 @@ export function ProductForm({
   useEffect(() => {
     if (state.success) router.push("/dashboard/products");
   }, [state.success, router]);
+
+  const syncFiles = (nextFiles: File[]) => {
+    setFiles(nextFiles);
+    const transfer = new DataTransfer();
+    nextFiles.forEach((file) => transfer.items.add(file));
+    if (imageInput.current) imageInput.current.files = transfer.files;
+  };
+
+  const selectImages = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(event.currentTarget.files ?? []);
+    const invalidCount = selected.length > imageSlots;
+    const invalidSize = selected.some((file) => file.size > maxUploadBytes);
+    if (invalidCount || invalidSize) {
+      event.currentTarget.value = "";
+      setFiles([]);
+      setImageError(
+        invalidCount
+          ? t("dashboard.imagesMaxReached")
+          : t("dashboard.imagesTooLarge"),
+      );
+      return;
+    }
+    setImageError(undefined);
+    setFiles(selected);
+  };
 
   return (
     <form className="dashboard-product-form" action={formAction}>
@@ -104,11 +133,11 @@ export function ProductForm({
             ))}
           </select>
         </label>
-        <label>
+        <div className="dashboard-static-field">
           <span>{t("dashboard.sku")}</span>
-          <input name="sku" required defaultValue={product?.sku ?? ""} />
+          <strong>{product?.sku ?? t("dashboard.skuGenerated")}</strong>
           <small>{t("dashboard.skuHelp")}</small>
-        </label>
+        </div>
         <label>
           <span>{t("dashboard.stock")}</span>
           <input
@@ -188,20 +217,24 @@ export function ProductForm({
       <label>
         <span>{t("dashboard.images")}</span>
         <input
+          ref={imageInput}
           type="file"
           name="images"
           accept="image/jpeg,image/png,image/webp"
           multiple
-          onChange={(event) =>
-            setFiles(
-              Array.from(event.target.files ?? []).slice(
-                0,
-                Math.max(0, 3 - remainingImages.length),
-              ),
-            )
-          }
+          disabled={imageSlots === 0}
+          onChange={selectImages}
         />
-        <small>{t("dashboard.imagesHelp")}</small>
+        <small>
+          {imageSlots === 0
+            ? t("dashboard.imagesMaxReached")
+            : t("dashboard.imagesHelp")}
+        </small>
+        {imageError ? (
+          <small className="form-helper-error" role="alert">
+            {imageError}
+          </small>
+        ) : null}
       </label>
       <div className="dashboard-image-list">
         {remainingImages.map((image) => (
@@ -229,9 +262,7 @@ export function ProductForm({
             <button
               type="button"
               onClick={() =>
-                setFiles((items) =>
-                  items.filter((_, itemIndex) => itemIndex !== index),
-                )
+                syncFiles(files.filter((_, itemIndex) => itemIndex !== index))
               }
             >
               {t("dashboard.remove")}

@@ -13,6 +13,7 @@ export type DashboardActionState = {
 };
 
 const textField = z.string().trim();
+const maxUploadBytes = 5 * 1024 * 1024;
 const productSchema = z.object({
   name: textField.min(2).max(160),
   brandId: z.string().uuid(),
@@ -20,10 +21,6 @@ const productSchema = z.object({
   description: textField.max(5000),
   shortDescription: textField.max(280),
   details: textField.max(5000),
-  sku: textField
-    .min(3)
-    .max(120)
-    .regex(/[a-zA-Z0-9]/),
   stock: textField.max(32),
   consumerPrice: textField.max(64),
   distributorPrice: textField.max(64),
@@ -46,16 +43,6 @@ function numberOrNull(value: string) {
   return Number.isFinite(number) ? number : null;
 }
 
-function slugify(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 180);
-}
-
 function getProductInput(formData: FormData) {
   return productSchema.safeParse({
     name: formData.get("name"),
@@ -64,7 +51,6 @@ function getProductInput(formData: FormData) {
     description: formData.get("description") ?? "",
     shortDescription: formData.get("shortDescription") ?? "",
     details: formData.get("details") ?? "",
-    sku: formData.get("sku") ?? "",
     stock: formData.get("stock") ?? "",
     consumerPrice: formData.get("consumerPrice") ?? "",
     distributorPrice: formData.get("distributorPrice") ?? "",
@@ -80,6 +66,14 @@ function getFiles(formData: FormData) {
   return formData
     .getAll("images")
     .filter((value): value is File => value instanceof File && value.size > 0);
+}
+
+function hasInvalidImage(files: File[]) {
+  return files.some(
+    (file) =>
+      file.size > maxUploadBytes ||
+      !["image/jpeg", "image/png", "image/webp"].includes(file.type),
+  );
 }
 
 function storagePath(productId: string, imageUrl: string) {
@@ -109,12 +103,12 @@ async function uploadImages(productId: string, files: File[], offset: number) {
       const optimized = await sharp(bytes)
         .rotate()
         .resize({
-          width: 1600,
-          height: 1600,
+          width: 1800,
+          height: 1800,
           fit: "inside",
           withoutEnlargement: true,
         })
-        .webp({ quality: 84 })
+        .webp({ quality: 86 })
         .toBuffer();
       const filename = `${offset + index + 1}.webp`;
       const path = `${productId}/${filename}`;
@@ -187,7 +181,6 @@ function productValues(input: z.infer<typeof productSchema>) {
       .split("\n")
       .map((point) => point.trim())
       .filter(Boolean),
-    sku: input.sku,
     stock: numberOrNull(input.stock),
     consumer_price: numberOrNull(input.consumerPrice),
     price: numberOrNull(input.consumerPrice),
@@ -214,12 +207,21 @@ export async function createProductAction(
   await requireAdmin();
   const parsed = getProductInput(formData);
   const files = getFiles(formData);
-  if (!parsed.success || !files.length || files.length > 3) return message();
+  if (
+    !parsed.success ||
+    !files.length ||
+    files.length > 3 ||
+    hasInvalidImage(files)
+  )
+    return message();
 
   const supabase = createAdminClient();
   const values = {
     ...productValues(parsed.data),
-    slug: slugify(parsed.data.sku),
+    // The database trigger replaces both temporary values with the next
+    // immutable, short SKU and its matching public slug.
+    sku: "TMF-PENDING",
+    slug: "pending",
   };
   const { data: product, error } = await supabase
     .from("products")
@@ -269,7 +271,8 @@ export async function updateProductAction(
   const removedIds = formData
     .getAll("removeImageId")
     .filter((value): value is string => typeof value === "string");
-  if (!parsed.success || files.length > 3) return message();
+  if (!parsed.success || files.length > 3 || hasInvalidImage(files))
+    return message();
 
   const supabase = createAdminClient();
   const { data: existing, error: existingError } = await supabase

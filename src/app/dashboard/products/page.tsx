@@ -67,7 +67,7 @@ export default async function DashboardProductsPage({
         categories={references.categories}
       />
       <div className="dashboard-table-wrap">
-        <table className="dashboard-table">
+        <table className="dashboard-table dashboard-inventory-table">
           <thead>
             <tr>
               <th>{translate("dashboard.image")}</th>
@@ -83,7 +83,10 @@ export default async function DashboardProductsPage({
           <tbody>
             {result.products.map((product) => (
               <tr key={product.id}>
-                <td>
+                <td
+                  className="inventory-cell inventory-image-cell"
+                  data-label={translate("dashboard.image")}
+                >
                   <div className="dashboard-table-image">
                     {product.main_image_url ? (
                       <Image
@@ -98,21 +101,45 @@ export default async function DashboardProductsPage({
                     )}
                   </div>
                 </td>
-                <td>
+                <td
+                  className="inventory-cell inventory-name-cell"
+                  data-label={translate("dashboard.productName")}
+                >
                   <Link href={`/dashboard/products/${product.id}`}>
                     <strong>{product.name}</strong>
                     <small>{product.sku ?? product.slug}</small>
                   </Link>
                 </td>
-                <td>{product.brand?.name ?? "—"}</td>
-                <td>{product.category?.name ?? "—"}</td>
-                <td>{formatPrice(product.consumer_price)}</td>
-                <td>
+                <td
+                  className="inventory-cell"
+                  data-label={translate("catalog.brand")}
+                >
+                  {product.brand?.name ?? "—"}
+                </td>
+                <td
+                  className="inventory-cell"
+                  data-label={translate("catalog.category")}
+                >
+                  {product.category?.name ?? "—"}
+                </td>
+                <td
+                  className="inventory-cell inventory-price-cell"
+                  data-label={translate("dashboard.publicPrice")}
+                >
+                  {formatPrice(product.consumer_price)}
+                </td>
+                <td
+                  className="inventory-cell inventory-price-cell"
+                  data-label={translate("dashboard.distributorPrice")}
+                >
                   {formatPrice(
                     product.internal?.distributor_unit_price ?? null,
                   )}
                 </td>
-                <td>
+                <td
+                  className="inventory-cell inventory-status-cell"
+                  data-label={translate("dashboard.status")}
+                >
                   <span
                     className={`status-pill ${product.is_active ? "active" : ""}`}
                   >
@@ -121,14 +148,12 @@ export default async function DashboardProductsPage({
                       : translate("dashboard.hidden")}
                   </span>
                 </td>
-                <td>
-                  <Link
-                    className="text-link"
-                    href={`/dashboard/products/${product.id}`}
-                  >
-                    {translate("common.edit")}
-                  </Link>
+                <td
+                  className="inventory-cell inventory-actions-cell"
+                  data-label={translate("dashboard.actions")}
+                >
                   <ProductActions
+                    editHref={`/dashboard/products/${product.id}`}
                     id={product.id}
                     isActive={product.is_active}
                   />

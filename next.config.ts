@@ -3,10 +3,18 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  experimental: {
+    serverActions: {
+      // Product uploads are optimized server-side before Storage; allow a small
+      // batch of source images to reach that processing step.
+      bodySizeLimit: "16mb",
+    },
+  },
   images: {
     // Optimized remote product images are versioned by their Storage path and URL.
     // Keep Next's derivative cache long-lived without adding a custom proxy.
     minimumCacheTTL: 31536000,
+    qualities: [70, 75, 80, 82],
     remotePatterns: [
       {
         protocol: "https",
