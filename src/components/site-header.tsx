@@ -1,10 +1,17 @@
+import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
+import { translate } from "@/i18n";
+
 export function SiteHeader() {
   return (
-    <header className="border-b border-zinc-200 bg-white">
-      <div className="mx-auto flex h-16 w-full max-w-5xl items-center px-6 sm:px-10">
-        <span className="text-sm font-semibold tracking-wide">
-          THE MEN&apos;S FORMULA
-        </span>
+    <header className="site-header">
+      <div className="shell header-inner">
+        <BrandLogo />
+        <nav className="header-nav" aria-label="Navegación principal">
+          <Link href="/">{translate("header.home")}</Link>
+          <Link href="/catalogo">{translate("header.catalog")}</Link>
+          <Link href="/contacto">{translate("header.contact")}</Link>
+        </nav>
       </div>
     </header>
   );

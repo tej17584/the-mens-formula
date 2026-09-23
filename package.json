@@ -14,14 +14,21 @@
     "check-all": "pnpm type-check && pnpm lint && pnpm format",
     "fix-all": "pnpm format:fix && pnpm lint:fix && pnpm test:update-snapshots",
     "supabase:types": "node scripts/generate-supabase-types.mjs",
+    "catalog:generate-migration": "node scripts/generate-catalog-migration.mjs",
+    "catalog:refresh-from-excel": "node scripts/generate-catalog-refresh-migration.mjs",
+    "catalog:prepare-images": "node scripts/prepare-product-images.mjs",
+    "catalog:upload-images": "node --env-file=.env.local scripts/upload-product-images.mjs",
+    "catalog:migrate-images": "node --env-file=.env.local scripts/migrate-product-images.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:update-snapshots": "vitest run -u"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.75.1",
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.116.0",
+    "@vercel/analytics": "^2.0.1",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -43,9 +50,11 @@
     "jsdom": "30.0.1",
     "prettier": "3.9.6",
     "prettier-plugin-tailwindcss": "0.8.1",
+    "sharp": "0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "5.0.0"
+    "vitest": "5.0.0",
+    "xlsx": "0.18.5"
   },
   "packageManager": "pnpm@11.27.0",
   "volta": {

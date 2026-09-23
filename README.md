@@ -36,3 +36,22 @@ Always authorize inside Server Actions and Route Handlers; `proxy.ts` only maint
 - `pnpm build` — production build
 
 Install Playwright browsers once with `pnpm exec playwright install`.
+
+## Catálogo
+
+The public catalog is sourced from `categories`, `brands`, `products`, and
+`product_images` in Supabase. The versioned foundation and the initial 66
+products are in `supabase/migrations/`. Public read access is protected by RLS;
+there is deliberately no anonymous write policy.
+
+- `pnpm catalog:generate-migration <excel> <migration> [preview-json]` builds
+  the seed migration from the supplier workbook.
+- `pnpm catalog:prepare-images <source-images> <excel> <public-output> [manifest]`
+  finds, rotates, resizes, and converts matched products to 1200px WebP.
+- `pnpm catalog:upload-images <prepared-images>` uploads the optimized output
+  to `products/<product-id>/main.webp` and updates the database. It requires
+  `SUPABASE_SERVICE_ROLE_KEY` locally; never expose that value in the browser.
+
+`NEXT_PUBLIC_WHATSAPP_NUMBER`, `NEXT_PUBLIC_CONTACT_EMAIL`, and
+`NEXT_PUBLIC_INSTAGRAM_URL` centralize commercial contact details. Configure
+them before using the consultation flow in production.

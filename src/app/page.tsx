@@ -1,24 +1,95 @@
+import Image from "next/image";
+import Link from "next/link";
+import { ProductCard } from "@/components/product-card";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { translate } from "@/i18n";
+import { getCatalogProducts, getDiverseProducts } from "@/lib/catalog";
 
-export default function Home() {
+export default async function Home() {
+  const products = await getCatalogProducts();
+  const selection = getDiverseProducts(products);
+  const heroProducts = selection
+    .filter((product) => product.main_image_url)
+    .slice(0, 4);
+  const brands = new Set(products.map((product) => product.brand.id)).size;
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 text-zinc-950">
+    <div className="site-page">
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-6 py-20 sm:px-10">
-        <section className="max-w-2xl space-y-6">
-          <p className="text-sm font-medium tracking-[0.2em] text-zinc-500 uppercase">
-            Production foundation
-          </p>
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
-            Build the next chapter of The Men&apos;s Formula.
-          </h1>
-          <p className="max-w-xl text-lg leading-8 text-zinc-600">
-            Next.js App Router, typed Supabase clients, cookie-based
-            authentication, validation, and a complete testing baseline are
-            ready for product work.
-          </p>
+      <main>
+        <section className="hero hero-catalog">
+          <div className="shell hero-grid">
+            <div className="hero-copy">
+              <p className="eyebrow">{translate("home.eyebrow")}</p>
+              <h1>{translate("home.title")}</h1>
+              <p>{translate("home.description")}</p>
+              <Link className="button button-primary" href="/catalogo">
+                {translate("home.explore")} <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+            <div className="hero-product-composition" aria-hidden="true">
+              {heroProducts.map((product, index) => (
+                <div
+                  className={`hero-product hero-product-${index + 1}`}
+                  key={product.id}
+                >
+                  <Image
+                    src={product.main_image_url!}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 260px, 1px"
+                    quality={82}
+                    priority={index === 0}
+                  />
+                </div>
+              ))}
+              <Image
+                className="hero-watermark"
+                src="/mark.png"
+                alt=""
+                width={360}
+                height={360}
+              />
+            </div>
+          </div>
+        </section>
+        <section className="catalog-facts">
+          <div className="shell">
+            <span>
+              {products.length} {translate("home.products")}
+            </span>
+            <span>
+              {brands} {translate("home.brands")}
+            </span>
+            <span>{translate("home.volumePrices")}</span>
+          </div>
+        </section>
+        <section
+          className="shell home-products"
+          aria-labelledby="products-title"
+        >
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">{translate("home.catalogEyebrow")}</p>
+              <h2 id="products-title">{translate("home.catalogTitle")}</h2>
+              <p>{translate("home.catalogDescription")}</p>
+            </div>
+            <Link className="text-link" href="/catalogo">
+              {translate("home.viewCatalog")} <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <div className="product-grid home-grid">
+            {selection.map((product, index) => (
+              <ProductCard
+                product={product}
+                priority={index < 2}
+                key={product.id}
+              />
+            ))}
+          </div>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }
