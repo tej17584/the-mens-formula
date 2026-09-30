@@ -17,5 +17,19 @@ export async function markContactReadAction(id: string) {
   }
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/contact");
-  return;
+}
+
+export async function deleteContactMessageAction(id: string) {
+  await requireAdmin();
+  const { error } = await createAdminClient()
+    .from("contact_messages")
+    .delete()
+    .eq("id", id);
+  if (error) {
+    sentryErrorReport(error, "CONTACT_ACTION - DELETE");
+    return { error: true };
+  }
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/contact");
+  return { success: true };
 }

@@ -1,16 +1,34 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { MoreHorizontal } from "lucide-react";
+import { toast } from "sonner";
 import {
   deleteProductAction,
   setProductAvailability,
   setProductVisibility,
 } from "@/actions/dashboard-products";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useTranslations } from "@/i18n";
-import { withDashboardFlashStatus } from "@/lib/dashboard/products-list-query";
-import { toast } from "sonner";
 
 export function ProductActions({
   editHref,
@@ -29,52 +47,42 @@ export function ProductActions({
 }) {
   const t = useTranslations();
   const router = useRouter();
-  const dialog = useRef<HTMLDialogElement>(null);
   const [pending, startTransition] = useTransition();
-  const [error, setError] = useState<string>();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const afterChange = () => {
+    router.replace(inventoryListPath, { scroll: false });
+    router.refresh();
+  };
 
   const setVisibility = () =>
     startTransition(async () => {
       const result = await setProductVisibility(id, !isActive);
-      if (result.error) {
-        setError(result.error);
-        toast.error(result.error);
-      } else {
+      if (result.error) toast.error(result.error);
+      else {
         toast.success(t("dashboard.flashVisibilityUpdated"));
-        router.replace(withDashboardFlashStatus(inventoryListPath, "visibility"), {
-          scroll: false,
-        });
-        router.refresh();
+        afterChange();
       }
     });
+
   const setAvailability = () =>
     startTransition(async () => {
       const result = await setProductAvailability(id, !isAvailable);
-      if (result.error) {
-        setError(result.error);
-        toast.error(result.error);
-      } else {
+      if (result.error) toast.error(result.error);
+      else {
         toast.success(t("dashboard.flashAvailabilityUpdated"));
-        router.replace(
-          withDashboardFlashStatus(inventoryListPath, "availability"),
-          { scroll: false },
-        );
-        router.refresh();
+        afterChange();
       }
     });
+
   const remove = () =>
     startTransition(async () => {
       const result = await deleteProductAction(id);
-      if (result.error) {
-        setError(result.error);
-        toast.error(result.error);
-      } else {
-        dialog.current?.close();
+      if (result.error) toast.error(result.error);
+      else {
+        setConfirmOpen(false);
         toast.success(t("dashboard.flashProductDeleted"));
-        router.replace(withDashboardFlashStatus(inventoryListPath, "deleted"), {
-          scroll: false,
-        });
-        router.refresh();
+        afterChange();
       }
     });
 
@@ -86,66 +94,63 @@ export function ProductActions({
       >
         {t("common.edit")}
       </Link>
-      <details className="dashboard-product-menu">
-        <summary aria-label={t("dashboard.moreActions")}>
-          <span aria-hidden="true">•••</span>
-        </summary>
-        <div role="menu">
-          <Link
-            href={productHref}
-            rel="noreferrer"
-            role="menuitem"
-            target="_blank"
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="outline"
+              size="icon-sm"
+              className="cursor-pointer"
+              aria-label={t("dashboard.moreActions")}
+            >
+              <MoreHorizontal />
+            </Button>
+          }
+        />
+        <DropdownMenuContent align="end" className="min-w-52">
+          <DropdownMenuItem
+            onClick={() => window.open(productHref, "_blank", "noopener")}
           >
             {t("dashboard.viewProduct")}
-          </Link>
-          <button
-            type="button"
-            disabled={pending}
-            role="menuitem"
-            onClick={setVisibility}
-          >
+          </DropdownMenuItem>
+          <DropdownMenuItem disabled={pending} onClick={setVisibility}>
             {isActive ? t("dashboard.hideFromWeb") : t("dashboard.showOnWeb")}
-          </button>
-          <button
-            type="button"
-            disabled={pending}
-            role="menuitem"
-            onClick={setAvailability}
-          >
+          </DropdownMenuItem>
+          <DropdownMenuItem disabled={pending} onClick={setAvailability}>
             {isAvailable
               ? t("dashboard.markUnavailable")
               : t("dashboard.markAvailable")}
-          </button>
-          <span aria-hidden="true" className="dashboard-menu-divider" />
-          <button
-            type="button"
-            className="dashboard-menu-danger"
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            variant="destructive"
             disabled={pending}
-            role="menuitem"
-            onClick={() => dialog.current?.showModal()}
+            onClick={() => setConfirmOpen(true)}
           >
             {t("dashboard.deleteProduct")}
-          </button>
-        </div>
-      </details>
-      {error ? <p role="alert">{error}</p> : null}
-      <dialog className="confirm-dialog" ref={dialog}>
-        <p>{t("dashboard.deleteConfirmation")}</p>
-        <div>
-          <button type="button" onClick={() => dialog.current?.close()}>
-            {t("common.cancel")}
-          </button>
-          <button
-            type="button"
-            className="danger-button"
-            disabled={pending}
-            onClick={remove}
-          >
-            {t("dashboard.deleteProduct")}
-          </button>
-        </div>
-      </dialog>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("dashboard.deleteProduct")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("dashboard.deleteConfirmation")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              disabled={pending}
+              onClick={remove}
+            >
+              {t("dashboard.deleteProduct")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

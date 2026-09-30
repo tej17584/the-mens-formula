@@ -2,9 +2,121 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { SlidersHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useTranslations } from "@/i18n";
 
 type Option = { id: string; name: string };
+
+function FilterFields({
+  brands,
+  categories,
+  params,
+  update,
+}: {
+  brands: Option[];
+  categories: Option[];
+  params: URLSearchParams;
+  update: (changes: Record<string, string>) => void;
+}) {
+  const t = useTranslations();
+  return (
+    <div className="dashboard-filter-fields">
+      <label>
+        <Label>{t("catalog.brand")}</Label>
+        <select
+          value={params.get("brand") ?? ""}
+          onChange={(event) => update({ brand: event.target.value })}
+        >
+          <option value="">{t("catalog.allBrands")}</option>
+          {brands.map((brand) => (
+            <option key={brand.id} value={brand.id}>
+              {brand.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        <Label>{t("catalog.category")}</Label>
+        <select
+          value={params.get("category") ?? ""}
+          onChange={(event) => update({ category: event.target.value })}
+        >
+          <option value="">{t("catalog.allCategories")}</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        <Label>{t("dashboard.status")}</Label>
+        <select
+          value={params.get("visible") ?? ""}
+          onChange={(event) => update({ visible: event.target.value })}
+        >
+          <option value="">{t("dashboard.allStatuses")}</option>
+          <option value="true">{t("dashboard.visible")}</option>
+          <option value="false">{t("dashboard.hidden")}</option>
+        </select>
+      </label>
+      <fieldset>
+        <legend>{t("dashboard.publicPrice")}</legend>
+        <Input
+          aria-label={t("dashboard.priceMin")}
+          defaultValue={params.get("minPrice") ?? ""}
+          min="0"
+          placeholder={t("dashboard.from")}
+          step="0.01"
+          type="number"
+          onBlur={(event) => update({ minPrice: event.target.value })}
+        />
+        <Input
+          aria-label={t("dashboard.priceMax")}
+          defaultValue={params.get("maxPrice") ?? ""}
+          min="0"
+          placeholder={t("dashboard.to")}
+          step="0.01"
+          type="number"
+          onBlur={(event) => update({ maxPrice: event.target.value })}
+        />
+      </fieldset>
+      <fieldset>
+        <legend>{t("dashboard.distributorPrice")}</legend>
+        <Input
+          aria-label={t("dashboard.distributorMin")}
+          defaultValue={params.get("minDistributor") ?? ""}
+          min="0"
+          placeholder={t("dashboard.from")}
+          step="0.00000001"
+          type="number"
+          onBlur={(event) => update({ minDistributor: event.target.value })}
+        />
+        <Input
+          aria-label={t("dashboard.distributorMax")}
+          defaultValue={params.get("maxDistributor") ?? ""}
+          min="0"
+          placeholder={t("dashboard.to")}
+          step="0.00000001"
+          type="number"
+          onBlur={(event) => update({ maxDistributor: event.target.value })}
+        />
+      </fieldset>
+    </div>
+  );
+}
 
 export function DashboardProductFilters({
   brands,
@@ -30,6 +142,7 @@ export function DashboardProductFilters({
         else next.delete(key);
       }
       next.delete("page");
+      next.delete("status");
       router.replace(next.size ? `${pathname}?${next}` : pathname, {
         scroll: false,
       });
@@ -44,12 +157,20 @@ export function DashboardProductFilters({
     return () => window.clearTimeout(timeout);
   }, [q, params, update]);
 
+  useEffect(() => {
+    setQ(params.get("q") ?? "");
+  }, [params]);
+
   const activeFilters = useMemo(() => {
     const brand = brands.find((item) => item.id === params.get("brand"));
     const category = categories.find(
       (item) => item.id === params.get("category"),
     );
+    const query = params.get("q");
     return [
+      query
+        ? { key: "q", label: `${t("dashboard.fromSearch")}: ${query}` }
+        : null,
       brand
         ? { key: "brand", label: `${t("catalog.brand")}: ${brand.name}` }
         : null,
@@ -80,6 +201,23 @@ export function DashboardProductFilters({
     router.replace(pathname, { scroll: false });
   };
 
+  const removeChip = (key: string) => {
+    if (key === "q") setQ("");
+    if (key === "price") update({ minPrice: "", maxPrice: "" });
+    else if (key === "distributor")
+      update({ minDistributor: "", maxDistributor: "" });
+    else update({ [key]: "" });
+  };
+
+  const filterFields = (
+    <FilterFields
+      brands={brands}
+      categories={categories}
+      params={params}
+      update={update}
+    />
+  );
+
   return (
     <section
       className="dashboard-inventory-toolbar"
@@ -99,15 +237,49 @@ export function DashboardProductFilters({
             placeholder={t("dashboard.searchProducts")}
           />
         </label>
-        <button
-          aria-expanded={open}
-          className="dashboard-filter-trigger"
-          type="button"
-          onClick={() => setOpen((value) => !value)}
-        >
-          {t("dashboard.filters")}
-          {activeFilters.length ? <span>{activeFilters.length}</span> : null}
-        </button>
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger
+            render={
+              <Button variant="outline" className="dashboard-filter-trigger" />
+            }
+          >
+            <SlidersHorizontal className="size-4" />
+            {t("dashboard.filters")}
+            {activeFilters.length ? <span>{activeFilters.length}</span> : null}
+          </SheetTrigger>
+          <SheetContent
+            side="bottom"
+            className="dashboard-filter-sheet max-h-[85dvh] overflow-y-auto sm:max-w-none"
+          >
+            <SheetHeader>
+              <SheetTitle>{t("dashboard.filters")}</SheetTitle>
+              <SheetDescription>
+                {t("dashboard.productsSubtitle")}
+              </SheetDescription>
+            </SheetHeader>
+            <div className="px-4 pb-2">{filterFields}</div>
+            <SheetFooter>
+              {activeFilters.length ? (
+                <Button variant="ghost" type="button" onClick={clear}>
+                  {t("catalog.clearFilters")}
+                </Button>
+              ) : null}
+              <Button type="button" onClick={() => setOpen(false)}>
+                {t("dashboard.applyFilters")}
+              </Button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+        {activeFilters.length ? (
+          <Button
+            variant="ghost"
+            type="button"
+            className="dashboard-toolbar-clear"
+            onClick={clear}
+          >
+            {t("catalog.clearFilters")}
+          </Button>
+        ) : null}
         <span className="dashboard-result-count">
           {resultCount} {t("catalog.products")}
         </span>
@@ -122,132 +294,15 @@ export function DashboardProductFilters({
             <button
               key={filter.key}
               type="button"
-              onClick={() => {
-                if (filter.key === "price")
-                  update({ minPrice: "", maxPrice: "" });
-                else if (filter.key === "distributor")
-                  update({ minDistributor: "", maxDistributor: "" });
-                else update({ [filter.key]: "" });
-              }}
+              onClick={() => removeChip(filter.key)}
             >
               {filter.label} <span aria-hidden="true">×</span>
             </button>
           ))}
-          <button
-            className="dashboard-clear-filters"
-            type="button"
-            onClick={clear}
-          >
-            {t("catalog.clearFilters")}
-          </button>
         </div>
       ) : null}
 
-      {open ? (
-        <>
-          <button
-            aria-label={t("dashboard.closeFilters")}
-            className="dashboard-filter-backdrop"
-            type="button"
-            onClick={() => setOpen(false)}
-          />
-          <div className="dashboard-filter-panel">
-            <div className="dashboard-filter-panel-heading">
-              <strong>{t("dashboard.filters")}</strong>
-              <button type="button" onClick={() => setOpen(false)}>
-                {t("common.cancel")}
-              </button>
-            </div>
-            <div className="dashboard-filter-controls">
-              <label>
-                <span>{t("catalog.brand")}</span>
-                <select
-                  value={params.get("brand") ?? ""}
-                  onChange={(event) => update({ brand: event.target.value })}
-                >
-                  <option value="">{t("catalog.allBrands")}</option>
-                  {brands.map((brand) => (
-                    <option key={brand.id} value={brand.id}>
-                      {brand.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>{t("catalog.category")}</span>
-                <select
-                  value={params.get("category") ?? ""}
-                  onChange={(event) => update({ category: event.target.value })}
-                >
-                  <option value="">{t("catalog.allCategories")}</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>{t("dashboard.status")}</span>
-                <select
-                  value={params.get("visible") ?? ""}
-                  onChange={(event) => update({ visible: event.target.value })}
-                >
-                  <option value="">{t("dashboard.allStatuses")}</option>
-                  <option value="true">{t("dashboard.visible")}</option>
-                  <option value="false">{t("dashboard.hidden")}</option>
-                </select>
-              </label>
-              <fieldset>
-                <legend>{t("dashboard.publicPrice")}</legend>
-                <input
-                  aria-label={t("dashboard.priceMin")}
-                  defaultValue={params.get("minPrice") ?? ""}
-                  min="0"
-                  placeholder={t("dashboard.from")}
-                  step="0.01"
-                  type="number"
-                  onBlur={(event) => update({ minPrice: event.target.value })}
-                />
-                <input
-                  aria-label={t("dashboard.priceMax")}
-                  defaultValue={params.get("maxPrice") ?? ""}
-                  min="0"
-                  placeholder={t("dashboard.to")}
-                  step="0.01"
-                  type="number"
-                  onBlur={(event) => update({ maxPrice: event.target.value })}
-                />
-              </fieldset>
-              <fieldset>
-                <legend>{t("dashboard.distributorPrice")}</legend>
-                <input
-                  aria-label={t("dashboard.distributorMin")}
-                  defaultValue={params.get("minDistributor") ?? ""}
-                  min="0"
-                  placeholder={t("dashboard.from")}
-                  step="0.00000001"
-                  type="number"
-                  onBlur={(event) =>
-                    update({ minDistributor: event.target.value })
-                  }
-                />
-                <input
-                  aria-label={t("dashboard.distributorMax")}
-                  defaultValue={params.get("maxDistributor") ?? ""}
-                  min="0"
-                  placeholder={t("dashboard.to")}
-                  step="0.00000001"
-                  type="number"
-                  onBlur={(event) =>
-                    update({ maxDistributor: event.target.value })
-                  }
-                />
-              </fieldset>
-            </div>
-          </div>
-        </>
-      ) : null}
+      <div className="dashboard-filter-desktop">{filterFields}</div>
     </section>
   );
 }

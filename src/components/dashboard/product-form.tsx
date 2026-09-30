@@ -12,6 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Switch } from "@/components/ui/switch";
 import { withDashboardFlashStatus } from "@/lib/dashboard/products-list-query";
 import {
   createProductAction,
@@ -68,6 +69,9 @@ export function ProductForm({
     : createProductAction;
   const [state, formAction, pending] = useActionState(action, initialState);
   const [, startTransition] = useTransition();
+  const notified = useRef(false);
+  const [isAvailable, setIsAvailable] = useState(product?.is_available ?? true);
+  const [isActive, setIsActive] = useState(product?.is_active ?? true);
   const remainingImages =
     product?.images.filter((image) => !removed.includes(image.id)) ?? [];
   const totalImages = remainingImages.length + files.length;
@@ -86,10 +90,14 @@ export function ProductForm({
     [previews],
   );
   useEffect(() => {
-    if (!state.success) return;
+    if (!state.success) {
+      notified.current = false;
+      return;
+    }
+    if (notified.current) return;
+    notified.current = true;
     if (product) {
       toast.success(t("dashboard.flashProductUpdated"));
-      router.refresh();
       return;
     }
     router.push(withDashboardFlashStatus(inventoryListPath, "created"));
@@ -395,35 +403,40 @@ export function ProductForm({
           <h2>{t("dashboard.visibilitySection")}</h2>
           <p>{t("dashboard.visibilitySectionHelp")}</p>
         </header>
-        <div className="dashboard-switches">
-          <label>
+        <div className="dashboard-toggle-grid">
+          <label className="dashboard-toggle-card">
+            <span>
+              <strong>{t("dashboard.availability")}</strong>
+              <small>{t("dashboard.availabilityHelp")}</small>
+            </span>
             <input
+              type="hidden"
               name="isAvailable"
-              type="checkbox"
-              defaultChecked={product?.is_available ?? true}
-            />{" "}
-            {t("dashboard.availability")}
-            <small>{t("dashboard.availabilityHelp")}</small>
+              value={isAvailable ? "on" : ""}
+            />
+            <Switch
+              checked={isAvailable}
+              onCheckedChange={setIsAvailable}
+              aria-label={t("dashboard.availability")}
+            />
           </label>
-          <label>
-            <input
-              name="isActive"
-              type="checkbox"
-              defaultChecked={product?.is_active ?? true}
-            />{" "}
-            {t("dashboard.visible")}
-            <small>{t("dashboard.visibilityHelp")}</small>
+          <label className="dashboard-toggle-card">
+            <span>
+              <strong>{t("dashboard.visible")}</strong>
+              <small>{t("dashboard.visibilityHelp")}</small>
+            </span>
+            <input type="hidden" name="isActive" value={isActive ? "on" : ""} />
+            <Switch
+              checked={isActive}
+              onCheckedChange={setIsActive}
+              aria-label={t("dashboard.visible")}
+            />
           </label>
         </div>
       </section>
       {state.error ? (
         <Alert variant="destructive" className="dashboard-form-alert">
           <AlertDescription>{state.error}</AlertDescription>
-        </Alert>
-      ) : null}
-      {state.success && product ? (
-        <Alert className="dashboard-form-alert">
-          <AlertDescription>{t("dashboard.flashProductUpdated")}</AlertDescription>
         </Alert>
       ) : null}
       <button

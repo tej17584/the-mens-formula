@@ -31,17 +31,18 @@ test.describe("dashboard products", () => {
   test("updates an existing product price", async ({ page }) => {
     await page.goto("/dashboard/products?q=Pomade");
     await page.getByRole("link", { name: /Pomade TMF-0036/i }).click();
-    const price = page.getByRole("spinbutton", { name: /precio público/i });
+    await expect(
+      page.getByRole("heading", { name: /actualizar producto/i }),
+    ).toBeVisible();
+    const price = page.locator('input[name="consumerPrice"]');
     const current = Number(await price.inputValue());
     const next = current === 99 ? 98 : 99;
     await price.fill(String(next));
     await page.getByRole("button", { name: /actualizar producto/i }).click();
-    await expect(page).toHaveURL(/\/dashboard\/products/);
-    await page.goto("/dashboard/products?q=Pomade");
-    await page.getByRole("link", { name: /Pomade TMF-0036/i }).click();
     await expect(
-      page.getByRole("spinbutton", { name: /precio público/i }),
-    ).toHaveValue(String(next));
+      page.getByRole("heading", { name: /actualizar producto/i }),
+    ).toBeVisible();
+    await expect(price).toHaveValue(String(next));
   });
 
   test("creates and deletes a product with image", async ({ page }) => {

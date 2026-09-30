@@ -26,4 +26,13 @@ test.describe("dashboard inventory filters", () => {
       "Pomade",
     );
   });
+
+  test("can clear all inventory filters at once", async ({ page }) => {
+    await page.goto("/dashboard/products?q=Pomade");
+    await page.getByRole("button", { name: /limpiar filtros/i }).first().click();
+    await expect(page).toHaveURL(/\/dashboard\/products\/?$/);
+    await expect(page.getByRole("searchbox", { name: /buscar/i })).toHaveValue(
+      "",
+    );
+  });
 });

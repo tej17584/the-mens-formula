@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { markContactReadAction } from "@/actions/dashboard-contact";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { DashboardMessageCard } from "@/components/dashboard/dashboard-message-card";
 import { translate } from "@/i18n";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getContactMessages } from "@/lib/dashboard";
@@ -17,70 +17,51 @@ export default async function DashboardContactPage({
       : undefined;
   const result = await getContactMessages(page, status);
   const totalPages = Math.max(1, Math.ceil(result.total / result.pageSize));
+  const filters = [
+    { href: "/dashboard/contact", label: translate("dashboard.allStatuses"), active: !status },
+    {
+      href: "/dashboard/contact?status=new",
+      label: translate("dashboard.new"),
+      active: status === "new",
+    },
+    {
+      href: "/dashboard/contact?status=read",
+      label: translate("dashboard.read"),
+      active: status === "read",
+    },
+  ];
   return (
     <DashboardLayout>
-      <header className="dashboard-heading dashboard-heading-row dashboard-page-header">
-        <div>
-          <p className="eyebrow">{translate("dashboard.title")}</p>
-          <h1>{translate("dashboard.messages")}</h1>
-          <p>{translate("dashboard.messagesSubtitle")}</p>
-        </div>
-        <nav className="dashboard-status-links">
-          <Link href="/dashboard/contact">
-            {translate("dashboard.allStatuses")}
-          </Link>
-          <Link href="/dashboard/contact?status=new">
-            {translate("dashboard.new")}
-          </Link>
-          <Link href="/dashboard/contact?status=read">
-            {translate("dashboard.read")}
-          </Link>
+      <header className="dashboard-heading">
+        <p className="eyebrow">{translate("dashboard.title")}</p>
+        <h1>{translate("dashboard.messages")}</h1>
+        <p>{translate("dashboard.messagesSubtitle")}</p>
+        <nav className="dashboard-status-links" aria-label={translate("dashboard.messageStatus")}>
+          {filters.map((filter) => (
+            <Link
+              className={filter.active ? "is-active" : undefined}
+              href={filter.href}
+              key={filter.href}
+            >
+              {filter.label}
+            </Link>
+          ))}
         </nav>
       </header>
       <div className="dashboard-messages">
         {result.messages.map((message) => (
-          <article
+          <DashboardMessageCard
             key={message.id}
-            className={`dashboard-message${message.status === "new" ? "is-new" : ""}`}
-          >
-            <header>
-              <div>
-                <strong>{message.name}</strong>
-                <a href={`mailto:${message.contact}`}>{message.contact}</a>
-              </div>
-              <span
-                className={`status-pill ${message.status === "new" ? "active" : ""}`}
-              >
-                {message.status === "new"
-                  ? translate("dashboard.new")
-                  : translate("dashboard.read")}
-              </span>
-            </header>
-            <p>{message.message}</p>
-            {message.product ? (
-              <Link
-                className="text-link"
-                href={`/catalogo/${message.product.slug}`}
-              >
-                {message.product.name}
-              </Link>
-            ) : null}
-            <footer>
-              <time dateTime={message.created_at}>
-                {new Intl.DateTimeFormat("es-GT", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                }).format(new Date(message.created_at))}
-              </time>
-              {message.status === "new" ? (
-                <form action={markContactReadAction.bind(null, message.id)}>
-                  <button type="submit">
-                    {translate("dashboard.markRead")}
-                  </button>
-                </form>
-              ) : null}
-            </footer>
-          </article>
+            message={{
+              id: message.id,
+              name: message.name,
+              contact: message.contact,
+              message: message.message,
+              status: message.status,
+              created_at: message.created_at,
+              product: message.product,
+            }}
+          />
         ))}
       </div>
       {result.messages.length === 0 ? (

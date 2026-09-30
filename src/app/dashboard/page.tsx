@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { translate } from "@/i18n";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getDashboardStats } from "@/lib/dashboard";
@@ -33,63 +39,68 @@ export default async function DashboardPage() {
       action: translate("dashboard.viewMessages"),
     },
   ];
+  const shortcuts = [
+    {
+      href: "/dashboard/products",
+      title: translate("dashboard.products"),
+      description: translate("dashboard.productsSubtitle"),
+    },
+    {
+      href: "/dashboard/contact",
+      title: translate("dashboard.messages"),
+      description: translate("dashboard.messagesSubtitle"),
+    },
+    {
+      href: "/dashboard/catalog",
+      title: translate("dashboard.catalogManagement"),
+      description: translate("dashboard.catalogManagementDescription"),
+    },
+    {
+      href: "/dashboard/settings",
+      title: translate("dashboard.settings"),
+      description: translate("dashboard.settingsSubtitle"),
+    },
+  ];
 
   return (
     <DashboardLayout>
-      <header className="dashboard-heading dashboard-page-header dashboard-welcome-heading">
-        <div>
-          <p className="eyebrow">{translate("dashboard.title")}</p>
-          <h1>{translate("dashboard.welcome")}</h1>
-          <p>{translate("dashboard.overview")}</p>
-        </div>
+      <header className="dashboard-heading">
+        <p className="eyebrow">{translate("dashboard.title")}</p>
+        <h1>{translate("dashboard.welcome")}</h1>
+        <p>{translate("dashboard.overview")}</p>
+        <Link className="button button-primary" href="/dashboard/products/new">
+          {translate("dashboard.newProduct")}
+        </Link>
       </header>
       <section
-        className="dashboard-status-section"
+        className="dashboard-metric-grid"
         aria-label={translate("dashboard.operationalSummary")}
       >
-        <div className="dashboard-metrics">
-          {cards.map((card) => (
-            <Link
-              className="dashboard-metric"
-              href={card.href}
-              key={card.label}
-            >
-              <p>{card.label}</p>
-              <strong>{card.value}</strong>
-              <span>
-                {card.action} <b aria-hidden="true">→</b>
-              </span>
-            </Link>
-          ))}
-        </div>
+        {cards.map((card) => (
+          <Link href={card.href} key={card.label}>
+            <Card className="dashboard-stat-card">
+              <CardHeader>
+                <CardDescription>{card.label}</CardDescription>
+                <CardTitle className="dashboard-stat-value">
+                  {card.value}
+                </CardTitle>
+                <span className="dashboard-stat-link">{card.action} →</span>
+              </CardHeader>
+            </Card>
+          </Link>
+        ))}
       </section>
-      <section
-        className="dashboard-quick-section"
-        aria-labelledby="dashboard-shortcuts-title"
-      >
-        <div className="dashboard-section-heading">
-          <p className="eyebrow">{translate("dashboard.quickAccess")}</p>
-          <p id="dashboard-shortcuts-title">
-            {translate("dashboard.quickAccessDescription")}
-          </p>
-        </div>
-        <div className="dashboard-shortcuts">
-          <Link href="/dashboard/products">
-            <strong>{translate("dashboard.products")}</strong>
-            <span aria-hidden="true">→</span>
+      <section className="dashboard-shortcut-grid">
+        {shortcuts.map((item) => (
+          <Link href={item.href} key={item.href}>
+            <Card className="dashboard-shortcut-card">
+              <CardHeader>
+                <CardTitle>{item.title}</CardTitle>
+                <CardDescription>{item.description}</CardDescription>
+              </CardHeader>
+            </Card>
           </Link>
-          <Link href="/dashboard/contact">
-            <strong>{translate("dashboard.messages")}</strong>
-            <span aria-hidden="true">→</span>
-          </Link>
-          <Link
-            className="dashboard-settings-shortcut"
-            href="/dashboard/catalog"
-          >
-            {translate("dashboard.catalogManagement")}
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
+        ))}
       </section>
     </DashboardLayout>
   );
