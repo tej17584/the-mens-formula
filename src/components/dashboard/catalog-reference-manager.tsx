@@ -188,7 +188,7 @@ export function CatalogReferenceManager({
   }[];
 }) {
   return (
-    <div className="dashboard-reference-grid dashboard-readable">
+    <div className="dashboard-reference-grid dashboard-readable dashboard-reference-type">
       <ReferencePanel action={manageBrandAction} kind="brand" values={brands} />
       <ReferencePanel
         action={manageCategoryAction}

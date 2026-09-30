@@ -3,6 +3,14 @@ import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { translate } from "@/i18n";
 import { getCatalogProducts, getDiverseProducts } from "@/lib/catalog";
 
@@ -23,9 +31,17 @@ export default async function Home() {
               <p className="eyebrow">{translate("home.eyebrow")}</p>
               <h1>{translate("home.title")}</h1>
               <p>{translate("home.description")}</p>
-              <Link className="button button-primary" href="/catalogo">
-                {translate("home.explore")} <span aria-hidden="true">→</span>
-              </Link>
+              <Button
+                className="hero-cta"
+                nativeButton={false}
+                render={<Link href="/catalogo" />}
+                size="lg"
+              >
+                {translate("home.explore")}
+                <span aria-hidden="true" data-icon="inline-end">
+                  →
+                </span>
+              </Button>
             </div>
             <div className="hero-product-composition" aria-hidden="true">
               {heroProducts.map((product, index) => (
@@ -54,14 +70,24 @@ export default async function Home() {
           </div>
         </section>
         <section className="catalog-facts">
-          <div className="shell">
-            <span>
-              {products.length} {translate("home.products")}
-            </span>
-            <span>
-              {brands} {translate("home.brands")}
-            </span>
-            <span>{translate("home.volumePrices")}</span>
+          <div className="shell catalog-facts-grid">
+            <Card className="catalog-fact" size="sm">
+              <CardHeader>
+                <CardDescription>{translate("home.products")}</CardDescription>
+                <CardTitle>{products.length}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card className="catalog-fact" size="sm">
+              <CardHeader>
+                <CardDescription>{translate("home.brands")}</CardDescription>
+                <CardTitle>{brands}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card className="catalog-fact" size="sm">
+              <CardHeader>
+                <CardTitle>{translate("home.volumePrices")}</CardTitle>
+              </CardHeader>
+            </Card>
           </div>
         </section>
         <section
@@ -74,10 +100,18 @@ export default async function Home() {
               <h2 id="products-title">{translate("home.catalogTitle")}</h2>
               <p>{translate("home.catalogDescription")}</p>
             </div>
-            <Link className="text-link" href="/catalogo">
-              {translate("home.viewCatalog")} <span aria-hidden="true">→</span>
-            </Link>
+            <Button
+              nativeButton={false}
+              render={<Link href="/catalogo" />}
+              variant="link"
+            >
+              {translate("home.viewCatalog")}
+              <span aria-hidden="true" data-icon="inline-end">
+                →
+              </span>
+            </Button>
           </div>
+          <Separator className="home-products-rule" />
           <div className="product-grid home-grid">
             {selection.map((product, index) => (
               <ProductCard

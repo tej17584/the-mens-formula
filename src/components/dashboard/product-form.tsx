@@ -15,6 +15,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Switch } from "@/components/ui/switch";
 import { withDashboardFlashStatus } from "@/lib/dashboard/products-list-query";
 import {
+  capDetailLines,
+  MAX_DETAIL_POINTS,
+} from "@/lib/dashboard/product-form-values";
+import {
   createProductAction,
   updateProductAction,
   type DashboardActionState,
@@ -276,9 +280,16 @@ export function ProductForm({
           <span>{t("dashboard.details")}</span>
           <textarea
             name="details"
-            rows={5}
-            defaultValue={product?.detail_points.join("\n") ?? ""}
+            rows={MAX_DETAIL_POINTS}
+            defaultValue={
+              product?.detail_points.slice(0, MAX_DETAIL_POINTS).join("\n") ?? ""
+            }
+            onChange={(event) => {
+              const next = capDetailLines(event.target.value);
+              if (next !== event.target.value) event.target.value = next;
+            }}
           />
+          <span className="dashboard-field-help">{t("dashboard.detailsHelp")}</span>
         </label>
       </section>
       <section className="dashboard-form-section">

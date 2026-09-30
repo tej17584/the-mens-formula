@@ -1,9 +1,32 @@
 import Link from "next/link";
+import { InboxIcon } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { DashboardMessageCard } from "@/components/dashboard/dashboard-message-card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { translate } from "@/i18n";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getContactMessages } from "@/lib/dashboard";
+
+function contactHref(page: number, status?: string) {
+  const params = new URLSearchParams();
+  if (status) params.set("status", status);
+  if (page > 1) params.set("page", String(page));
+  return `/dashboard/contact${params.size ? `?${params}` : ""}`;
+}
 
 export default async function DashboardContactPage({
   searchParams,
@@ -79,25 +102,52 @@ export default async function DashboardContactPage({
         ))}
       </div>
       {result.messages.length === 0 ? (
-        <p className="empty-state">{translate("dashboard.noMessages")}</p>
+        <Empty className="dashboard-empty">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <InboxIcon />
+            </EmptyMedia>
+            <EmptyTitle>{translate("dashboard.noMessages")}</EmptyTitle>
+            <EmptyDescription>
+              {translate("dashboard.messagesSubtitle")}
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : null}
-      <nav className="pagination" aria-label={translate("catalog.page")}>
-        <Link
-          className={page <= 1 ? "disabled" : ""}
-          href={`/dashboard/contact?page=${Math.max(1, page - 1)}${status ? `&status=${status}` : ""}`}
-        >
-          {translate("catalog.previous")}
-        </Link>
-        <span>
-          {page} {translate("catalog.of")} {totalPages}
-        </span>
-        <Link
-          className={page >= totalPages ? "disabled" : ""}
-          href={`/dashboard/contact?page=${Math.min(totalPages, page + 1)}${status ? `&status=${status}` : ""}`}
-        >
-          {translate("catalog.next")}
-        </Link>
-      </nav>
+      <Pagination aria-label={translate("catalog.page")}>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              aria-disabled={page <= 1}
+              aria-label={translate("catalog.previous")}
+              className={page <= 1 ? "pointer-events-none opacity-50" : undefined}
+              href={contactHref(Math.max(1, page - 1), status)}
+              text={translate("catalog.previous")}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href={contactHref(page, status)} isActive>
+              {page}
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <span className="px-2 text-sm text-muted-foreground">
+              {translate("catalog.of")} {totalPages}
+            </span>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              aria-disabled={page >= totalPages}
+              aria-label={translate("catalog.next")}
+              className={
+                page >= totalPages ? "pointer-events-none opacity-50" : undefined
+              }
+              href={contactHref(Math.min(totalPages, page + 1), status)}
+              text={translate("catalog.next")}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </DashboardLayout>
   );
 }

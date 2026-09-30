@@ -69,6 +69,26 @@ describe("parseProductFormData", () => {
     expect(row.is_available).toBe(false);
     expect(row.detail_points).toEqual(["Line one", "Line two"]);
   });
+
+  it("keeps only the first five detail lines", () => {
+    const parsed = parseProductFormData(
+      form({
+        name: "Pomade",
+        brandId,
+        categoryId,
+        details: "One\nTwo\nThree\nFour\nFive\nSix",
+      }),
+    );
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    expect(productRowValues(parsed.data).detail_points).toEqual([
+      "One",
+      "Two",
+      "Three",
+      "Four",
+      "Five",
+    ]);
+  });
 });
 
 describe("numberOrNull", () => {

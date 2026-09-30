@@ -50,6 +50,14 @@ export function parseProductFormData(formData: FormData) {
   });
 }
 
+export const MAX_DETAIL_POINTS = 5;
+
+export function capDetailLines(value: string) {
+  const lines = value.split("\n");
+  if (lines.length <= MAX_DETAIL_POINTS) return value;
+  return lines.slice(0, MAX_DETAIL_POINTS).join("\n");
+}
+
 export function productRowValues(input: ProductFormInput) {
   return {
     name: input.name,
@@ -60,7 +68,8 @@ export function productRowValues(input: ProductFormInput) {
     detail_points: input.details
       .split("\n")
       .map((point) => point.trim())
-      .filter(Boolean),
+      .filter(Boolean)
+      .slice(0, MAX_DETAIL_POINTS),
     stock: numberOrNull(input.stock),
     consumer_price: numberOrNull(input.consumerPrice),
     price: numberOrNull(input.consumerPrice),

@@ -1,7 +1,15 @@
 "use client";
 
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { ReactNode } from "react";
+import { SearchIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { useTranslations } from "@/i18n";
 
 type Option = { slug: string; name: string };
@@ -19,6 +27,7 @@ export function CatalogControls({
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
+  const [q, setQ] = useState(params.get("q") ?? "");
   const update = (updates: Record<string, string | null>, resetPage = true) => {
     const next = new URLSearchParams(params.toString());
     Object.entries(updates).forEach(([key, value]) => {
@@ -30,6 +39,16 @@ export function CatalogControls({
       scroll: false,
     });
   };
+
+  useEffect(() => {
+    setQ(params.get("q") ?? "");
+  }, [params]);
+
+  const search = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    update({ q: q.trim() || null });
+  };
+
   const filters = (
     <>
       <label className="select-field">
@@ -60,15 +79,16 @@ export function CatalogControls({
           ))}
         </select>
       </label>
-      <button
+      <Button
         className="clear-filters"
         type="button"
+        variant="ghost"
         onClick={() =>
           update({ q: null, categoria: null, marca: null, sort: null })
         }
       >
         {t("catalog.clearFilters")}
-      </button>
+      </Button>
     </>
   );
   const hasFilters = Boolean(params.get("categoria") || params.get("marca"));
@@ -87,15 +107,30 @@ export function CatalogControls({
       </details>
       <section className="catalog-results">
         <div className="catalog-toolbar">
-          <label className="search-field">
-            <span className="sr-only">{t("common.search")}</span>
-            <input
-              defaultValue={params.get("q") ?? ""}
-              onChange={(event) => update({ q: event.target.value })}
-              placeholder={t("catalog.searchPlaceholder")}
-              type="search"
-            />
-          </label>
+          <form className="search-field" onSubmit={search}>
+            <InputGroup className="catalog-search-group">
+              <InputGroupAddon>
+                <SearchIcon />
+              </InputGroupAddon>
+              <InputGroupInput
+                aria-label={t("common.search")}
+                onChange={(event) => setQ(event.target.value)}
+                placeholder={t("catalog.searchPlaceholder")}
+                type="search"
+                value={q}
+              />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  className="catalog-search-submit"
+                  type="submit"
+                  variant="secondary"
+                  size="sm"
+                >
+                  {t("common.search")}
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+          </form>
           <label className="sort-field">
             <span className="sr-only">{t("catalog.sort")}</span>
             <select

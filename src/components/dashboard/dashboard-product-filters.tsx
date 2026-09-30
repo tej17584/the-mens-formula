@@ -1,10 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { SlidersHorizontal } from "lucide-react";
+import { SearchIcon, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import {
   Sheet,
@@ -151,15 +157,13 @@ export function DashboardProductFilters({
   );
 
   useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      if (q !== (params.get("q") ?? "")) update({ q });
-    }, 350);
-    return () => window.clearTimeout(timeout);
-  }, [q, params, update]);
-
-  useEffect(() => {
     setQ(params.get("q") ?? "");
   }, [params]);
+
+  const search = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    update({ q: q.trim() });
+  };
 
   const activeFilters = useMemo(() => {
     const brand = brands.find((item) => item.id === params.get("brand"));
@@ -224,19 +228,32 @@ export function DashboardProductFilters({
       aria-label={t("dashboard.filters")}
     >
       <div className="dashboard-toolbar-main">
-        <label className="dashboard-search-field">
-          <span className="sr-only">{t("common.search")}</span>
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="6.5" />
-            <path d="m16 16 4 4" />
-          </svg>
-          <input
-            type="search"
-            value={q}
-            onChange={(event) => setQ(event.target.value)}
-            placeholder={t("dashboard.searchProducts")}
-          />
-        </label>
+        <form className="dashboard-search-field" onSubmit={search}>
+          <InputGroup
+            className="dashboard-search-group shadow-none has-[[data-slot=input-group-control]:focus-visible]:!border-[var(--color-brand)] has-[[data-slot=input-group-control]:focus-visible]:!ring-0 has-[[data-slot=input-group-control]:focus-visible]:!shadow-none"
+          >
+            <InputGroupAddon>
+              <SearchIcon />
+            </InputGroupAddon>
+            <InputGroupInput
+              aria-label={t("common.search")}
+              onChange={(event) => setQ(event.target.value)}
+              placeholder={t("dashboard.searchProducts")}
+              type="search"
+              value={q}
+            />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                className="dashboard-search-submit"
+                type="submit"
+                variant="secondary"
+                size="sm"
+              >
+                {t("common.search")}
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        </form>
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
             render={

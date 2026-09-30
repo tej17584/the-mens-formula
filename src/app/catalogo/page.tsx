@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ProductGrid } from "@/components/product-grid";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { Separator } from "@/components/ui/separator";
 import { translate } from "@/i18n";
 import { getCatalogFilters, getCatalogPage } from "@/lib/catalog";
 
@@ -51,6 +52,7 @@ export default async function CatalogPage({ searchParams }: Props) {
           <h1>{translate("catalog.title")}</h1>
           <p>{translate("catalog.description")}</p>
         </div>
+        <Separator className="catalog-intro-rule" />
         <ProductGrid
           products={result.products}
           categories={filters.categories}

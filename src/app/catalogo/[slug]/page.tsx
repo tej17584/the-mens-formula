@@ -14,6 +14,7 @@ import {
   getRelatedProducts,
   getSiteSettings,
 } from "@/lib/catalog";
+import { MAX_DETAIL_POINTS } from "@/lib/dashboard/product-form-values";
 import { formatPrice, siteConfig } from "@/lib/site-config";
 
 type Props = PageProps<"/catalogo/[slug]">;
@@ -117,7 +118,7 @@ export default async function ProductPage({ params }: Props) {
               <div className="detail-points">
                 <h2>{translate("product.details")}</h2>
                 <ul>
-                  {product.detail_points.map((point) => (
+                  {product.detail_points.slice(0, MAX_DETAIL_POINTS).map((point) => (
                     <li key={point}>{point}</li>
                   ))}
                 </ul>
