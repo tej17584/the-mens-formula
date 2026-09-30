@@ -291,6 +291,25 @@ export async function updateProductAction(
   return { success: true };
 }
 
+export async function setProductAvailability(
+  productId: string,
+  isAvailable: boolean,
+) {
+  await requireAdmin();
+  const { data, error } = await createAdminClient()
+    .from("products")
+    .update({ is_available: isAvailable })
+    .eq("id", productId)
+    .select("slug")
+    .single();
+  if (error) {
+    sentryErrorReport(error, "PRODUCT_ACTION - AVAILABILITY");
+    return { error: "No se pudo actualizar la disponibilidad." };
+  }
+  refreshProductPaths(data.slug);
+  return { success: true };
+}
+
 export async function setProductVisibility(
   productId: string,
   isActive: boolean,

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { ProductGallery } from "@/components/product-gallery";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -85,6 +87,17 @@ export default async function ProductPage({ params }: Props) {
               · {product.category.name}
             </p>
             <h1>{product.name}</h1>
+            {!product.is_available ? (
+              <Badge variant="secondary">{translate("catalog.unavailable")}</Badge>
+            ) : null}
+            {!product.is_available ? (
+              <Alert>
+                <AlertTitle>{translate("catalog.unavailable")}</AlertTitle>
+                <AlertDescription>
+                  {translate("catalog.unavailableNotice")}
+                </AlertDescription>
+              </Alert>
+            ) : null}
             {product.description ? (
               <p className="product-description">{product.description}</p>
             ) : null}

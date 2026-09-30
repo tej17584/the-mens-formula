@@ -62,12 +62,13 @@ test.describe("dashboard products", () => {
       path.join(__dirname, "../fixtures/sample.png"),
     );
     await expect(page.getByText(/1\/3/i)).toBeVisible();
-    await page.getByRole("checkbox", { name: /visible/i }).check();
     await page.getByRole("button", { name: /crear producto/i }).click();
-    await expect(page).toHaveURL(/\/dashboard\/products$/, { timeout: 20000 });
+    await expect(page).toHaveURL(/\/dashboard\/products(\?|$)/, {
+      timeout: 20000,
+    });
     await page.goto(`/dashboard/products?q=${encodeURIComponent(name)}`);
     await expect(page.getByRole("link", { name })).toBeVisible();
-    await page.getByRole("button", { name: /más acciones/i }).first().click();
+    await page.getByLabel(/más acciones/i).first().click();
     await page.getByRole("menuitem", { name: /eliminar producto/i }).click();
     await page
       .getByRole("button", { name: /eliminar producto/i })

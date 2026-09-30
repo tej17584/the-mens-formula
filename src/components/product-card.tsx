@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 import { translate } from "@/i18n";
 import type { CatalogProduct } from "@/lib/catalog";
 import { formatPrice } from "@/lib/site-config";
@@ -44,6 +45,9 @@ export function ProductCard({
         <h3>
           <Link href={`/catalogo/${product.slug}`}>{product.name}</Link>
         </h3>
+        {!product.is_available ? (
+          <Badge variant="secondary">{translate("catalog.unavailable")}</Badge>
+        ) : null}
         <div className="card-price">
           <span>{translate("catalog.unitPrice")}</span>
           <strong>{formatPrice(product.consumer_price)}</strong>

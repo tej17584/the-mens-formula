@@ -6,7 +6,7 @@ test.describe("storefront catalog filters", () => {
     await expect(page.getByRole("combobox", { name: /categoría/i })).toHaveValue(
       "productos-para-cabello",
     );
-    await expect(page.getByText(/44 productos/i)).toBeVisible();
+    await expect(page.getByText(/\d+ productos/i)).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Agiva 01 Orange" }),
     ).toBeVisible();

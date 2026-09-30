@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { ProductActions } from "@/components/dashboard/dashboard-product-actions";
+import { DashboardFlashBanner } from "@/components/dashboard/dashboard-flash-banner";
 import { DashboardProductFilters } from "@/components/dashboard/dashboard-product-filters";
 import { translate } from "@/i18n";
 import { requireAdmin } from "@/lib/admin-auth";
@@ -10,7 +11,10 @@ import {
   getDashboardProductPage,
   getDashboardReferences,
 } from "@/lib/dashboard";
-import { parseDashboardProductsSearchParams } from "@/lib/dashboard/products-list-query";
+import {
+  dashboardProductsListPath,
+  parseDashboardProductsSearchParams,
+} from "@/lib/dashboard/products-list-query";
 import { formatPrice } from "@/lib/site-config";
 
 type PageProps = {
@@ -30,14 +34,12 @@ export default async function DashboardProductsPage({
   const totalPages = Math.max(1, Math.ceil(result.total / result.pageSize));
   const page = Math.min(result.page, totalPages);
   const firstProduct = result.total ? (page - 1) * result.pageSize + 1 : 0;
-  const params = new URLSearchParams();
-  Object.entries(raw).forEach(([key, value]) => {
-    if (typeof value === "string" && key !== "page") params.set(key, value);
-  });
-  const hrefForPage = (number: number) => {
-    const next = new URLSearchParams(params);
-    if (number > 1) next.set("page", String(number));
-    return `/dashboard/products${next.size ? `?${next}` : ""}`;
+  const inventoryListPath = dashboardProductsListPath(raw, { page });
+  const hrefForPage = (number: number) =>
+    dashboardProductsListPath(raw, { page: number });
+  const editHref = (productId: string) => {
+    const returnTo = encodeURIComponent(inventoryListPath);
+    return `/dashboard/products/${productId}?returnTo=${returnTo}`;
   };
   return (
     <DashboardLayout>
@@ -51,6 +53,9 @@ export default async function DashboardProductsPage({
           {translate("dashboard.newProduct")}
         </Link>
       </header>
+      <Suspense fallback={null}>
+        <DashboardFlashBanner />
+      </Suspense>
       <Suspense
         fallback={
           <section
@@ -99,7 +104,7 @@ export default async function DashboardProductsPage({
                       "TMF"
                     )}
                   </div>
-                  <Link href={`/dashboard/products/${product.id}`}>
+                  <Link href={editHref(product.id)}>
                     <strong>{product.name}</strong>
                     <small>{product.sku ?? product.slug}</small>
                   </Link>
@@ -134,22 +139,31 @@ export default async function DashboardProductsPage({
                   className="inventory-cell inventory-status-cell"
                   data-label={translate("dashboard.status")}
                 >
-                  <span
-                    className={`status-pill ${product.is_active ? "active" : ""}`}
-                  >
-                    {product.is_active
-                      ? translate("dashboard.visible")
-                      : translate("dashboard.hidden")}
-                  </span>
+                  <div className="inventory-status-stack">
+                    <span
+                      className={`status-pill ${product.is_active ? "active" : ""}`}
+                    >
+                      {product.is_active
+                        ? translate("dashboard.visible")
+                        : translate("dashboard.hidden")}
+                    </span>
+                    {!product.is_available ? (
+                      <span className="status-pill status-pill-muted">
+                        {translate("catalog.unavailable")}
+                      </span>
+                    ) : null}
+                  </div>
                 </td>
                 <td
                   className="inventory-cell inventory-actions-cell"
                   data-label={translate("dashboard.actions")}
                 >
                   <ProductActions
-                    editHref={`/dashboard/products/${product.id}`}
+                    editHref={editHref(product.id)}
                     id={product.id}
+                    inventoryListPath={inventoryListPath}
                     isActive={product.is_active}
+                    isAvailable={product.is_available}
                     productHref={`/catalogo/${product.slug}`}
                   />
                 </td>

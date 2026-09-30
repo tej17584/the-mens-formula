@@ -10,6 +10,17 @@ export type DashboardProductsSearchParams = {
   maxDistributor?: string;
 };
 
+const inventoryFilterKeys = [
+  "q",
+  "brand",
+  "category",
+  "visible",
+  "minPrice",
+  "maxPrice",
+  "minDistributor",
+  "maxDistributor",
+] as const;
+
 export function stringParam(value: string | string[] | undefined) {
   return typeof value === "string" ? value : undefined;
 }
@@ -42,4 +53,32 @@ export function buildDashboardProductsPath(
   }
   next.delete("page");
   return next.size ? `${pathname}?${next}` : pathname;
+}
+
+export function dashboardProductsListPath(
+  raw: Record<string, string | string[] | undefined>,
+  options?: { status?: string; page?: number },
+) {
+  const params = new URLSearchParams();
+  for (const key of inventoryFilterKeys) {
+    const value = stringParam(raw[key]);
+    if (value) params.set(key, value);
+  }
+  if (options?.page && options.page > 1) {
+    params.set("page", String(options.page));
+  }
+  if (options?.status) params.set("status", options.status);
+  const query = params.toString();
+  return `/dashboard/products${query ? `?${query}` : ""}`;
+}
+
+export function withDashboardFlashStatus(
+  listPath: string,
+  status: string,
+) {
+  const [pathname, search = ""] = listPath.split("?");
+  const params = new URLSearchParams(search);
+  params.set("status", status);
+  const query = params.toString();
+  return `${pathname}?${query}`;
 }

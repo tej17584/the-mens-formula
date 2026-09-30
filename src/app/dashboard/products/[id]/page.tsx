@@ -5,11 +5,22 @@ import { translate } from "@/i18n";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getDashboardProduct, getDashboardReferences } from "@/lib/dashboard";
 
+type PageProps = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
 export default async function EditProductPage({
   params,
-}: PageProps<"/dashboard/products/[id]">) {
+  searchParams,
+}: PageProps) {
   await requireAdmin();
   const { id } = await params;
+  const query = await searchParams;
+  const returnTo =
+    typeof query.returnTo === "string" && query.returnTo.startsWith("/dashboard")
+      ? query.returnTo
+      : "/dashboard/products";
   const [product, references] = await Promise.all([
     getDashboardProduct(id),
     getDashboardReferences(),
@@ -25,6 +36,7 @@ export default async function EditProductPage({
       <ProductForm
         brands={references.brands}
         categories={references.categories}
+        inventoryListPath={returnTo}
         product={product}
       />
     </DashboardLayout>

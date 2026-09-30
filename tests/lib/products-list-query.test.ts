@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   buildDashboardProductsPath,
+  dashboardProductsListPath,
   parseDashboardProductsSearchParams,
+  withDashboardFlashStatus,
 } from "@/lib/dashboard/products-list-query";
 
 describe("parseDashboardProductsSearchParams", () => {
@@ -37,6 +39,22 @@ describe("parseDashboardProductsSearchParams", () => {
       q: "van",
       visible: "true",
     });
+  });
+});
+
+describe("dashboardProductsListPath", () => {
+  it("preserves inventory filters and page", () => {
+    expect(
+      dashboardProductsListPath({ q: "Pomade", status: "updated" }, { page: 2 }),
+    ).toBe("/dashboard/products?q=Pomade&page=2");
+  });
+});
+
+describe("withDashboardFlashStatus", () => {
+  it("adds status without dropping filters", () => {
+    expect(
+      withDashboardFlashStatus("/dashboard/products?q=Pomade", "visibility"),
+    ).toBe("/dashboard/products?q=Pomade&status=visibility");
   });
 });
 

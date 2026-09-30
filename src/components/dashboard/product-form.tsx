@@ -10,6 +10,9 @@ import {
   useTransition,
 } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { withDashboardFlashStatus } from "@/lib/dashboard/products-list-query";
 import {
   createProductAction,
   updateProductAction,
@@ -45,10 +48,12 @@ const maxUploadBytes = 5 * 1024 * 1024;
 export function ProductForm({
   brands,
   categories,
+  inventoryListPath = "/dashboard/products",
   product,
 }: {
   brands: Option[];
   categories: Option[];
+  inventoryListPath?: string;
   product?: ProductValues;
 }) {
   const t = useTranslations();
@@ -81,8 +86,14 @@ export function ProductForm({
     [previews],
   );
   useEffect(() => {
-    if (state.success) router.push("/dashboard/products");
-  }, [state.success, router]);
+    if (!state.success) return;
+    if (product) {
+      toast.success(t("dashboard.flashProductUpdated"));
+      router.refresh();
+      return;
+    }
+    router.push(withDashboardFlashStatus(inventoryListPath, "created"));
+  }, [state.success, product, router, inventoryListPath, t]);
 
   const syncFiles = (nextFiles: File[]) => {
     setFiles(nextFiles);
@@ -382,6 +393,7 @@ export function ProductForm({
       <section className="dashboard-form-section dashboard-visibility-section">
         <header>
           <h2>{t("dashboard.visibilitySection")}</h2>
+          <p>{t("dashboard.visibilitySectionHelp")}</p>
         </header>
         <div className="dashboard-switches">
           <label>
@@ -391,6 +403,7 @@ export function ProductForm({
               defaultChecked={product?.is_available ?? true}
             />{" "}
             {t("dashboard.availability")}
+            <small>{t("dashboard.availabilityHelp")}</small>
           </label>
           <label>
             <input
@@ -399,13 +412,19 @@ export function ProductForm({
               defaultChecked={product?.is_active ?? true}
             />{" "}
             {t("dashboard.visible")}
+            <small>{t("dashboard.visibilityHelp")}</small>
           </label>
         </div>
       </section>
       {state.error ? (
-        <p className="form-error" role="alert">
-          {state.error}
-        </p>
+        <Alert variant="destructive" className="dashboard-form-alert">
+          <AlertDescription>{state.error}</AlertDescription>
+        </Alert>
+      ) : null}
+      {state.success && product ? (
+        <Alert className="dashboard-form-alert">
+          <AlertDescription>{t("dashboard.flashProductUpdated")}</AlertDescription>
+        </Alert>
       ) : null}
       <button
         className="button button-primary"
