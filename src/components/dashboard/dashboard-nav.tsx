@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOutDashboard } from "@/actions/auth";
@@ -76,6 +76,12 @@ export function DashboardNav() {
       icon: "settings",
     },
   ];
+
+  useEffect(() => {
+    document.body.classList.toggle("dashboard-nav-locked", open);
+    return () => document.body.classList.remove("dashboard-nav-locked");
+  }, [open]);
+
   return (
     <>
       <button
@@ -99,13 +105,11 @@ export function DashboardNav() {
         />
       ) : null}
       <aside
-        className={["dashboard-nav", open && "is-open"]
-          .filter(Boolean)
-          .join(" ")}
+        className={["dashboard-nav", open && "is-open"].filter(Boolean).join(" ")}
         id="dashboard-navigation"
       >
         <div className="dashboard-nav-brand">
-          <BrandLogo />
+          <BrandLogo inverted />
           <button
             aria-label={t("dashboard.closeNavigation")}
             className="dashboard-nav-close"
@@ -135,13 +139,15 @@ export function DashboardNav() {
             );
           })}
         </nav>
-        <Link className="dashboard-back-link" href="/catalogo">
-          {t("common.backToCatalog")}
-          <span aria-hidden="true">→</span>
-        </Link>
-        <form action={signOutDashboard} className="dashboard-sign-out">
-          <button type="submit">{t("dashboard.signOut")}</button>
-        </form>
+        <div className="dashboard-nav-footer">
+          <Link className="dashboard-back-link" href="/catalogo">
+            {t("common.backToCatalog")}
+            <span aria-hidden="true">→</span>
+          </Link>
+          <form action={signOutDashboard} className="dashboard-sign-out">
+            <button type="submit">{t("dashboard.signOut")}</button>
+          </form>
+        </div>
       </aside>
     </>
   );

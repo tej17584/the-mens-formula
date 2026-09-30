@@ -4,6 +4,8 @@ import { SiteHeader } from "@/components/site-header";
 describe("SiteHeader", () => {
   it("renders the product name", () => {
     render(<SiteHeader />);
-    expect(screen.getByText("THE MEN'S FORMULA")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /The Men's Formula, inicio/i }),
+    ).toBeInTheDocument();
   });
 });

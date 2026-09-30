@@ -9,7 +9,7 @@ export default async function DashboardSettingsPage() {
   const settings = await getDashboardSiteSettings();
   return (
     <DashboardLayout>
-      <header className="dashboard-heading dashboard-page-header">
+      <header className="dashboard-heading dashboard-page-header dashboard-readable">
         <div>
           <p className="eyebrow">{translate("dashboard.title")}</p>
           <h1>{translate("dashboard.settings")}</h1>

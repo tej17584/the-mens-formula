@@ -1,10 +1,23 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import {
   updateSiteSettings,
   type SettingsActionState,
 } from "@/actions/dashboard-settings";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useTranslations } from "@/i18n";
 
 const initialState: SettingsActionState = {};
@@ -17,48 +30,63 @@ export function DashboardSettingsForm({
   whatsappProductMessage: string;
 }) {
   const t = useTranslations();
+  const notified = useRef(false);
   const [state, action, pending] = useActionState(
     updateSiteSettings,
     initialState,
   );
+  useEffect(() => {
+    if (!state.success) {
+      notified.current = false;
+      return;
+    }
+    if (notified.current) return;
+    notified.current = true;
+    toast.success(t("dashboard.settingsSaved"), {
+      id: "dashboard-settings-saved",
+    });
+  }, [state.success, t]);
   return (
-    <form className="dashboard-product-form" action={action}>
-      <label>
-        <span>{t("dashboard.whatsappNumber")}</span>
-        <input
-          name="whatsappNumber"
-          inputMode="tel"
-          required
-          defaultValue={whatsappNumber ?? ""}
-        />
-        <small>{t("dashboard.whatsappHelp")}</small>
-      </label>
-      <label>
-        <span>{t("dashboard.whatsappMessage")}</span>
-        <textarea
-          name="whatsappProductMessage"
-          rows={5}
-          required
-          defaultValue={whatsappProductMessage}
-        />
-      </label>
-      {state.error ? (
-        <p className="form-error" role="alert">
-          {state.error}
-        </p>
-      ) : null}
-      {state.success ? (
-        <p className="form-success" role="status">
-          {t("dashboard.settingsSaved")}
-        </p>
-      ) : null}
-      <button
-        className="button button-primary"
-        disabled={pending}
-        type="submit"
-      >
-        {t("dashboard.saveSettings")}
-      </button>
-    </form>
+    <Card className="dashboard-settings-card dashboard-readable">
+      <CardHeader>
+        <CardTitle>{t("dashboard.settings")}</CardTitle>
+        <CardDescription>{t("dashboard.settingsSubtitle")}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form className="dashboard-settings-form" action={action}>
+          <div className="dashboard-settings-field">
+            <Label htmlFor="whatsappNumber">{t("dashboard.whatsappNumber")}</Label>
+            <Input
+              id="whatsappNumber"
+              name="whatsappNumber"
+              inputMode="tel"
+              required
+              defaultValue={whatsappNumber ?? ""}
+            />
+            <p className="dashboard-field-help">{t("dashboard.whatsappHelp")}</p>
+          </div>
+          <div className="dashboard-settings-field">
+            <Label htmlFor="whatsappProductMessage">
+              {t("dashboard.whatsappMessage")}
+            </Label>
+            <Textarea
+              id="whatsappProductMessage"
+              name="whatsappProductMessage"
+              rows={5}
+              required
+              defaultValue={whatsappProductMessage}
+            />
+          </div>
+          {state.error ? (
+            <Alert variant="destructive">
+              <AlertDescription>{state.error}</AlertDescription>
+            </Alert>
+          ) : null}
+          <Button disabled={pending} type="submit">
+            {t("dashboard.saveSettings")}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

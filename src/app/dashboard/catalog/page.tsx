@@ -9,7 +9,7 @@ export default async function DashboardCatalogPage() {
   const references = await getDashboardReferences();
   return (
     <DashboardLayout>
-      <header className="dashboard-heading dashboard-page-header">
+      <header className="dashboard-heading dashboard-page-header dashboard-readable">
         <div>
           <p className="eyebrow">{translate("dashboard.title")}</p>
           <h1>{translate("dashboard.catalogManagement")}</h1>

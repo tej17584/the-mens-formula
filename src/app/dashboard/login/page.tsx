@@ -14,7 +14,6 @@ export default async function DashboardLoginPage({ searchParams }: PageProps) {
     <main className="dashboard-login">
       <BrandLogo />
       <p className="eyebrow">{translate("dashboard.title")}</p>
-      <h1>{translate("dashboard.loginTitle")}</h1>
       {sessionExpired ? (
         <p className="form-error" role="status">
           {translate("dashboard.sessionExpired")}

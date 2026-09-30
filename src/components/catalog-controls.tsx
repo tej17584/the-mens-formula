@@ -1,7 +1,22 @@
 "use client";
 
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { ReactNode } from "react";
+import { SearchIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { useTranslations } from "@/i18n";
 
 type Option = { slug: string; name: string };
@@ -19,6 +34,7 @@ export function CatalogControls({
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
+  const [q, setQ] = useState(params.get("q") ?? "");
   const update = (updates: Record<string, string | null>, resetPage = true) => {
     const next = new URLSearchParams(params.toString());
     Object.entries(updates).forEach(([key, value]) => {
@@ -30,9 +46,19 @@ export function CatalogControls({
       scroll: false,
     });
   };
+
+  useEffect(() => {
+    setQ(params.get("q") ?? "");
+  }, [params]);
+
+  const search = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    update({ q: q.trim() || null });
+  };
+
   const filters = (
     <>
-      <label className="select-field">
+      <label className="select-field catalog-filter-field">
         <span>{t("catalog.category")}</span>
         <select
           value={params.get("categoria") ?? "all"}
@@ -46,7 +72,7 @@ export function CatalogControls({
           ))}
         </select>
       </label>
-      <label className="select-field">
+      <label className="select-field catalog-filter-field">
         <span>{t("catalog.brand")}</span>
         <select
           value={params.get("marca") ?? "all"}
@@ -60,24 +86,35 @@ export function CatalogControls({
           ))}
         </select>
       </label>
-      <button
+      <Button
         className="clear-filters"
         type="button"
+        variant="ghost"
         onClick={() =>
           update({ q: null, categoria: null, marca: null, sort: null })
         }
       >
         {t("catalog.clearFilters")}
-      </button>
+      </Button>
     </>
   );
-  const hasFilters = Boolean(params.get("categoria") || params.get("marca"));
+  const hasFilters = Boolean(
+    params.get("categoria") || params.get("marca") || params.get("q"),
+  );
+  const filterPanel = (
+    <Card className="catalog-filter-panel" size="sm">
+      <CardHeader>
+        <CardTitle className="sidebar-title">{t("catalog.filters")}</CardTitle>
+        {hasFilters ? (
+          <Badge variant="secondary">{t("catalog.filtersActive")}</Badge>
+        ) : null}
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">{filters}</CardContent>
+    </Card>
+  );
   return (
-    <div className="catalog-layout">
-      <aside className="catalog-sidebar">
-        <p className="sidebar-title">{t("catalog.filters")}</p>
-        {filters}
-      </aside>
+    <div className="catalog-layout catalog-storefront">
+      <aside className="catalog-sidebar">{filterPanel}</aside>
       <details className="mobile-filters">
         <summary>
           {t("catalog.filters")}{" "}
@@ -86,16 +123,33 @@ export function CatalogControls({
         <div>{filters}</div>
       </details>
       <section className="catalog-results">
-        <div className="catalog-toolbar">
-          <label className="search-field">
-            <span className="sr-only">{t("common.search")}</span>
-            <input
-              defaultValue={params.get("q") ?? ""}
-              onChange={(event) => update({ q: event.target.value })}
-              placeholder={t("catalog.searchPlaceholder")}
-              type="search"
-            />
-          </label>
+        <div className="catalog-toolbar catalog-toolbar-panel">
+          <form className="search-field" onSubmit={search}>
+            <InputGroup
+              className="catalog-search-group shadow-none has-[[data-slot=input-group-control]:focus-visible]:!border-[var(--color-brand)] has-[[data-slot=input-group-control]:focus-visible]:!ring-0 has-[[data-slot=input-group-control]:focus-visible]:!shadow-none"
+            >
+              <InputGroupAddon>
+                <SearchIcon />
+              </InputGroupAddon>
+              <InputGroupInput
+                aria-label={t("common.search")}
+                onChange={(event) => setQ(event.target.value)}
+                placeholder={t("catalog.searchPlaceholder")}
+                type="search"
+                value={q}
+              />
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  className="catalog-search-submit"
+                  type="submit"
+                  variant="secondary"
+                  size="sm"
+                >
+                  {t("common.search")}
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+          </form>
           <label className="sort-field">
             <span className="sr-only">{t("catalog.sort")}</span>
             <select

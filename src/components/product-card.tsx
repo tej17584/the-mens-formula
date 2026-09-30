@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { translate } from "@/i18n";
 import type { CatalogProduct } from "@/lib/catalog";
 import { formatPrice } from "@/lib/site-config";
@@ -44,18 +46,29 @@ export function ProductCard({
         <h3>
           <Link href={`/catalogo/${product.slug}`}>{product.name}</Link>
         </h3>
+        {!product.is_available ? (
+          <Badge variant="secondary">{translate("catalog.unavailable")}</Badge>
+        ) : null}
         <div className="card-price">
           <span>{translate("catalog.unitPrice")}</span>
           <strong>{formatPrice(product.consumer_price)}</strong>
         </div>
         {hasVolumePrices ? (
-          <span className="volume-badge">
+          <Badge className="product-volume-badge" variant="outline">
             {translate("catalog.volumePrices")}
-          </span>
+          </Badge>
         ) : null}
-        <Link className="text-link" href={`/catalogo/${product.slug}`}>
-          {translate("catalog.viewProduct")} <span aria-hidden="true">→</span>
-        </Link>
+        <Button
+          className="text-link product-view"
+          nativeButton={false}
+          render={<Link href={`/catalogo/${product.slug}`} />}
+          variant="link"
+        >
+          {translate("catalog.viewProduct")}{" "}
+          <span aria-hidden="true" data-icon="inline-end">
+            →
+          </span>
+        </Button>
       </div>
     </article>
   );

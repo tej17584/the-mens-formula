@@ -1,6 +1,25 @@
 import Link from "next/link";
+import { SearchIcon } from "lucide-react";
 import { CatalogControls } from "@/components/catalog-controls";
 import { ProductCard } from "@/components/product-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { translate } from "@/i18n";
 import type { CatalogProduct } from "@/lib/catalog";
 
@@ -33,14 +52,18 @@ export function ProductGrid({
   };
   return (
     <CatalogControls categories={categories} brands={brands}>
-      <p className="catalog-count">
-        {total}{" "}
-        {total === 1
-          ? translate("catalog.product")
-          : translate("catalog.products")}{" "}
-        · {translate("catalog.page")} {page} {translate("catalog.of")}{" "}
-        {totalPages}
-      </p>
+      <div className="catalog-meta-row">
+        <Badge variant="secondary">
+          {total}{" "}
+          {total === 1
+            ? translate("catalog.product")
+            : translate("catalog.products")}
+        </Badge>
+        <p className="catalog-count">
+          {translate("catalog.page")} {page} {translate("catalog.of")}{" "}
+          {totalPages}
+        </p>
+      </div>
       {products.length ? (
         <div className="product-grid">
           {products.map((product, index) => (
@@ -52,30 +75,52 @@ export function ProductGrid({
           ))}
         </div>
       ) : (
-        <div className="empty-state">
-          <p>{translate("common.noResults")}</p>
-          <Link href="/catalogo">{translate("catalog.clearFilters")}</Link>
-        </div>
+        <Empty className="catalog-empty">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <SearchIcon />
+            </EmptyMedia>
+            <EmptyTitle>{translate("common.noResults")}</EmptyTitle>
+            <EmptyDescription>
+              {translate("catalog.noResultsHint")}
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button nativeButton={false} render={<Link href="/catalogo" />}>
+              {translate("catalog.clearFilters")}
+            </Button>
+          </EmptyContent>
+        </Empty>
       )}
-      <nav className="pagination" aria-label={translate("catalog.page")}>
-        <Link
-          aria-disabled={page <= 1}
-          className={page <= 1 ? "disabled" : ""}
-          href={hrefForPage(Math.max(1, page - 1))}
-        >
-          {translate("catalog.previous")}
-        </Link>
-        <span>
-          {page} {translate("catalog.of")} {totalPages}
-        </span>
-        <Link
-          aria-disabled={page >= totalPages}
-          className={page >= totalPages ? "disabled" : ""}
-          href={hrefForPage(Math.min(totalPages, page + 1))}
-        >
-          {translate("catalog.next")}
-        </Link>
-      </nav>
+      <Pagination className="catalog-pagination" aria-label={translate("catalog.page")}>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              aria-disabled={page <= 1}
+              aria-label={translate("catalog.previous")}
+              className={page <= 1 ? "pointer-events-none opacity-50" : undefined}
+              href={hrefForPage(Math.max(1, page - 1))}
+              text={translate("catalog.previous")}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href={hrefForPage(page)} isActive>
+              {page}
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              aria-disabled={page >= totalPages}
+              aria-label={translate("catalog.next")}
+              className={
+                page >= totalPages ? "pointer-events-none opacity-50" : undefined
+              }
+              href={hrefForPage(Math.min(totalPages, page + 1))}
+              text={translate("catalog.next")}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </CatalogControls>
   );
 }

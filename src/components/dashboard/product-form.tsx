@@ -1,8 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useActionState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Switch } from "@/components/ui/switch";
+import { withDashboardFlashStatus } from "@/lib/dashboard/products-list-query";
+import {
+  capDetailLines,
+  MAX_DETAIL_POINTS,
+} from "@/lib/dashboard/product-form-values";
 import {
   createProductAction,
   updateProductAction,
@@ -38,10 +53,12 @@ const maxUploadBytes = 5 * 1024 * 1024;
 export function ProductForm({
   brands,
   categories,
+  inventoryListPath = "/dashboard/products",
   product,
 }: {
   brands: Option[];
   categories: Option[];
+  inventoryListPath?: string;
   product?: ProductValues;
 }) {
   const t = useTranslations();
@@ -55,6 +72,10 @@ export function ProductForm({
     ? updateProductAction.bind(null, product.id)
     : createProductAction;
   const [state, formAction, pending] = useActionState(action, initialState);
+  const [, startTransition] = useTransition();
+  const notified = useRef(false);
+  const [isAvailable, setIsAvailable] = useState(product?.is_available ?? true);
+  const [isActive, setIsActive] = useState(product?.is_active ?? true);
   const remainingImages =
     product?.images.filter((image) => !removed.includes(image.id)) ?? [];
   const totalImages = remainingImages.length + files.length;
@@ -73,8 +94,20 @@ export function ProductForm({
     [previews],
   );
   useEffect(() => {
-    if (state.success) router.push("/dashboard/products");
-  }, [state.success, router]);
+    if (!state.success) {
+      notified.current = false;
+      return;
+    }
+    if (notified.current) return;
+    notified.current = true;
+    if (product) {
+      toast.success(t("dashboard.flashProductUpdated"), {
+        id: "dashboard-product-updated",
+      });
+      return;
+    }
+    router.push(withDashboardFlashStatus(inventoryListPath, "created"));
+  }, [state.success, product, router, inventoryListPath, t]);
 
   const syncFiles = (nextFiles: File[]) => {
     setFiles(nextFiles);
@@ -118,8 +151,18 @@ export function ProductForm({
     addImages(selected);
   };
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    formData.delete("images");
+    files.forEach((file) => formData.append("images", file));
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
   return (
-    <form className="dashboard-product-form" action={formAction}>
+    <form className="dashboard-product-form" onSubmit={handleSubmit}>
       <section className="dashboard-form-section">
         <header>
           <h2>{t("dashboard.productInformation")}</h2>
@@ -237,9 +280,16 @@ export function ProductForm({
           <span>{t("dashboard.details")}</span>
           <textarea
             name="details"
-            rows={5}
-            defaultValue={product?.detail_points.join("\n") ?? ""}
+            rows={MAX_DETAIL_POINTS}
+            defaultValue={
+              product?.detail_points.slice(0, MAX_DETAIL_POINTS).join("\n") ?? ""
+            }
+            onChange={(event) => {
+              const next = capDetailLines(event.target.value);
+              if (next !== event.target.value) event.target.value = next;
+            }}
           />
+          <span className="dashboard-field-help">{t("dashboard.detailsHelp")}</span>
         </label>
       </section>
       <section className="dashboard-form-section">
@@ -364,30 +414,43 @@ export function ProductForm({
       <section className="dashboard-form-section dashboard-visibility-section">
         <header>
           <h2>{t("dashboard.visibilitySection")}</h2>
+          <p>{t("dashboard.visibilitySectionHelp")}</p>
         </header>
-        <div className="dashboard-switches">
-          <label>
+        <div className="dashboard-toggle-grid">
+          <label className="dashboard-toggle-card">
+            <span>
+              <strong>{t("dashboard.availability")}</strong>
+              <small>{t("dashboard.availabilityHelp")}</small>
+            </span>
             <input
+              type="hidden"
               name="isAvailable"
-              type="checkbox"
-              defaultChecked={product?.is_available ?? true}
-            />{" "}
-            {t("dashboard.availability")}
+              value={isAvailable ? "on" : ""}
+            />
+            <Switch
+              checked={isAvailable}
+              onCheckedChange={setIsAvailable}
+              aria-label={t("dashboard.availability")}
+            />
           </label>
-          <label>
-            <input
-              name="isActive"
-              type="checkbox"
-              defaultChecked={product?.is_active ?? true}
-            />{" "}
-            {t("dashboard.visible")}
+          <label className="dashboard-toggle-card">
+            <span>
+              <strong>{t("dashboard.visible")}</strong>
+              <small>{t("dashboard.visibilityHelp")}</small>
+            </span>
+            <input type="hidden" name="isActive" value={isActive ? "on" : ""} />
+            <Switch
+              checked={isActive}
+              onCheckedChange={setIsActive}
+              aria-label={t("dashboard.visible")}
+            />
           </label>
         </div>
       </section>
       {state.error ? (
-        <p className="form-error" role="alert">
-          {state.error}
-        </p>
+        <Alert variant="destructive" className="dashboard-form-alert">
+          <AlertDescription>{state.error}</AlertDescription>
+        </Alert>
       ) : null}
       <button
         className="button button-primary"

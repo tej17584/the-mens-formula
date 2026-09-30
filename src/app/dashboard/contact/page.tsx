@@ -1,9 +1,32 @@
 import Link from "next/link";
-import { markContactReadAction } from "@/actions/dashboard-contact";
+import { InboxIcon } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+import { DashboardMessageCard } from "@/components/dashboard/dashboard-message-card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { translate } from "@/i18n";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getContactMessages } from "@/lib/dashboard";
+
+function contactHref(page: number, status?: string) {
+  const params = new URLSearchParams();
+  if (status) params.set("status", status);
+  if (page > 1) params.set("page", String(page));
+  return `/dashboard/contact${params.size ? `?${params}` : ""}`;
+}
 
 export default async function DashboardContactPage({
   searchParams,
@@ -17,92 +40,114 @@ export default async function DashboardContactPage({
       : undefined;
   const result = await getContactMessages(page, status);
   const totalPages = Math.max(1, Math.ceil(result.total / result.pageSize));
+  const filters = [
+    {
+      href: "/dashboard/contact",
+      label: translate("dashboard.allStatuses"),
+      active: !status,
+    },
+    {
+      href: "/dashboard/contact?status=new",
+      label: translate("dashboard.new"),
+      active: status === "new",
+    },
+    {
+      href: "/dashboard/contact?status=read",
+      label: translate("dashboard.read"),
+      active: status === "read",
+    },
+  ];
   return (
     <DashboardLayout>
-      <header className="dashboard-heading dashboard-heading-row dashboard-page-header">
+      <header className="dashboard-heading dashboard-heading-row">
         <div>
           <p className="eyebrow">{translate("dashboard.title")}</p>
           <h1>{translate("dashboard.messages")}</h1>
           <p>{translate("dashboard.messagesSubtitle")}</p>
         </div>
-        <nav className="dashboard-status-links">
-          <Link href="/dashboard/contact">
-            {translate("dashboard.allStatuses")}
-          </Link>
-          <Link href="/dashboard/contact?status=new">
-            {translate("dashboard.new")}
-          </Link>
-          <Link href="/dashboard/contact?status=read">
-            {translate("dashboard.read")}
-          </Link>
-        </nav>
       </header>
-      <div className="dashboard-messages">
+      <div className="dashboard-inbox-toolbar">
+        <nav
+          className="dashboard-status-links"
+          aria-label={translate("dashboard.messageStatus")}
+        >
+          {filters.map((filter) => (
+            <Link
+              className={filter.active ? "is-active" : undefined}
+              href={filter.href}
+              key={filter.href}
+            >
+              {filter.label}
+            </Link>
+          ))}
+        </nav>
+        <p className="dashboard-result-count">
+          {result.total} {translate("dashboard.messages").toLowerCase()}
+        </p>
+      </div>
+      <div className="dashboard-messages" role="list">
         {result.messages.map((message) => (
-          <article
+          <DashboardMessageCard
             key={message.id}
-            className={`dashboard-message${message.status === "new" ? "is-new" : ""}`}
-          >
-            <header>
-              <div>
-                <strong>{message.name}</strong>
-                <a href={`mailto:${message.contact}`}>{message.contact}</a>
-              </div>
-              <span
-                className={`status-pill ${message.status === "new" ? "active" : ""}`}
-              >
-                {message.status === "new"
-                  ? translate("dashboard.new")
-                  : translate("dashboard.read")}
-              </span>
-            </header>
-            <p>{message.message}</p>
-            {message.product ? (
-              <Link
-                className="text-link"
-                href={`/catalogo/${message.product.slug}`}
-              >
-                {message.product.name}
-              </Link>
-            ) : null}
-            <footer>
-              <time dateTime={message.created_at}>
-                {new Intl.DateTimeFormat("es-GT", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                }).format(new Date(message.created_at))}
-              </time>
-              {message.status === "new" ? (
-                <form action={markContactReadAction.bind(null, message.id)}>
-                  <button type="submit">
-                    {translate("dashboard.markRead")}
-                  </button>
-                </form>
-              ) : null}
-            </footer>
-          </article>
+            message={{
+              id: message.id,
+              name: message.name,
+              contact: message.contact,
+              message: message.message,
+              status: message.status,
+              created_at: message.created_at,
+              product: message.product,
+            }}
+          />
         ))}
       </div>
       {result.messages.length === 0 ? (
-        <p className="empty-state">{translate("dashboard.noMessages")}</p>
+        <Empty className="dashboard-empty">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <InboxIcon />
+            </EmptyMedia>
+            <EmptyTitle>{translate("dashboard.noMessages")}</EmptyTitle>
+            <EmptyDescription>
+              {translate("dashboard.messagesSubtitle")}
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : null}
-      <nav className="pagination" aria-label={translate("catalog.page")}>
-        <Link
-          className={page <= 1 ? "disabled" : ""}
-          href={`/dashboard/contact?page=${Math.max(1, page - 1)}${status ? `&status=${status}` : ""}`}
-        >
-          {translate("catalog.previous")}
-        </Link>
-        <span>
-          {page} {translate("catalog.of")} {totalPages}
-        </span>
-        <Link
-          className={page >= totalPages ? "disabled" : ""}
-          href={`/dashboard/contact?page=${Math.min(totalPages, page + 1)}${status ? `&status=${status}` : ""}`}
-        >
-          {translate("catalog.next")}
-        </Link>
-      </nav>
+      <Pagination aria-label={translate("catalog.page")}>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              aria-disabled={page <= 1}
+              aria-label={translate("catalog.previous")}
+              className={page <= 1 ? "pointer-events-none opacity-50" : undefined}
+              href={contactHref(Math.max(1, page - 1), status)}
+              text={translate("catalog.previous")}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href={contactHref(page, status)} isActive>
+              {page}
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <span className="px-2 text-sm text-muted-foreground">
+              {translate("catalog.of")} {totalPages}
+            </span>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              aria-disabled={page >= totalPages}
+              aria-label={translate("catalog.next")}
+              className={
+                page >= totalPages ? "pointer-events-none opacity-50" : undefined
+              }
+              href={contactHref(Math.min(totalPages, page + 1), status)}
+              text={translate("catalog.next")}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </DashboardLayout>
   );
 }

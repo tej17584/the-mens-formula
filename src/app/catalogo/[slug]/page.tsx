@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { ProductGallery } from "@/components/product-gallery";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -12,6 +14,7 @@ import {
   getRelatedProducts,
   getSiteSettings,
 } from "@/lib/catalog";
+import { MAX_DETAIL_POINTS } from "@/lib/dashboard/product-form-values";
 import { formatPrice, siteConfig } from "@/lib/site-config";
 
 type Props = PageProps<"/catalogo/[slug]">;
@@ -85,6 +88,17 @@ export default async function ProductPage({ params }: Props) {
               · {product.category.name}
             </p>
             <h1>{product.name}</h1>
+            {!product.is_available ? (
+              <Badge variant="secondary">{translate("catalog.unavailable")}</Badge>
+            ) : null}
+            {!product.is_available ? (
+              <Alert>
+                <AlertTitle>{translate("catalog.unavailable")}</AlertTitle>
+                <AlertDescription>
+                  {translate("catalog.unavailableNotice")}
+                </AlertDescription>
+              </Alert>
+            ) : null}
             {product.description ? (
               <p className="product-description">{product.description}</p>
             ) : null}
@@ -104,7 +118,7 @@ export default async function ProductPage({ params }: Props) {
               <div className="detail-points">
                 <h2>{translate("product.details")}</h2>
                 <ul>
-                  {product.detail_points.map((point) => (
+                  {product.detail_points.slice(0, MAX_DETAIL_POINTS).map((point) => (
                     <li key={point}>{point}</li>
                   ))}
                 </ul>

@@ -186,8 +186,10 @@ export async function getDashboardProduct(id: string) {
   return data ?? null;
 }
 
+export const CONTACT_MESSAGES_PAGE_SIZE = 20;
+
 export async function getContactMessages(page = 1, status?: string) {
-  const pageSize = 20;
+  const pageSize = CONTACT_MESSAGES_PAGE_SIZE;
   let query = createAdminClient()
     .from("contact_messages")
     .select(
