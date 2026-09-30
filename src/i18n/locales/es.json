@@ -18,7 +18,8 @@
     "contact": "Contacto",
     "catalogCta": "Ver catálogo",
     "openMenu": "Abrir menú",
-    "menuTitle": "Menú"
+    "menuTitle": "Menú",
+    "menuDescription": "Navega por el sitio"
   },
   "footer": {
     "statement": "Herramientas y productos que acompañan cada buen corte.",
@@ -52,7 +53,8 @@
     "volumePricesDetail": "Precios especiales al comprar 3, 6 unidades o caja completa.",
     "statProductsKicker": "Inventario",
     "statBrandsKicker": "Portafolio",
-    "statVolumeKicker": "Mayoreo"
+    "statVolumeKicker": "Mayoreo",
+    "volumeTierBox": "Caja"
   },
   "catalog": {
     "metaTitle": "Catálogo",

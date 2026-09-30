@@ -28,36 +28,36 @@ export function ContactForm() {
       </CardHeader>
       <CardContent>
         <form className="contact-form" action={formAction}>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             <Label className="storefront-label" htmlFor="contact-name">
               {t("contact.name")}
             </Label>
             <Input
-              className="storefront-input"
+              className="storefront-input text-base md:text-base"
               id="contact-name"
               required
               name="name"
               autoComplete="name"
             />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             <Label className="storefront-label" htmlFor="contact-channel">
               {t("contact.contact")}
             </Label>
             <Input
-              className="storefront-input"
+              className="storefront-input text-base md:text-base"
               id="contact-channel"
               required
               name="contact"
               autoComplete="email"
             />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             <Label className="storefront-label" htmlFor="contact-message">
               {t("contact.message")}
             </Label>
             <Textarea
-              className="storefront-textarea"
+              className="storefront-textarea text-base md:text-base"
               id="contact-message"
               required
               name="message"

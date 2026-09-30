@@ -93,7 +93,16 @@ export default async function Home() {
             <HomeStatCard
               kicker={translate("home.statVolumeKicker")}
               label={translate("home.volumePricesDetail")}
-              value={translate("home.volumePricesShort")}
+              value={
+                <>
+                  {translate("home.volumePricesShort")}
+                  <span className="home-stat-card-tiers">
+                    <span>3+</span>
+                    <span>6+</span>
+                    <span>{translate("home.volumeTierBox")}</span>
+                  </span>
+                </>
+              }
               variant="volume"
               wide
             />
