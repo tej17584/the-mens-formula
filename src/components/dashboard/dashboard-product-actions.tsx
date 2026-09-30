@@ -94,20 +94,20 @@ export function ProductActions({
       >
         {t("common.edit")}
       </Link>
-      <DropdownMenu>
+      <DropdownMenu modal>
         <DropdownMenuTrigger
           render={
             <Button
               variant="outline"
-              size="icon-sm"
-              className="cursor-pointer"
+              size="icon"
+              className="dashboard-more-trigger"
               aria-label={t("dashboard.moreActions")}
             >
               <MoreHorizontal />
             </Button>
           }
         />
-        <DropdownMenuContent align="end" className="min-w-52">
+        <DropdownMenuContent align="end" side="bottom" className="min-w-56">
           <DropdownMenuItem
             onClick={() => window.open(productHref, "_blank", "noopener")}
           >

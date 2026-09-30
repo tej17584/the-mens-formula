@@ -18,7 +18,11 @@ export default async function DashboardContactPage({
   const result = await getContactMessages(page, status);
   const totalPages = Math.max(1, Math.ceil(result.total / result.pageSize));
   const filters = [
-    { href: "/dashboard/contact", label: translate("dashboard.allStatuses"), active: !status },
+    {
+      href: "/dashboard/contact",
+      label: translate("dashboard.allStatuses"),
+      active: !status,
+    },
     {
       href: "/dashboard/contact?status=new",
       label: translate("dashboard.new"),
@@ -32,11 +36,18 @@ export default async function DashboardContactPage({
   ];
   return (
     <DashboardLayout>
-      <header className="dashboard-heading">
-        <p className="eyebrow">{translate("dashboard.title")}</p>
-        <h1>{translate("dashboard.messages")}</h1>
-        <p>{translate("dashboard.messagesSubtitle")}</p>
-        <nav className="dashboard-status-links" aria-label={translate("dashboard.messageStatus")}>
+      <header className="dashboard-heading dashboard-heading-row">
+        <div>
+          <p className="eyebrow">{translate("dashboard.title")}</p>
+          <h1>{translate("dashboard.messages")}</h1>
+          <p>{translate("dashboard.messagesSubtitle")}</p>
+        </div>
+      </header>
+      <div className="dashboard-inbox-toolbar">
+        <nav
+          className="dashboard-status-links"
+          aria-label={translate("dashboard.messageStatus")}
+        >
           {filters.map((filter) => (
             <Link
               className={filter.active ? "is-active" : undefined}
@@ -47,7 +58,10 @@ export default async function DashboardContactPage({
             </Link>
           ))}
         </nav>
-      </header>
+        <p className="dashboard-result-count">
+          {result.total} {translate("dashboard.messages").toLowerCase()}
+        </p>
+      </div>
       <div className="dashboard-messages">
         {result.messages.map((message) => (
           <DashboardMessageCard

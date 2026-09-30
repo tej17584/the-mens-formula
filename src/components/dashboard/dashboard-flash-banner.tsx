@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -33,14 +34,20 @@ export function DashboardFlashBanner() {
   const status = params.get("status");
   const message = flashMessage(status, t);
 
-  if (!message) return null;
-
-  const dismiss = () => {
+  const dismiss = useCallback(() => {
     router.replace(
       buildDashboardProductsPath("/dashboard/products", params, { status: "" }),
       { scroll: false },
     );
-  };
+  }, [params, router]);
+
+  useEffect(() => {
+    if (!status || !message) return;
+    const timer = window.setTimeout(dismiss, 4000);
+    return () => window.clearTimeout(timer);
+  }, [status, message, dismiss]);
+
+  if (!message) return null;
 
   return (
     <Alert className="dashboard-flash-banner">
@@ -48,7 +55,7 @@ export function DashboardFlashBanner() {
       <AlertDescription className="dashboard-flash-banner-body">
         <span>{message}</span>
         <Button type="button" variant="ghost" size="sm" onClick={dismiss}>
-          {t("common.cancel")}
+          {t("common.close")}
         </Button>
       </AlertDescription>
     </Alert>

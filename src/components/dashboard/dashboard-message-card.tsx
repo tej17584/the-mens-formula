@@ -58,18 +58,31 @@ export function DashboardMessageCard({ message }: { message: Message }) {
       if (result?.error) toast.error(t("dashboard.messageDeleteFailed"));
       else {
         setConfirmOpen(false);
-        toast.success(t("dashboard.messageDeleted"));
+        toast.success(t("dashboard.messageDeleted"), {
+          id: `message-deleted-${message.id}`,
+        });
         router.refresh();
       }
     });
 
   return (
     <>
-      <Card className={isNew ? "dashboard-message-card is-new" : "dashboard-message-card"}>
-        <CardHeader className="flex-row items-start justify-between gap-3">
-          <div>
+      <Card
+        className={
+          isNew ? "dashboard-message-card is-new" : "dashboard-message-card"
+        }
+      >
+        <CardHeader className="dashboard-message-header">
+          <div className="min-w-0">
             <CardTitle>{message.name}</CardTitle>
-            <a className="dashboard-message-contact" href={`mailto:${message.contact}`}>
+            <a
+              className="dashboard-message-contact"
+              href={
+                message.contact.includes("@")
+                  ? `mailto:${message.contact}`
+                  : `tel:${message.contact}`
+              }
+            >
               {message.contact}
             </a>
           </div>
@@ -81,7 +94,7 @@ export function DashboardMessageCard({ message }: { message: Message }) {
           <p className="dashboard-message-body">{message.message}</p>
           {message.product ? (
             <Link
-              className="text-link"
+              className="dashboard-message-product"
               href={`/catalogo/${message.product.slug}`}
             >
               {message.product.name}

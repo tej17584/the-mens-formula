@@ -249,7 +249,7 @@ export function DashboardProductFilters({
           </SheetTrigger>
           <SheetContent
             side="bottom"
-            className="dashboard-filter-sheet max-h-[85dvh] overflow-y-auto sm:max-w-none"
+            className="dashboard-filter-sheet max-h-[85dvh] overflow-y-auto sm:max-w-none md:max-w-3xl md:rounded-t-xl"
           >
             <SheetHeader>
               <SheetTitle>{t("dashboard.filters")}</SheetTitle>
@@ -270,16 +270,15 @@ export function DashboardProductFilters({
             </SheetFooter>
           </SheetContent>
         </Sheet>
-        {activeFilters.length ? (
-          <Button
-            variant="ghost"
-            type="button"
-            className="dashboard-toolbar-clear"
-            onClick={clear}
-          >
-            {t("catalog.clearFilters")}
-          </Button>
-        ) : null}
+        <Button
+          variant="ghost"
+          type="button"
+          className="dashboard-toolbar-clear"
+          disabled={!activeFilters.length && !q}
+          onClick={clear}
+        >
+          {t("catalog.clearFilters")}
+        </Button>
         <span className="dashboard-result-count">
           {resultCount} {t("catalog.products")}
         </span>

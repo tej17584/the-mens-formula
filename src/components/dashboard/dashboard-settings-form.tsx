@@ -42,7 +42,9 @@ export function DashboardSettingsForm({
     }
     if (notified.current) return;
     notified.current = true;
-    toast.success(t("dashboard.settingsSaved"));
+    toast.success(t("dashboard.settingsSaved"), {
+      id: "dashboard-settings-saved",
+    });
   }, [state.success, t]);
   return (
     <Card className="dashboard-settings-card">

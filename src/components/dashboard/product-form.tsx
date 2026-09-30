@@ -97,7 +97,9 @@ export function ProductForm({
     if (notified.current) return;
     notified.current = true;
     if (product) {
-      toast.success(t("dashboard.flashProductUpdated"));
+      toast.success(t("dashboard.flashProductUpdated"), {
+        id: "dashboard-product-updated",
+      });
       return;
     }
     router.push(withDashboardFlashStatus(inventoryListPath, "created"));

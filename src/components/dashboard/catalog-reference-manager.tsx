@@ -57,11 +57,15 @@ function ReferencePanel({
   useEffect(() => {
     if (state.success === "created") {
       form.current?.reset();
-      toast.success(t("dashboard.referenceCreated"));
+      toast.success(t("dashboard.referenceCreated"), {
+        id: "dashboard-reference-created",
+      });
     }
     if (state.success === "deleted") {
       setPendingDelete(null);
-      toast.success(t("dashboard.referenceDeleted"));
+      toast.success(t("dashboard.referenceDeleted"), {
+        id: "dashboard-reference-deleted",
+      });
     }
   }, [state.success, t]);
 
@@ -106,7 +110,7 @@ function ReferencePanel({
         <ul className="dashboard-reference-list">
           {values.map((value) => (
             <li key={value.id}>
-              <div>
+              <div className="dashboard-reference-copy">
                 <strong>{value.name}</strong>
                 <small>{value.slug}</small>
               </div>
