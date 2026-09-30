@@ -22,6 +22,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:local": "node --env-file=.env.local -e \"process.env.PLAYWRIGHT_BASE_URL='http://localhost:3000'; require('child_process').spawnSync(process.execPath,['./node_modules/@playwright/test/cli.js','test'],{stdio:'inherit',env:process.env})\"",
     "test:update-snapshots": "vitest run -u"
   },
   "dependencies": {

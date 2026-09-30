@@ -2,8 +2,12 @@
 
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
+import {
+  numberOrNull,
+  parseProductFormData,
+  productRowValues,
+} from "@/lib/dashboard/product-form-values";
 import { sentryErrorReport } from "@/lib/sentry";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -12,54 +16,12 @@ export type DashboardActionState = {
   error?: string;
 };
 
-const textField = z.string().trim();
 const maxUploadBytes = 5 * 1024 * 1024;
-const productSchema = z.object({
-  name: textField.min(2).max(160),
-  brandId: z.string().uuid(),
-  categoryId: z.string().uuid(),
-  description: textField.max(5000),
-  shortDescription: textField.max(280),
-  details: textField.max(5000),
-  stock: textField.max(32),
-  consumerPrice: textField.max(64),
-  distributorPrice: textField.max(64),
-  price3Plus: textField.max(64),
-  price6Plus: textField.max(64),
-  boxPrice: textField.max(64),
-  isAvailable: z.boolean(),
-  isActive: z.boolean(),
-});
 
 function message(): DashboardActionState {
   return {
     error: "No se pudo guardar. Revisa los campos e inténtalo otra vez.",
   };
-}
-
-function numberOrNull(value: string) {
-  if (!value.trim()) return null;
-  const number = Number(value);
-  return Number.isFinite(number) ? number : null;
-}
-
-function getProductInput(formData: FormData) {
-  return productSchema.safeParse({
-    name: formData.get("name"),
-    brandId: formData.get("brandId"),
-    categoryId: formData.get("categoryId"),
-    description: formData.get("description") ?? "",
-    shortDescription: formData.get("shortDescription") ?? "",
-    details: formData.get("details") ?? "",
-    stock: formData.get("stock") ?? "",
-    consumerPrice: formData.get("consumerPrice") ?? "",
-    distributorPrice: formData.get("distributorPrice") ?? "",
-    price3Plus: formData.get("price3Plus") ?? "",
-    price6Plus: formData.get("price6Plus") ?? "",
-    boxPrice: formData.get("boxPrice") ?? "",
-    isAvailable: formData.get("isAvailable") === "on",
-    isActive: formData.get("isActive") === "on",
-  });
 }
 
 function getFiles(formData: FormData) {
@@ -170,28 +132,6 @@ async function updateMainImage(productId: string) {
   }
 }
 
-function productValues(input: z.infer<typeof productSchema>) {
-  return {
-    name: input.name,
-    brand_id: input.brandId,
-    category_id: input.categoryId,
-    description: input.description || null,
-    short_description: input.shortDescription || null,
-    detail_points: input.details
-      .split("\n")
-      .map((point) => point.trim())
-      .filter(Boolean),
-    stock: numberOrNull(input.stock),
-    consumer_price: numberOrNull(input.consumerPrice),
-    price: numberOrNull(input.consumerPrice),
-    price_3_plus: numberOrNull(input.price3Plus),
-    price_6_plus: numberOrNull(input.price6Plus),
-    box_price: numberOrNull(input.boxPrice),
-    is_available: input.isAvailable,
-    is_active: input.isActive,
-  };
-}
-
 function refreshProductPaths(slug?: string) {
   revalidatePath("/");
   revalidatePath("/catalogo");
@@ -205,7 +145,7 @@ export async function createProductAction(
   formData: FormData,
 ): Promise<DashboardActionState> {
   await requireAdmin();
-  const parsed = getProductInput(formData);
+  const parsed = parseProductFormData(formData);
   const files = getFiles(formData);
   if (
     !parsed.success ||
@@ -217,7 +157,7 @@ export async function createProductAction(
 
   const supabase = createAdminClient();
   const values = {
-    ...productValues(parsed.data),
+    ...productRowValues(parsed.data),
     // The database trigger replaces both temporary values with the next
     // immutable, short SKU and its matching public slug.
     sku: "TMF-PENDING",
@@ -266,7 +206,7 @@ export async function updateProductAction(
   formData: FormData,
 ): Promise<DashboardActionState> {
   await requireAdmin();
-  const parsed = getProductInput(formData);
+  const parsed = parseProductFormData(formData);
   const files = getFiles(formData);
   const removedIds = formData
     .getAll("removeImageId")
@@ -290,7 +230,7 @@ export async function updateProductAction(
   if (!retained.length && !files.length) return message();
   if (retained.length + files.length > 3) return message();
 
-  const values = productValues(parsed.data);
+  const values = productRowValues(parsed.data);
   const { data: product, error } = await supabase
     .from("products")
     .update(values)

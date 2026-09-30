@@ -1,7 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useActionState,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { useRouter } from "next/navigation";
 import {
   createProductAction,
@@ -55,6 +62,7 @@ export function ProductForm({
     ? updateProductAction.bind(null, product.id)
     : createProductAction;
   const [state, formAction, pending] = useActionState(action, initialState);
+  const [, startTransition] = useTransition();
   const remainingImages =
     product?.images.filter((image) => !removed.includes(image.id)) ?? [];
   const totalImages = remainingImages.length + files.length;
@@ -118,8 +126,18 @@ export function ProductForm({
     addImages(selected);
   };
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    formData.delete("images");
+    files.forEach((file) => formData.append("images", file));
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
   return (
-    <form className="dashboard-product-form" action={formAction}>
+    <form className="dashboard-product-form" onSubmit={handleSubmit}>
       <section className="dashboard-form-section">
         <header>
           <h2>{t("dashboard.productInformation")}</h2>
