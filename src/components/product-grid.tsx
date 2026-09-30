@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SearchIcon } from "lucide-react";
 import { CatalogControls } from "@/components/catalog-controls";
 import { ProductCard } from "@/components/product-card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -51,14 +52,18 @@ export function ProductGrid({
   };
   return (
     <CatalogControls categories={categories} brands={brands}>
-      <p className="catalog-count">
-        {total}{" "}
-        {total === 1
-          ? translate("catalog.product")
-          : translate("catalog.products")}{" "}
-        · {translate("catalog.page")} {page} {translate("catalog.of")}{" "}
-        {totalPages}
-      </p>
+      <div className="catalog-meta-row">
+        <Badge variant="secondary">
+          {total}{" "}
+          {total === 1
+            ? translate("catalog.product")
+            : translate("catalog.products")}
+        </Badge>
+        <p className="catalog-count">
+          {translate("catalog.page")} {page} {translate("catalog.of")}{" "}
+          {totalPages}
+        </p>
+      </div>
       {products.length ? (
         <div className="product-grid">
           {products.map((product, index) => (

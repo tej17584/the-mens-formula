@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ProductGrid } from "@/components/product-grid";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { translate } from "@/i18n";
 import { getCatalogFilters, getCatalogPage } from "@/lib/catalog";
 
@@ -46,13 +46,19 @@ export default async function CatalogPage({ searchParams }: Props) {
   return (
     <div className="site-page">
       <SiteHeader />
-      <main className="catalog-page shell">
-        <div className="catalog-intro">
-          <p className="eyebrow">The Men&apos;s Formula</p>
-          <h1>{translate("catalog.title")}</h1>
-          <p>{translate("catalog.description")}</p>
+      <main className="catalog-page storefront-catalog">
+        <div className="catalog-hero-band">
+          <div className="shell storefront-shell">
+            <header className="catalog-page-header">
+              <Badge className="page-eyebrow-badge" variant="secondary">
+                The Men&apos;s Formula
+              </Badge>
+              <h1>{translate("catalog.title")}</h1>
+              <p>{translate("catalog.description")}</p>
+            </header>
+          </div>
         </div>
-        <Separator className="catalog-intro-rule" />
+        <div className="shell storefront-shell catalog-page-body">
         <ProductGrid
           products={result.products}
           categories={filters.categories}
@@ -67,6 +73,7 @@ export default async function CatalogPage({ searchParams }: Props) {
             sort: query.sort,
           }}
         />
+        </div>
       </main>
       <SiteFooter />
     </div>

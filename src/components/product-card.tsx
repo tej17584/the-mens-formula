@@ -54,9 +54,9 @@ export function ProductCard({
           <strong>{formatPrice(product.consumer_price)}</strong>
         </div>
         {hasVolumePrices ? (
-          <span className="volume-badge">
+          <Badge className="product-volume-badge" variant="outline">
             {translate("catalog.volumePrices")}
-          </span>
+          </Badge>
         ) : null}
         <Button
           className="text-link product-view"
