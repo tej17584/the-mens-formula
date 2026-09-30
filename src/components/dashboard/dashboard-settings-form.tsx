@@ -47,7 +47,7 @@ export function DashboardSettingsForm({
     });
   }, [state.success, t]);
   return (
-    <Card className="dashboard-settings-card">
+    <Card className="dashboard-settings-card dashboard-readable">
       <CardHeader>
         <CardTitle>{t("dashboard.settings")}</CardTitle>
         <CardDescription>{t("dashboard.settingsSubtitle")}</CardDescription>

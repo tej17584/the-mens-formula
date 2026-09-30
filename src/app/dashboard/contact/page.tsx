@@ -62,7 +62,7 @@ export default async function DashboardContactPage({
           {result.total} {translate("dashboard.messages").toLowerCase()}
         </p>
       </div>
-      <div className="dashboard-messages">
+      <div className="dashboard-messages" role="list">
         {result.messages.map((message) => (
           <DashboardMessageCard
             key={message.id}
