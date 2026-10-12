@@ -157,12 +157,13 @@ h3 {
 .brand-logo {
   display: inline-flex;
   align-items: center;
-  width: 8.5rem;
+  width: auto;
+  height: 3.25rem;
   flex: none;
 }
 .brand-logo img {
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
   object-fit: contain;
 }
 .header-nav {
@@ -679,7 +680,8 @@ h3 {
   padding-bottom: var(--space-10);
 }
 .site-footer .brand-logo {
-  width: 10rem;
+  width: auto;
+  height: 5rem;
 }
 .footer-statement {
   max-width: 21rem;
@@ -1385,7 +1387,8 @@ h3 {
     color-mix(in oklch, var(--color-ink), transparent 83%);
 }
 .dashboard-nav .brand-logo {
-  width: 7.5rem;
+  width: auto;
+  height: 3.1rem;
 }
 .dashboard-nav .eyebrow {
   margin-left: auto;
@@ -1850,7 +1853,8 @@ h3 {
   gap: var(--space-4);
 }
 .dashboard-login .brand-logo {
-  width: 10rem;
+  width: auto;
+  height: 5.25rem;
   margin-bottom: var(--space-5);
 }
 .dashboard-login h1 {
@@ -3328,7 +3332,8 @@ h3 {
     padding: var(--space-5);
   }
   .dashboard-nav-brand .brand-logo {
-    width: 11.25rem;
+    width: auto;
+    height: 4.25rem;
   }
   .dashboard-nav nav {
     display: grid;
@@ -3442,7 +3447,8 @@ h3 {
     gap: var(--space-4);
   }
   .dashboard-nav-brand .brand-logo {
-    width: 11.25rem;
+    width: auto;
+    height: 4.25rem;
   }
   .dashboard-nav-close {
     display: grid;
@@ -4778,7 +4784,8 @@ body.dashboard-nav-locked .dashboard-menu-button {
   }
   .dashboard-nav-brand .brand-logo,
   .dashboard-nav .brand-logo {
-    width: 11.5rem;
+    width: auto;
+    height: 4.35rem;
     filter: none;
   }
   .dashboard-nav nav a {
@@ -5093,7 +5100,8 @@ body.dashboard-nav-locked .dashboard-menu-button {
   min-height: 5rem;
 }
 .site-header .brand-logo {
-  width: min(11rem, 42vw);
+  width: auto;
+  height: min(3.55rem, 18vw);
 }
 .header-actions {
   display: flex;

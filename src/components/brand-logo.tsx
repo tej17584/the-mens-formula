@@ -9,10 +9,11 @@ export function BrandLogo({ inverted = false }: { inverted?: boolean }) {
       aria-label="The Men's Formula, inicio"
     >
       <Image
-        src={inverted ? "/logo-header-dark.png" : "/logo-header-light.png"}
+        src={inverted ? "/logo-dark.png" : "/logo-light.png"}
         alt="The Men's Formula"
-        width={180}
-        height={60}
+        width={1332}
+        height={853}
+        sizes="160px"
         priority
       />
     </Link>
