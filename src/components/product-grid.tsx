@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SearchIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from "lucide-react";
 import { CatalogControls } from "@/components/catalog-controls";
 import { ProductCard } from "@/components/product-card";
 import { Badge } from "@/components/ui/badge";
@@ -12,14 +12,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
 import { translate } from "@/i18n";
 import type { CatalogProduct } from "@/lib/catalog";
 
@@ -45,11 +38,16 @@ export function ProductGrid({
   const hrefForPage = (number: number) => {
     const params = new URLSearchParams();
     Object.entries(query).forEach(([key, value]) => {
-      if (value && key !== "page") params.set(key, value);
+      if (!value || key === "page") return;
+      if (key === "sort" && value === "relevance") return;
+      params.set(key, value);
     });
     if (number > 1) params.set("page", String(number));
     return `/catalogo${params.size ? `?${params}` : ""}`;
   };
+  const hasPrevious = page > 1;
+  const hasNext = page < totalPages;
+  const pageStatus = `${translate("catalog.page")} ${page} ${translate("catalog.of")} ${totalPages}`;
   return (
     <CatalogControls categories={categories} brands={brands}>
       <div className="catalog-meta-row">
@@ -92,35 +90,74 @@ export function ProductGrid({
           </EmptyContent>
         </Empty>
       )}
-      <Pagination className="catalog-pagination" aria-label={translate("catalog.page")}>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              aria-disabled={page <= 1}
-              aria-label={translate("catalog.previous")}
-              className={page <= 1 ? "pointer-events-none opacity-50" : undefined}
-              href={hrefForPage(Math.max(1, page - 1))}
-              text={translate("catalog.previous")}
-            />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href={hrefForPage(page)} isActive>
-              {page}
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext
-              aria-disabled={page >= totalPages}
-              aria-label={translate("catalog.next")}
-              className={
-                page >= totalPages ? "pointer-events-none opacity-50" : undefined
-              }
-              href={hrefForPage(Math.min(totalPages, page + 1))}
-              text={translate("catalog.next")}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      {totalPages > 1 ? (
+        <Pagination
+          className="catalog-pagination"
+          aria-label={translate("catalog.page")}
+        >
+          <PaginationContent className="catalog-pagination-content">
+            <PaginationItem>
+              {hasPrevious ? (
+                <Link
+                  className="catalog-pagination-nav"
+                  href={hrefForPage(page - 1)}
+                  prefetch={false}
+                  rel="prev"
+                >
+                  <ChevronLeftIcon aria-hidden="true" />
+                  <span>{translate("catalog.previous")}</span>
+                </Link>
+              ) : (
+                <span
+                  aria-disabled="true"
+                  className="catalog-pagination-nav is-disabled"
+                >
+                  <ChevronLeftIcon aria-hidden="true" />
+                  <span>{translate("catalog.previous")}</span>
+                </span>
+              )}
+            </PaginationItem>
+            <PaginationItem className="catalog-pagination-status">
+              <span aria-current="page" className="catalog-pagination-current">
+                {page}
+              </span>
+              <span aria-hidden="true" className="catalog-pagination-separator">
+                /
+              </span>
+              <span className="catalog-pagination-total">{totalPages}</span>
+              <span className="sr-only">{pageStatus}</span>
+            </PaginationItem>
+            <PaginationItem>
+              {hasNext ? (
+                <Link
+                  className="catalog-pagination-nav"
+                  href={hrefForPage(page + 1)}
+                  prefetch={false}
+                  rel="next"
+                >
+                  <span>{translate("catalog.next")}</span>
+                  <ChevronRightIcon aria-hidden="true" />
+                </Link>
+              ) : (
+                <span
+                  aria-disabled="true"
+                  className="catalog-pagination-nav is-disabled"
+                >
+                  <span>{translate("catalog.next")}</span>
+                  <ChevronRightIcon aria-hidden="true" />
+                </span>
+              )}
+            </PaginationItem>
+          </PaginationContent>
+          <p aria-hidden="true" className="catalog-pagination-caption">
+            {pageStatus}
+          </p>
+        </Pagination>
+      ) : (
+        <p className="catalog-pagination-caption catalog-pagination-caption-only">
+          {pageStatus}
+        </p>
+      )}
     </CatalogControls>
   );
 }

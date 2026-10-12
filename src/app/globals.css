@@ -4918,6 +4918,99 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 .catalog-pagination {
   margin-top: 1.5rem;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.catalog-pagination-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 28rem;
+}
+.catalog-pagination-content [data-slot="pagination-item"] {
+  display: flex;
+  min-width: 0;
+}
+.catalog-pagination-content [data-slot="pagination-item"]:first-child {
+  justify-content: flex-start;
+}
+.catalog-pagination-content [data-slot="pagination-item"]:last-child {
+  justify-content: flex-end;
+}
+.catalog-pagination-nav {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.35rem;
+  border: var(--rule) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  padding: 0.55rem 0.85rem;
+  color: var(--color-ink);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.catalog-pagination-nav:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand-deep);
+}
+.catalog-pagination-nav.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.catalog-pagination-status {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: var(--rule) solid color-mix(in oklch, var(--color-brand), transparent 65%);
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--color-brand), transparent 92%);
+  padding-inline: 0.95rem;
+  color: var(--color-brand-deep);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.catalog-pagination-current {
+  min-width: 1.25rem;
+  text-align: center;
+}
+.catalog-pagination-separator {
+  color: color-mix(in oklch, var(--color-brand-deep), transparent 35%);
+  font-weight: 700;
+}
+.catalog-pagination-caption {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  font-weight: 650;
+  text-align: center;
+}
+.catalog-pagination-caption-only {
+  margin-top: 1.5rem;
+}
+@media (max-width: 479px) {
+  .catalog-pagination-nav {
+    padding-inline: 0.65rem;
+    font-size: 0.84rem;
+  }
+  .catalog-pagination-nav span {
+    max-width: 4.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+@media (min-width: 640px) {
+  .catalog-pagination-caption {
+    display: none;
+  }
 }
 .product-copy [data-slot="button"] {
   height: auto;
