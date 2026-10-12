@@ -38,13 +38,20 @@ export function CatalogControls({
   const update = (updates: Record<string, string | null>, resetPage = true) => {
     const next = new URLSearchParams(params.toString());
     Object.entries(updates).forEach(([key, value]) => {
-      if (value && value !== "all") next.set(key, value);
-      else next.delete(key);
+      const isDefault =
+        !value ||
+        value === "all" ||
+        (key === "sort" && value === "relevance");
+      if (isDefault) next.delete(key);
+      else next.set(key, value);
     });
     if (resetPage) next.delete("page");
-    router.replace(next.size ? `${pathname}?${next}` : pathname, {
-      scroll: false,
-    });
+    const nextUrl = next.size ? `${pathname}?${next.toString()}` : pathname;
+    const currentUrl = params.size
+      ? `${pathname}?${params.toString()}`
+      : pathname;
+    if (nextUrl === currentUrl) return;
+    router.replace(nextUrl, { scroll: false });
   };
 
   useEffect(() => {

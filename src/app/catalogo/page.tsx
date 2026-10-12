@@ -32,12 +32,16 @@ export default async function CatalogPage({ searchParams }: Props) {
     getCatalogPage(query),
     getCatalogFilters(),
   ]);
-  if (result.page !== query.page) {
+  const rawPage = param(raw.page);
+  const shouldNormalizePage =
+    result.page !== query.page || rawPage === "1" || rawPage === "0";
+  if (shouldNormalizePage) {
     const normalized = new URLSearchParams();
     if (query.q) normalized.set("q", query.q);
     if (query.category) normalized.set("categoria", query.category);
     if (query.brand) normalized.set("marca", query.brand);
-    if (query.sort) normalized.set("sort", query.sort);
+    if (query.sort && query.sort !== "relevance")
+      normalized.set("sort", query.sort);
     if (result.page > 1) normalized.set("page", String(result.page));
     redirect(`/catalogo${normalized.size ? `?${normalized}` : ""}`);
   }

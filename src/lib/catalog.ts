@@ -123,13 +123,13 @@ export async function getCatalogPage(query: CatalogQuery) {
     const sorted = [...preview].sort((first, second) =>
       first.name.localeCompare(second.name, "es"),
     );
+    const total = sorted.length;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const page = Math.min(requestedPage, totalPages);
     return {
-      products: sorted.slice(
-        (requestedPage - 1) * pageSize,
-        requestedPage * pageSize,
-      ),
-      total: sorted.length,
-      page: requestedPage,
+      products: sorted.slice((page - 1) * pageSize, page * pageSize),
+      total,
+      page,
       pageSize,
     };
   }
@@ -207,7 +207,7 @@ export async function getCatalogPage(query: CatalogQuery) {
     };
   } catch (error) {
     sentryErrorReport(error, "PRODUCTS_QUERY - CATALOG_PAGE");
-    return { products: [], total: 0, page: requestedPage, pageSize };
+    return { products: [], total: 0, page: 1, pageSize };
   }
 }
 
