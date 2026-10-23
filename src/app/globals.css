@@ -2663,24 +2663,55 @@ h3 {
 .dashboard-nav-backdrop {
   display: none;
 }
-.dashboard-back-link {
+.dashboard-page-toolbar {
+  display: flex;
+  align-items: center;
+  margin-bottom: calc(var(--space-2) * -1);
+}
+.dashboard-page-back {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  justify-content: center;
+  gap: 0.35rem;
   width: fit-content;
-  margin-bottom: var(--space-3);
-  font-size: 0.9375rem;
-  font-weight: 600;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border: var(--rule) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: 0 0.35rem 0.9rem
+    color-mix(in oklch, var(--color-ink), transparent 94%);
   color: var(--color-brand-deep);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.2;
   text-decoration: none;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
 }
-.dashboard-back-link:hover {
-  color: var(--color-brand);
+.dashboard-page-back:hover {
+  border-color: color-mix(in oklch, var(--color-brand), transparent 45%);
+  background: color-mix(in oklch, var(--color-brand), transparent 94%);
+  color: var(--color-brand-deep);
 }
-.dashboard-back-link:focus-visible {
+.dashboard-page-back:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 3px;
-  border-radius: 0.25rem;
+}
+.dashboard-page-back span {
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .dashboard-page-toolbar {
+    margin-bottom: 0;
+  }
+  .dashboard-page-back {
+    width: 100%;
+    min-height: 3rem;
+    font-size: 1rem;
+  }
 }
 .dashboard-heading.dashboard-page-header {
   min-height: 7.25rem;

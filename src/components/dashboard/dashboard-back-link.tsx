@@ -9,9 +9,9 @@ export function DashboardBackLink({
   label: string;
 }) {
   return (
-    <Link className="dashboard-back-link" href={href}>
-      <ChevronLeftIcon aria-hidden className="size-4" />
-      {label}
+    <Link className="dashboard-page-back" href={href}>
+      <ChevronLeftIcon aria-hidden className="size-4 shrink-0" />
+      <span>{label}</span>
     </Link>
   );
 }
