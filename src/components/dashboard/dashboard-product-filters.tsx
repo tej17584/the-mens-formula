@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchIcon, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { NumericInput } from "@/components/ui/numeric-input";
 import {
   InputGroup,
   InputGroupAddon,
@@ -80,43 +80,31 @@ function FilterFields({
       </label>
       <fieldset>
         <legend>{t("dashboard.publicPrice")}</legend>
-        <Input
+        <NumericInput
           aria-label={t("dashboard.priceMin")}
           defaultValue={params.get("minPrice") ?? ""}
-          min="0"
           placeholder={t("dashboard.from")}
-          step="0.01"
-          type="number"
           onBlur={(event) => update({ minPrice: event.target.value })}
         />
-        <Input
+        <NumericInput
           aria-label={t("dashboard.priceMax")}
           defaultValue={params.get("maxPrice") ?? ""}
-          min="0"
           placeholder={t("dashboard.to")}
-          step="0.01"
-          type="number"
           onBlur={(event) => update({ maxPrice: event.target.value })}
         />
       </fieldset>
       <fieldset>
         <legend>{t("dashboard.distributorPrice")}</legend>
-        <Input
+        <NumericInput
           aria-label={t("dashboard.distributorMin")}
           defaultValue={params.get("minDistributor") ?? ""}
-          min="0"
           placeholder={t("dashboard.from")}
-          step="0.00000001"
-          type="number"
           onBlur={(event) => update({ minDistributor: event.target.value })}
         />
-        <Input
+        <NumericInput
           aria-label={t("dashboard.distributorMax")}
           defaultValue={params.get("maxDistributor") ?? ""}
-          min="0"
           placeholder={t("dashboard.to")}
-          step="0.00000001"
-          type="number"
           onBlur={(event) => update({ maxDistributor: event.target.value })}
         />
       </fieldset>

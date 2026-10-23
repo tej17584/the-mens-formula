@@ -3,6 +3,7 @@
 import Image from "next/image";
 import {
   useActionState,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -23,6 +24,7 @@ import {
   updateProductAction,
   type DashboardActionState,
 } from "@/actions/dashboard-products";
+import { NumericField } from "@/components/ui/numeric-input";
 import { useTranslations } from "@/i18n";
 
 type Option = { id: string; name: string };
@@ -93,6 +95,14 @@ export function ProductForm({
     () => () => previews.forEach((preview) => URL.revokeObjectURL(preview.url)),
     [previews],
   );
+
+  const syncFiles = useCallback((nextFiles: File[]) => {
+    setFiles(nextFiles);
+    const transfer = new DataTransfer();
+    nextFiles.forEach((file) => transfer.items.add(file));
+    if (imageInput.current) imageInput.current.files = transfer.files;
+  }, []);
+
   useEffect(() => {
     if (!state.success) {
       notified.current = false;
@@ -101,20 +111,16 @@ export function ProductForm({
     if (notified.current) return;
     notified.current = true;
     if (product) {
+      syncFiles([]);
+      setRemoved([]);
+      router.refresh();
       toast.success(t("dashboard.flashProductUpdated"), {
         id: "dashboard-product-updated",
       });
       return;
     }
     router.push(withDashboardFlashStatus(inventoryListPath, "created"));
-  }, [state.success, product, router, inventoryListPath, t]);
-
-  const syncFiles = (nextFiles: File[]) => {
-    setFiles(nextFiles);
-    const transfer = new DataTransfer();
-    nextFiles.forEach((file) => transfer.items.add(file));
-    if (imageInput.current) imageInput.current.files = transfer.files;
-  };
+  }, [state.success, product, router, inventoryListPath, t, syncFiles]);
 
   const addImages = (selected: File[]) => {
     const invalidType = selected.some(
@@ -205,60 +211,44 @@ export function ProductForm({
           </div>
           <label>
             <span>{t("dashboard.stock")}</span>
-            <input
+            <NumericField
               name="stock"
-              type="number"
-              min="0"
+              integer
               defaultValue={product?.stock ?? ""}
             />
           </label>
           <label>
             <span>{t("dashboard.publicPrice")}</span>
-            <input
+            <NumericField
               name="consumerPrice"
-              type="number"
-              min="0"
-              step="0.01"
               defaultValue={product?.consumer_price ?? ""}
             />
           </label>
           <label>
             <span>{t("dashboard.distributorPrice")}</span>
-            <input
+            <NumericField
               name="distributorPrice"
-              type="number"
-              min="0"
-              step="0.00000001"
               defaultValue={product?.internal?.distributor_unit_price ?? ""}
             />
           </label>
           <label>
             <span>{t("product.threePlus")}</span>
-            <input
+            <NumericField
               name="price3Plus"
-              type="number"
-              min="0"
-              step="0.01"
               defaultValue={product?.price_3_plus ?? ""}
             />
           </label>
           <label>
             <span>{t("product.sixPlus")}</span>
-            <input
+            <NumericField
               name="price6Plus"
-              type="number"
-              min="0"
-              step="0.01"
               defaultValue={product?.price_6_plus ?? ""}
             />
           </label>
           <label>
             <span>{t("product.box")}</span>
-            <input
+            <NumericField
               name="boxPrice"
-              type="number"
-              min="0"
-              step="0.01"
               defaultValue={product?.box_price ?? ""}
             />
           </label>
