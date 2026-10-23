@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
+import { notify } from "@/lib/notify";
 import {
   manageBrandAction,
   manageCategoryAction,
@@ -57,13 +57,13 @@ function ReferencePanel({
   useEffect(() => {
     if (state.success === "created") {
       form.current?.reset();
-      toast.success(t("dashboard.referenceCreated"), {
+      notify.success(t("dashboard.referenceCreated"), {
         id: "dashboard-reference-created",
       });
     }
     if (state.success === "deleted") {
       setPendingDelete(null);
-      toast.success(t("dashboard.referenceDeleted"), {
+      notify.success(t("dashboard.referenceDeleted"), {
         id: "dashboard-reference-deleted",
       });
     }

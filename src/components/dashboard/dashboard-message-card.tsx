@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { notify } from "@/lib/notify";
 import {
   deleteContactMessageAction,
   markContactReadAction,
@@ -50,10 +50,10 @@ export function DashboardMessageCard({ message }: { message: Message }) {
   const remove = () =>
     startTransition(async () => {
       const result = await deleteContactMessageAction(message.id);
-      if (result?.error) toast.error(t("dashboard.messageDeleteFailed"));
+      if (result?.error) notify.error(t("dashboard.messageDeleteFailed"));
       else {
         setConfirmOpen(false);
-        toast.success(t("dashboard.messageDeleted"), {
+        notify.success(t("dashboard.messageDeleted"), {
           id: `message-deleted-${message.id}`,
         });
         router.refresh();

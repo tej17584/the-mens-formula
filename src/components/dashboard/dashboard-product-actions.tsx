@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MoreHorizontal } from "lucide-react";
-import { toast } from "sonner";
+import { notify } from "@/lib/notify";
 import {
   deleteProductAction,
   setProductAvailability,
@@ -58,9 +58,9 @@ export function ProductActions({
   const setVisibility = () =>
     startTransition(async () => {
       const result = await setProductVisibility(id, !isActive);
-      if (result.error) toast.error(result.error);
+      if (result.error) notify.error(result.error);
       else {
-        toast.success(t("dashboard.flashVisibilityUpdated"));
+        notify.success(t("dashboard.flashVisibilityUpdated"));
         afterChange();
       }
     });
@@ -68,9 +68,9 @@ export function ProductActions({
   const setAvailability = () =>
     startTransition(async () => {
       const result = await setProductAvailability(id, !isAvailable);
-      if (result.error) toast.error(result.error);
+      if (result.error) notify.error(result.error);
       else {
-        toast.success(t("dashboard.flashAvailabilityUpdated"));
+        notify.success(t("dashboard.flashAvailabilityUpdated"));
         afterChange();
       }
     });
@@ -78,10 +78,10 @@ export function ProductActions({
   const remove = () =>
     startTransition(async () => {
       const result = await deleteProductAction(id);
-      if (result.error) toast.error(result.error);
+      if (result.error) notify.error(result.error);
       else {
         setConfirmOpen(false);
-        toast.success(t("dashboard.flashProductDeleted"));
+        notify.success(t("dashboard.flashProductDeleted"));
         afterChange();
       }
     });
