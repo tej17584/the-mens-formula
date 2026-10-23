@@ -11,7 +11,7 @@ import {
   useTransition,
 } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { notify } from "@/lib/notify";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Switch } from "@/components/ui/switch";
 import { withDashboardFlashStatus } from "@/lib/dashboard/products-list-query";
@@ -24,6 +24,7 @@ import {
   updateProductAction,
   type DashboardActionState,
 } from "@/actions/dashboard-products";
+import { BrandLoader } from "@/components/ui/brand-loader";
 import { NumericField } from "@/components/ui/numeric-input";
 import { useTranslations } from "@/i18n";
 
@@ -75,7 +76,7 @@ export function ProductForm({
     : createProductAction;
   const [state, formAction, pending] = useActionState(action, initialState);
   const [, startTransition] = useTransition();
-  const notified = useRef(false);
+  const handledActionState = useRef(initialState);
   const [isAvailable, setIsAvailable] = useState(product?.is_available ?? true);
   const [isActive, setIsActive] = useState(product?.is_active ?? true);
   const remainingImages =
@@ -104,23 +105,21 @@ export function ProductForm({
   }, []);
 
   useEffect(() => {
-    if (!state.success) {
-      notified.current = false;
-      return;
-    }
-    if (notified.current) return;
-    notified.current = true;
+    if (handledActionState.current === state) return;
+    handledActionState.current = state;
+    if (!state.success) return;
+
     if (product) {
       syncFiles([]);
       setRemoved([]);
       router.refresh();
-      toast.success(t("dashboard.flashProductUpdated"), {
+      notify.success(t("dashboard.flashProductUpdated"), {
         id: "dashboard-product-updated",
       });
       return;
     }
     router.push(withDashboardFlashStatus(inventoryListPath, "created"));
-  }, [state.success, product, router, inventoryListPath, t, syncFiles]);
+  }, [state, product, router, inventoryListPath, t, syncFiles]);
 
   const addImages = (selected: File[]) => {
     const invalidType = selected.some(
@@ -168,7 +167,16 @@ export function ProductForm({
   };
 
   return (
-    <form className="dashboard-product-form" onSubmit={handleSubmit}>
+    <form
+      className="dashboard-product-form"
+      data-submitting={pending || undefined}
+      onSubmit={handleSubmit}
+    >
+      {pending ? (
+        <div className="dashboard-form-loading" aria-live="polite">
+          <BrandLoader label={t("common.loading")} size="md" />
+        </div>
+      ) : null}
       <section className="dashboard-form-section">
         <header>
           <h2>{t("dashboard.productInformation")}</h2>
@@ -443,11 +451,20 @@ export function ProductForm({
         </Alert>
       ) : null}
       <button
-        className="button button-primary"
+        className="button button-primary dashboard-product-submit"
         type="submit"
         disabled={pending || totalImages > 3}
       >
-        {product ? t("dashboard.updateProduct") : t("dashboard.createProduct")}
+        {pending ? (
+          <>
+            <BrandLoader size="sm" />
+            <span>{t("common.loading")}</span>
+          </>
+        ) : product ? (
+          t("dashboard.updateProduct")
+        ) : (
+          t("dashboard.createProduct")
+        )}
       </button>
     </form>
   );

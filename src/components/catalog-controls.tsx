@@ -1,7 +1,15 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useState,
+  useTransition,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { BrandLoader } from "@/components/ui/brand-loader";
+import { RouteLoadingRegion } from "@/components/ui/route-loading-overlay";
 import { SearchIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,6 +43,7 @@ export function CatalogControls({
   const pathname = usePathname();
   const params = useSearchParams();
   const [q, setQ] = useState(params.get("q") ?? "");
+  const [isPending, startTransition] = useTransition();
   const update = (updates: Record<string, string | null>, resetPage = true) => {
     const next = new URLSearchParams(params.toString());
     Object.entries(updates).forEach(([key, value]) => {
@@ -51,7 +60,9 @@ export function CatalogControls({
       ? `${pathname}?${params.toString()}`
       : pathname;
     if (nextUrl === currentUrl) return;
-    router.replace(nextUrl, { scroll: false });
+    startTransition(() => {
+      router.replace(nextUrl, { scroll: false });
+    });
   };
 
   useEffect(() => {
@@ -129,8 +140,17 @@ export function CatalogControls({
         </summary>
         <div>{filters}</div>
       </details>
-      <section className="catalog-results">
+      <RouteLoadingRegion
+        pending={isPending}
+        label={t("common.loading")}
+        className="catalog-results"
+      >
         <div className="catalog-toolbar catalog-toolbar-panel">
+          {isPending ? (
+            <div className="catalog-toolbar-loading">
+              <BrandLoader size="sm" label={t("common.loading")} />
+            </div>
+          ) : null}
           <form className="search-field" onSubmit={search}>
             <InputGroup
               className="catalog-search-group shadow-none has-[[data-slot=input-group-control]:focus-visible]:!border-[var(--color-brand)] has-[[data-slot=input-group-control]:focus-visible]:!ring-0 has-[[data-slot=input-group-control]:focus-visible]:!shadow-none"
@@ -172,7 +192,7 @@ export function CatalogControls({
           </label>
         </div>
         {children}
-      </section>
+      </RouteLoadingRegion>
     </div>
   );
 }

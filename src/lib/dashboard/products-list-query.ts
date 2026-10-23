@@ -25,6 +25,15 @@ export function stringParam(value: string | string[] | undefined) {
   return typeof value === "string" ? value : undefined;
 }
 
+export function sanitizeDashboardReturnTo(
+  value: string | string[] | undefined,
+  fallback = "/dashboard/products",
+) {
+  const path = stringParam(value);
+  if (!path || !path.startsWith("/dashboard")) return fallback;
+  return path;
+}
+
 export function parseDashboardProductsSearchParams(
   raw: Record<string, string | string[] | undefined>,
 ): DashboardProductsSearchParams {

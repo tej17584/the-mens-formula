@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useNavigationLoading } from "@/components/dashboard/navigation-loading";
 import { SearchIcon, SlidersHorizontal } from "lucide-react";
+import { BrandLoader } from "@/components/ui/brand-loader";
 import { Button } from "@/components/ui/button";
 import { NumericInput } from "@/components/ui/numeric-input";
 import {
@@ -122,7 +124,7 @@ export function DashboardProductFilters({
   resultCount: number;
 }) {
   const t = useTranslations();
-  const router = useRouter();
+  const { navigate, isPending } = useNavigationLoading();
   const pathname = usePathname();
   const params = useSearchParams();
   const [q, setQ] = useState(params.get("q") ?? "");
@@ -137,11 +139,9 @@ export function DashboardProductFilters({
       }
       next.delete("page");
       next.delete("status");
-      router.replace(next.size ? `${pathname}?${next}` : pathname, {
-        scroll: false,
-      });
+      navigate(next.size ? `${pathname}?${next}` : pathname);
     },
-    [params, pathname, router],
+    [params, pathname, navigate],
   );
 
   useEffect(() => {
@@ -190,7 +190,7 @@ export function DashboardProductFilters({
   const clear = () => {
     setQ("");
     setOpen(false);
-    router.replace(pathname, { scroll: false });
+    navigate(pathname);
   };
 
   const removeChip = (key: string) => {
@@ -285,7 +285,13 @@ export function DashboardProductFilters({
           {t("catalog.clearFilters")}
         </Button>
         <span className="dashboard-result-count">
-          {resultCount} {t("catalog.products")}
+          {isPending ? (
+            <BrandLoader size="sm" label={t("common.loading")} />
+          ) : (
+            <>
+              {resultCount} {t("catalog.products")}
+            </>
+          )}
         </span>
       </div>
 

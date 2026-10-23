@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { toast } from "sonner";
+import { notify } from "@/lib/notify";
 import {
   updateSiteSettings,
   type SettingsActionState,
@@ -42,7 +42,7 @@ export function DashboardSettingsForm({
     }
     if (notified.current) return;
     notified.current = true;
-    toast.success(t("dashboard.settingsSaved"), {
+    notify.success(t("dashboard.settingsSaved"), {
       id: "dashboard-settings-saved",
     });
   }, [state.success, t]);

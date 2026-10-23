@@ -5,6 +5,7 @@ import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { ProductActions } from "@/components/dashboard/dashboard-product-actions";
 import { DashboardFlashBanner } from "@/components/dashboard/dashboard-flash-banner";
 import { DashboardProductFilters } from "@/components/dashboard/dashboard-product-filters";
+import { NavigationLoadingRegion } from "@/components/dashboard/navigation-loading";
 import { translate } from "@/i18n";
 import { requireAdmin } from "@/lib/admin-auth";
 import {
@@ -37,10 +38,11 @@ export default async function DashboardProductsPage({
   const inventoryListPath = dashboardProductsListPath(raw, { page });
   const hrefForPage = (number: number) =>
     dashboardProductsListPath(raw, { page: number });
+  const returnToQuery = encodeURIComponent(inventoryListPath);
   const editHref = (productId: string) => {
-    const returnTo = encodeURIComponent(inventoryListPath);
-    return `/dashboard/products/${productId}?returnTo=${returnTo}`;
+    return `/dashboard/products/${productId}?returnTo=${returnToQuery}`;
   };
+  const newProductHref = `/dashboard/products/new?returnTo=${returnToQuery}`;
   return (
     <DashboardLayout>
       <header className="dashboard-heading dashboard-heading-row">
@@ -49,7 +51,7 @@ export default async function DashboardProductsPage({
           <h1>{translate("dashboard.products")}</h1>
           <p>{translate("dashboard.productsSubtitle")}</p>
         </div>
-        <Link className="button button-primary" href="/dashboard/products/new">
+        <Link className="button button-primary" href={newProductHref}>
           {translate("dashboard.newProduct")}
         </Link>
       </header>
@@ -71,6 +73,7 @@ export default async function DashboardProductsPage({
           resultCount={result.total}
         />
       </Suspense>
+      <NavigationLoadingRegion className="dashboard-inventory-results">
       <div className="dashboard-table-wrap">
         <table className="dashboard-table dashboard-inventory-table">
           <thead>
@@ -201,6 +204,7 @@ export default async function DashboardProductsPage({
           </Link>
         </nav>
       </div>
+      </NavigationLoadingRegion>
     </DashboardLayout>
   );
 }

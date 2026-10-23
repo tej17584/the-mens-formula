@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
+import { DashboardBackLink } from "@/components/dashboard/dashboard-back-link";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { ProductForm } from "@/components/dashboard/product-form";
 import { translate } from "@/i18n";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getDashboardProduct, getDashboardReferences } from "@/lib/dashboard";
+import { sanitizeDashboardReturnTo } from "@/lib/dashboard/products-list-query";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -17,10 +19,7 @@ export default async function EditProductPage({
   await requireAdmin();
   const { id } = await params;
   const query = await searchParams;
-  const returnTo =
-    typeof query.returnTo === "string" && query.returnTo.startsWith("/dashboard")
-      ? query.returnTo
-      : "/dashboard/products";
+  const returnTo = sanitizeDashboardReturnTo(query.returnTo);
   const [product, references] = await Promise.all([
     getDashboardProduct(id),
     getDashboardReferences(),
@@ -29,6 +28,10 @@ export default async function EditProductPage({
   return (
     <DashboardLayout>
       <header className="dashboard-heading dashboard-page-header">
+        <DashboardBackLink
+          href={returnTo}
+          label={translate("dashboard.backToInventory")}
+        />
         <p className="eyebrow">{translate("dashboard.products")}</p>
         <h1>{translate("dashboard.updateProduct")}</h1>
         <p>{translate("dashboard.productsSubtitle")}</p>
