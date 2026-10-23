@@ -288,6 +288,7 @@ export async function updateProductAction(
     return message();
   }
   refreshProductPaths(product.slug);
+  revalidatePath(`/dashboard/products/${productId}`);
   return { success: true };
 }
 

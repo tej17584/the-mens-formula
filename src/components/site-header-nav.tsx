@@ -23,7 +23,8 @@ const links = [
   { href: "/contacto", key: "header.contact" as const },
 ];
 
-function isActive(pathname: string, href: string) {
+function isActive(pathname: string | null, href: string) {
+  if (!pathname) return false;
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
