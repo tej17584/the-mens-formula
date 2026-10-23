@@ -17,11 +17,13 @@ export default async function NewProductPage({ searchParams }: PageProps) {
   const references = await getDashboardReferences();
   return (
     <DashboardLayout>
-      <header className="dashboard-heading dashboard-page-header">
+      <div className="dashboard-page-toolbar">
         <DashboardBackLink
           href={returnTo}
           label={translate("dashboard.backToInventory")}
         />
+      </div>
+      <header className="dashboard-heading dashboard-page-header">
         <p className="eyebrow">{translate("dashboard.products")}</p>
         <h1>{translate("dashboard.createProduct")}</h1>
         <p>{translate("dashboard.productsSubtitle")}</p>
