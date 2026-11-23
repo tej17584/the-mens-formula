@@ -10,7 +10,6 @@ import {
 } from "@/actions/dashboard-contact";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -34,31 +33,46 @@ type Message = {
 export function DashboardMessageCard({ message }: { message: Message }) {
   const t = useTranslations();
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  const [readPending, startReadTransition] = useTransition();
+  const [deletePending, startDeleteTransition] = useTransition();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const pending = readPending || deletePending;
   const isNew = message.status === "new";
   const contactHref = message.contact.includes("@")
     ? `mailto:${message.contact}`
     : `tel:${message.contact}`;
 
   const markRead = () =>
-    startTransition(async () => {
-      const result = await markContactReadAction(message.id);
-      if (result?.error) notify.error(t("dashboard.messageMarkReadFailed"));
-      else router.refresh();
+    startReadTransition(() => {
+      void (async () => {
+        try {
+          const result = await markContactReadAction(message.id);
+          if (result.error) notify.error(result.error);
+          else router.refresh();
+        } catch {
+          notify.error(t("dashboard.messageMarkReadFailed"));
+        }
+      })();
     });
 
   const remove = () =>
-    startTransition(async () => {
-      const result = await deleteContactMessageAction(message.id);
-      if (result?.error) notify.error(t("dashboard.messageDeleteFailed"));
-      else {
-        setConfirmOpen(false);
-        notify.success(t("dashboard.messageDeleted"), {
-          id: `message-deleted-${message.id}`,
-        });
-        router.refresh();
-      }
+    startDeleteTransition(() => {
+      void (async () => {
+        try {
+          const result = await deleteContactMessageAction(message.id);
+          if (result.error) {
+            notify.error(result.error);
+            return;
+          }
+          setConfirmOpen(false);
+          notify.success(t("dashboard.messageDeleted"), {
+            id: `message-deleted-${message.id}`,
+          });
+          router.refresh();
+        } catch {
+          notify.error(t("dashboard.messageDeleteFailed"));
+        }
+      })();
     });
 
   return (
@@ -118,7 +132,7 @@ export function DashboardMessageCard({ message }: { message: Message }) {
         </div>
         <footer className="dashboard-ticket-actions">
           {isNew ? (
-            <Button disabled={pending} onClick={markRead}>
+            <Button disabled={pending} onClick={markRead} type="button">
               {t("dashboard.markRead")}
             </Button>
           ) : null}
@@ -126,6 +140,7 @@ export function DashboardMessageCard({ message }: { message: Message }) {
             variant="destructive"
             disabled={pending}
             onClick={() => setConfirmOpen(true)}
+            type="button"
           >
             {t("dashboard.deleteMessage")}
           </Button>
@@ -140,14 +155,15 @@ export function DashboardMessageCard({ message }: { message: Message }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-            <AlertDialogAction
+            <AlertDialogCancel type="button">{t("common.cancel")}</AlertDialogCancel>
+            <Button
               variant="destructive"
-              disabled={pending}
+              disabled={deletePending}
               onClick={remove}
+              type="button"
             >
               {t("dashboard.deleteMessage")}
-            </AlertDialogAction>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
