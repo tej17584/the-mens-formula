@@ -1,5 +1,6 @@
 import "server-only";
 
+import { escapePostgrestSearchTerm } from "@/lib/postgrest-search";
 import { sentryErrorReport } from "@/lib/sentry";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -97,9 +98,10 @@ export async function getDashboardProductPage(
       Number(filters.maxDistributor),
     );
   if (filters.q?.trim()) {
-    const term = filters.q.trim().replaceAll(",", " ");
+    const term = filters.q.trim().replaceAll(/\s+/g, " ");
+    const escaped = escapePostgrestSearchTerm(term);
     query = query.or(
-      `name.ilike.%${term}%,slug.ilike.%${term}%,sku.ilike.%${term}%`,
+      `name.ilike.%${escaped}%,slug.ilike.%${escaped}%,sku.ilike.%${escaped}%`,
     );
   }
   const { data, error, count } = await query.range(

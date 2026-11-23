@@ -103,6 +103,7 @@ export type Database = {
           message: string;
           name: string;
           product_id: string | null;
+          source_ip: string | null;
           status: string;
           updated_at: string;
         };
@@ -113,6 +114,7 @@ export type Database = {
           message: string;
           name: string;
           product_id?: string | null;
+          source_ip?: string | null;
           status?: string;
           updated_at?: string;
         };
@@ -121,6 +123,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           message?: string;
+          source_ip?: string | null;
           name?: string;
           product_id?: string | null;
           status?: string;

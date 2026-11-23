@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useMemo, useState, type FormEvent } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useNavigationLoading } from "@/components/dashboard/navigation-loading";
 import { SearchIcon, SlidersHorizontal } from "lucide-react";
@@ -26,6 +26,55 @@ import {
 import { useTranslations } from "@/i18n";
 
 type Option = { id: string; name: string };
+
+function DashboardSearchField({
+  initialQuery,
+  onSearch,
+  searchLabel,
+  placeholder,
+  submitLabel,
+}: {
+  initialQuery: string;
+  onSearch: (query: string) => void;
+  searchLabel: string;
+  placeholder: string;
+  submitLabel: string;
+}) {
+  const [q, setQ] = useState(initialQuery);
+  const search = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onSearch(q.trim());
+  };
+
+  return (
+    <form className="dashboard-search-field" onSubmit={search}>
+      <InputGroup
+        className="dashboard-search-group shadow-none has-[[data-slot=input-group-control]:focus-visible]:!border-[var(--color-brand)] has-[[data-slot=input-group-control]:focus-visible]:!ring-0 has-[[data-slot=input-group-control]:focus-visible]:!shadow-none"
+      >
+        <InputGroupAddon>
+          <SearchIcon />
+        </InputGroupAddon>
+        <InputGroupInput
+          aria-label={searchLabel}
+          onChange={(event) => setQ(event.target.value)}
+          placeholder={placeholder}
+          type="search"
+          value={q}
+        />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            className="dashboard-search-submit"
+            type="submit"
+            variant="secondary"
+            size="sm"
+          >
+            {submitLabel}
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+    </form>
+  );
+}
 
 function FilterFields({
   brands,
@@ -127,7 +176,7 @@ export function DashboardProductFilters({
   const { navigate, isPending } = useNavigationLoading();
   const pathname = usePathname();
   const params = useSearchParams();
-  const [q, setQ] = useState(params.get("q") ?? "");
+  const committedQuery = params.get("q") ?? "";
   const [open, setOpen] = useState(false);
 
   const update = useCallback(
@@ -143,15 +192,6 @@ export function DashboardProductFilters({
     },
     [params, pathname, navigate],
   );
-
-  useEffect(() => {
-    setQ(params.get("q") ?? "");
-  }, [params]);
-
-  const search = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    update({ q: q.trim() });
-  };
 
   const activeFilters = useMemo(() => {
     const brand = brands.find((item) => item.id === params.get("brand"));
@@ -188,13 +228,11 @@ export function DashboardProductFilters({
   }, [brands, categories, params, t]);
 
   const clear = () => {
-    setQ("");
     setOpen(false);
     navigate(pathname);
   };
 
   const removeChip = (key: string) => {
-    if (key === "q") setQ("");
     if (key === "price") update({ minPrice: "", maxPrice: "" });
     else if (key === "distributor")
       update({ minDistributor: "", maxDistributor: "" });
@@ -216,32 +254,14 @@ export function DashboardProductFilters({
       aria-label={t("dashboard.filters")}
     >
       <div className="dashboard-toolbar-main">
-        <form className="dashboard-search-field" onSubmit={search}>
-          <InputGroup
-            className="dashboard-search-group shadow-none has-[[data-slot=input-group-control]:focus-visible]:!border-[var(--color-brand)] has-[[data-slot=input-group-control]:focus-visible]:!ring-0 has-[[data-slot=input-group-control]:focus-visible]:!shadow-none"
-          >
-            <InputGroupAddon>
-              <SearchIcon />
-            </InputGroupAddon>
-            <InputGroupInput
-              aria-label={t("common.search")}
-              onChange={(event) => setQ(event.target.value)}
-              placeholder={t("dashboard.searchProducts")}
-              type="search"
-              value={q}
-            />
-            <InputGroupAddon align="inline-end">
-              <InputGroupButton
-                className="dashboard-search-submit"
-                type="submit"
-                variant="secondary"
-                size="sm"
-              >
-                {t("common.search")}
-              </InputGroupButton>
-            </InputGroupAddon>
-          </InputGroup>
-        </form>
+        <DashboardSearchField
+          key={committedQuery}
+          initialQuery={committedQuery}
+          onSearch={(query) => update({ q: query })}
+          placeholder={t("dashboard.searchProducts")}
+          searchLabel={t("common.search")}
+          submitLabel={t("common.search")}
+        />
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
             render={
@@ -279,7 +299,7 @@ export function DashboardProductFilters({
           variant="ghost"
           type="button"
           className="dashboard-toolbar-clear"
-          disabled={!activeFilters.length && !q}
+          disabled={!activeFilters.length && !committedQuery}
           onClick={clear}
         >
           {t("catalog.clearFilters")}

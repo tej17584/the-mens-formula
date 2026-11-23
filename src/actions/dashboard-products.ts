@@ -2,7 +2,7 @@
 
 import sharp from "sharp";
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/admin-auth";
+import { guardAdminAction } from "@/lib/admin-auth";
 import {
   numberOrNull,
   parseProductFormData,
@@ -50,17 +50,44 @@ function storagePath(productId: string, imageUrl: string) {
   }
 }
 
+type UploadedImage = {
+  product_id: string;
+  image_url: string;
+  alt_text: string;
+  sort_order: number;
+};
+
+async function removeUploadedAssets(
+  productId: string,
+  images: Pick<UploadedImage, "image_url">[],
+) {
+  if (!images.length) return;
+  const supabase = createAdminClient();
+  const paths = images
+    .map((image) => storagePath(productId, image.image_url))
+    .filter((path): path is string => Boolean(path));
+  if (paths.length) {
+    const { error } = await supabase.storage.from("products").remove(paths);
+    if (error) sentryErrorReport(error, "PRODUCT_IMAGES - ROLLBACK_STORAGE");
+  }
+  const urls = images.map((image) => image.image_url);
+  const { error: deleteError } = await supabase
+    .from("product_images")
+    .delete()
+    .eq("product_id", productId)
+    .in("image_url", urls);
+  if (deleteError) {
+    sentryErrorReport(deleteError, "PRODUCT_IMAGES - ROLLBACK_RECORDS");
+  }
+}
+
 async function uploadImages(productId: string, files: File[], offset: number) {
   const supabase = createAdminClient();
-  const images: {
-    product_id: string;
-    image_url: string;
-    alt_text: string;
-    sort_order: number;
-  }[] = [];
+  const images: UploadedImage[] = [];
+  const stagedPaths: string[] = [];
 
-  for (const [index, file] of files.entries()) {
-    try {
+  try {
+    for (const [index, file] of files.entries()) {
       const bytes = Buffer.from(await file.arrayBuffer());
       const optimized = await sharp(bytes)
         .rotate()
@@ -85,6 +112,7 @@ async function uploadImages(productId: string, files: File[], offset: number) {
         sentryErrorReport(uploadError, "PRODUCT_IMAGES - UPLOAD");
         throw new Error("UPLOAD_FAILED");
       }
+      stagedPaths.push(path);
       const { data } = supabase.storage.from("products").getPublicUrl(path);
       images.push({
         product_id: productId,
@@ -92,22 +120,54 @@ async function uploadImages(productId: string, files: File[], offset: number) {
         alt_text: file.name.slice(0, 220),
         sort_order: offset + index,
       });
-    } catch (error) {
-      if (!(error instanceof Error && error.message === "UPLOAD_FAILED")) {
-        sentryErrorReport(error, "PRODUCT_IMAGES - PROCESS");
-      }
-      throw error;
     }
+  } catch (error) {
+    if (stagedPaths.length) {
+      const { error: rollbackError } = await supabase.storage
+        .from("products")
+        .remove(stagedPaths);
+      if (rollbackError) {
+        sentryErrorReport(rollbackError, "PRODUCT_IMAGES - UPLOAD_ROLLBACK");
+      }
+    }
+    if (!(error instanceof Error && error.message === "UPLOAD_FAILED")) {
+      sentryErrorReport(error, "PRODUCT_IMAGES - PROCESS");
+    }
+    throw error;
   }
 
   if (!images.length) return [];
   const { error } = await supabase.from("product_images").insert(images);
   if (error) {
     sentryErrorReport(error, "PRODUCT_IMAGES - CREATE_RECORDS");
+    if (stagedPaths.length) {
+      await supabase.storage.from("products").remove(stagedPaths);
+    }
     throw new Error("IMAGE_RECORDS_FAILED");
   }
   return images;
 }
+
+const productSnapshotSelect =
+  "name, brand_id, category_id, description, short_description, detail_points, stock, consumer_price, price, price_3_plus, price_6_plus, box_price, is_available, is_active, main_image_url";
+
+type ProductSnapshot = {
+  name: string;
+  brand_id: string;
+  category_id: string;
+  description: string | null;
+  short_description: string | null;
+  detail_points: string[];
+  stock: number | null;
+  consumer_price: number | null;
+  price: number | null;
+  price_3_plus: number | null;
+  price_6_plus: number | null;
+  box_price: number | null;
+  is_available: boolean;
+  is_active: boolean;
+  main_image_url: string | null;
+};
 
 async function updateMainImage(productId: string) {
   const supabase = createAdminClient();
@@ -144,7 +204,8 @@ export async function createProductAction(
   _previous: DashboardActionState,
   formData: FormData,
 ): Promise<DashboardActionState> {
-  await requireAdmin();
+  const authError = await guardAdminAction();
+  if (authError) return { error: authError };
   const parsed = parseProductFormData(formData);
   const files = getFiles(formData);
   if (
@@ -205,7 +266,8 @@ export async function updateProductAction(
   _previous: DashboardActionState,
   formData: FormData,
 ): Promise<DashboardActionState> {
-  await requireAdmin();
+  const authError = await guardAdminAction();
+  if (authError) return { error: authError };
   const parsed = parseProductFormData(formData);
   const files = getFiles(formData);
   const removedIds = formData
@@ -230,6 +292,33 @@ export async function updateProductAction(
   if (!retained.length && !files.length) return message();
   if (retained.length + files.length > 3) return message();
 
+  const uploadOffset =
+    retained.length > 0
+      ? Math.max(...retained.map((image) => image.sort_order)) + 1
+      : 0;
+
+  let stagedUploads: UploadedImage[] = [];
+  try {
+    if (files.length) {
+      stagedUploads = await uploadImages(productId, files, uploadOffset);
+    }
+  } catch {
+    return message();
+  }
+
+  const { data: snapshot, error: snapshotError } = await supabase
+    .from("products")
+    .select(productSnapshotSelect)
+    .eq("id", productId)
+    .single();
+  if (snapshotError || !snapshot) {
+    if (snapshotError) {
+      sentryErrorReport(snapshotError, "PRODUCT_ACTION - SNAPSHOT");
+    }
+    await removeUploadedAssets(productId, stagedUploads);
+    return message();
+  }
+
   const values = productRowValues(parsed.data);
   const { data: product, error } = await supabase
     .from("products")
@@ -239,6 +328,7 @@ export async function updateProductAction(
     .single();
   if (error || !product) {
     if (error) sentryErrorReport(error, "PRODUCT_ACTION - UPDATE");
+    await removeUploadedAssets(productId, stagedUploads);
     return message();
   }
 
@@ -251,6 +341,11 @@ export async function updateProductAction(
     });
   if (internalError) {
     sentryErrorReport(internalError, "PRODUCT_ACTION - UPDATE_INTERNAL");
+    await supabase
+      .from("products")
+      .update(snapshot as ProductSnapshot)
+      .eq("id", productId);
+    await removeUploadedAssets(productId, stagedUploads);
     return message();
   }
 
@@ -282,7 +377,6 @@ export async function updateProductAction(
   }
 
   try {
-    if (files.length) await uploadImages(productId, files, retained.length);
     await updateMainImage(productId);
   } catch {
     return message();
@@ -296,7 +390,8 @@ export async function setProductAvailability(
   productId: string,
   isAvailable: boolean,
 ) {
-  await requireAdmin();
+  const authError = await guardAdminAction();
+  if (authError) return { error: authError };
   const { data, error } = await createAdminClient()
     .from("products")
     .update({ is_available: isAvailable })
@@ -315,7 +410,8 @@ export async function setProductVisibility(
   productId: string,
   isActive: boolean,
 ) {
-  await requireAdmin();
+  const authError = await guardAdminAction();
+  if (authError) return { error: authError };
   const { data, error } = await createAdminClient()
     .from("products")
     .update({ is_active: isActive })
@@ -331,7 +427,8 @@ export async function setProductVisibility(
 }
 
 export async function deleteProductAction(productId: string) {
-  await requireAdmin();
+  const authError = await guardAdminAction();
+  if (authError) return { error: authError };
   const supabase = createAdminClient();
   const { data: product, error: productError } = await supabase
     .from("products")
@@ -346,15 +443,7 @@ export async function deleteProductAction(productId: string) {
   const paths = (product.images ?? [])
     .map((image) => storagePath(productId, image.image_url))
     .filter((path): path is string => Boolean(path));
-  if (paths.length) {
-    const { error: storageError } = await supabase.storage
-      .from("products")
-      .remove(paths);
-    if (storageError) {
-      sentryErrorReport(storageError, "PRODUCT_IMAGES - DELETE");
-      return { error: "No se pudieron eliminar las imágenes del producto." };
-    }
-  }
+  const slug = product.slug;
   const { error } = await supabase
     .from("products")
     .delete()
@@ -363,6 +452,14 @@ export async function deleteProductAction(productId: string) {
     sentryErrorReport(error, "PRODUCT_ACTION - DELETE");
     return { error: "No se pudo eliminar el producto." };
   }
-  refreshProductPaths(product.slug);
+  if (paths.length) {
+    const { error: storageError } = await supabase.storage
+      .from("products")
+      .remove(paths);
+    if (storageError) {
+      sentryErrorReport(storageError, "PRODUCT_IMAGES - DELETE");
+    }
+  }
+  refreshProductPaths(slug);
   return { success: true };
 }

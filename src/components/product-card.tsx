@@ -49,15 +49,21 @@ export function ProductCard({
         {!product.is_available ? (
           <Badge variant="secondary">{translate("catalog.unavailable")}</Badge>
         ) : null}
-        <div className="card-price">
-          <span>{translate("catalog.unitPrice")}</span>
-          <strong>{formatPrice(product.consumer_price)}</strong>
-        </div>
-        {hasVolumePrices ? (
-          <Badge className="product-volume-badge" variant="outline">
-            {translate("catalog.volumePrices")}
-          </Badge>
-        ) : null}
+        {product.is_available ? (
+          <>
+            <div className="card-price">
+              <span>{translate("catalog.unitPrice")}</span>
+              <strong>{formatPrice(product.consumer_price)}</strong>
+            </div>
+            {hasVolumePrices ? (
+              <Badge className="product-volume-badge" variant="outline">
+                {translate("catalog.volumePrices")}
+              </Badge>
+            ) : null}
+          </>
+        ) : (
+          <p className="card-price-muted">{translate("catalog.priceOnRequest")}</p>
+        )}
         <Button
           className="text-link product-view"
           nativeButton={false}

@@ -127,7 +127,8 @@ h3 {
 .site-page main {
   flex: 1;
 }
-.sr-only {
+.sr-only,
+.contact-honeypot {
   position: absolute;
   width: 1px;
   height: 1px;

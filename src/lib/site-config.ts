@@ -1,3 +1,5 @@
+import { translate } from "@/i18n";
+
 export const siteConfig = {
   name: "The Men's Formula",
   description: "Productos profesionales para barbería.",
@@ -21,4 +23,3 @@ export function formatPrice(price: number | null) {
     minimumFractionDigits: 2,
   }).format(price);
 }
-import { translate } from "@/i18n";

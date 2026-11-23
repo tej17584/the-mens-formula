@@ -3,6 +3,7 @@ import {
   buildDashboardProductsPath,
   dashboardProductsListPath,
   parseDashboardProductsSearchParams,
+  sanitizeDashboardReturnTo,
   withDashboardFlashStatus,
 } from "@/lib/dashboard/products-list-query";
 
@@ -55,6 +56,23 @@ describe("withDashboardFlashStatus", () => {
     expect(
       withDashboardFlashStatus("/dashboard/products?q=Pomade", "visibility"),
     ).toBe("/dashboard/products?q=Pomade&status=visibility");
+  });
+});
+
+describe("sanitizeDashboardReturnTo", () => {
+  it("rejects traversal and unknown paths", () => {
+    expect(sanitizeDashboardReturnTo("/dashboard/../secret")).toBe(
+      "/dashboard/products",
+    );
+    expect(sanitizeDashboardReturnTo("https://evil.test/dashboard")).toBe(
+      "/dashboard/products",
+    );
+  });
+
+  it("keeps valid dashboard paths", () => {
+    expect(sanitizeDashboardReturnTo("/dashboard/products?q=van")).toBe(
+      "/dashboard/products?q=van",
+    );
   });
 });
 

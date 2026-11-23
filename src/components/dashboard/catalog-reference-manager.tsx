@@ -62,7 +62,6 @@ function ReferencePanel({
       });
     }
     if (state.success === "deleted") {
-      setPendingDelete(null);
       notify.success(t("dashboard.referenceDeleted"), {
         id: "dashboard-reference-deleted",
       });
@@ -164,6 +163,7 @@ function ReferencePanel({
                 variant="destructive"
                 disabled={pending}
                 type="submit"
+                onClick={() => setPendingDelete(null)}
               >
                 {t("common.delete")}
               </AlertDialogAction>

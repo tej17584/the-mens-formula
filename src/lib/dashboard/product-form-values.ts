@@ -2,6 +2,34 @@ import { z } from "zod";
 
 const textField = z.string().trim();
 
+function optionalNonNegativeNumber(value: string) {
+  if (!value.trim()) return true;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0;
+}
+
+function optionalWholeNumber(value: string) {
+  if (!value.trim()) return true;
+  const number = Number(value);
+  return Number.isFinite(number) && Number.isInteger(number) && number >= 0;
+}
+
+const optionalAmountField = z
+  .string()
+  .trim()
+  .max(64)
+  .refine(optionalNonNegativeNumber, {
+    message: "Ingresa un monto numérico válido (0 o mayor).",
+  });
+
+const optionalStockField = z
+  .string()
+  .trim()
+  .max(32)
+  .refine(optionalWholeNumber, {
+    message: "Ingresa un número entero válido para el inventario.",
+  });
+
 export const productFormSchema = z.object({
   name: textField.min(2).max(160),
   brandId: z.string().uuid(),
@@ -9,12 +37,12 @@ export const productFormSchema = z.object({
   description: textField.max(5000),
   shortDescription: textField.max(280),
   details: textField.max(5000),
-  stock: textField.max(32),
-  consumerPrice: textField.max(64),
-  distributorPrice: textField.max(64),
-  price3Plus: textField.max(64),
-  price6Plus: textField.max(64),
-  boxPrice: textField.max(64),
+  stock: optionalStockField,
+  consumerPrice: optionalAmountField,
+  distributorPrice: optionalAmountField,
+  price3Plus: optionalAmountField,
+  price6Plus: optionalAmountField,
+  boxPrice: optionalAmountField,
   isAvailable: z.boolean(),
   isActive: z.boolean(),
 });

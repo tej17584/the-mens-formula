@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  useEffect,
   useState,
   useTransition,
   type FormEvent,
@@ -29,6 +28,55 @@ import { useTranslations } from "@/i18n";
 
 type Option = { slug: string; name: string };
 
+function CatalogSearchField({
+  initialQuery,
+  onSearch,
+  searchLabel,
+  placeholder,
+  submitLabel,
+}: {
+  initialQuery: string;
+  onSearch: (query: string) => void;
+  searchLabel: string;
+  placeholder: string;
+  submitLabel: string;
+}) {
+  const [q, setQ] = useState(initialQuery);
+  const search = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onSearch(q.trim());
+  };
+
+  return (
+    <form className="search-field" onSubmit={search}>
+      <InputGroup
+        className="catalog-search-group shadow-none has-[[data-slot=input-group-control]:focus-visible]:!border-[var(--color-brand)] has-[[data-slot=input-group-control]:focus-visible]:!ring-0 has-[[data-slot=input-group-control]:focus-visible]:!shadow-none"
+      >
+        <InputGroupAddon>
+          <SearchIcon />
+        </InputGroupAddon>
+        <InputGroupInput
+          aria-label={searchLabel}
+          onChange={(event) => setQ(event.target.value)}
+          placeholder={placeholder}
+          type="search"
+          value={q}
+        />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            className="catalog-search-submit"
+            type="submit"
+            variant="secondary"
+            size="sm"
+          >
+            {submitLabel}
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+    </form>
+  );
+}
+
 export function CatalogControls({
   categories,
   brands,
@@ -42,8 +90,8 @@ export function CatalogControls({
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const [q, setQ] = useState(params.get("q") ?? "");
   const [isPending, startTransition] = useTransition();
+  const committedQuery = params.get("q") ?? "";
   const update = (updates: Record<string, string | null>, resetPage = true) => {
     const next = new URLSearchParams(params.toString());
     Object.entries(updates).forEach(([key, value]) => {
@@ -63,15 +111,6 @@ export function CatalogControls({
     startTransition(() => {
       router.replace(nextUrl, { scroll: false });
     });
-  };
-
-  useEffect(() => {
-    setQ(params.get("q") ?? "");
-  }, [params]);
-
-  const search = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    update({ q: q.trim() || null });
   };
 
   const filters = (
@@ -151,32 +190,14 @@ export function CatalogControls({
               <BrandLoader size="sm" label={t("common.loading")} />
             </div>
           ) : null}
-          <form className="search-field" onSubmit={search}>
-            <InputGroup
-              className="catalog-search-group shadow-none has-[[data-slot=input-group-control]:focus-visible]:!border-[var(--color-brand)] has-[[data-slot=input-group-control]:focus-visible]:!ring-0 has-[[data-slot=input-group-control]:focus-visible]:!shadow-none"
-            >
-              <InputGroupAddon>
-                <SearchIcon />
-              </InputGroupAddon>
-              <InputGroupInput
-                aria-label={t("common.search")}
-                onChange={(event) => setQ(event.target.value)}
-                placeholder={t("catalog.searchPlaceholder")}
-                type="search"
-                value={q}
-              />
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton
-                  className="catalog-search-submit"
-                  type="submit"
-                  variant="secondary"
-                  size="sm"
-                >
-                  {t("common.search")}
-                </InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
-          </form>
+          <CatalogSearchField
+            key={committedQuery}
+            initialQuery={committedQuery}
+            onSearch={(query) => update({ q: query || null })}
+            placeholder={t("catalog.searchPlaceholder")}
+            searchLabel={t("common.search")}
+            submitLabel={t("common.search")}
+          />
           <label className="sort-field">
             <span className="sr-only">{t("catalog.sort")}</span>
             <select

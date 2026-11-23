@@ -6,6 +6,7 @@ test("contact form submits successfully", async ({ page }) => {
   await page.getByLabel(/nombre/i).fill(name);
   await page.getByLabel(/correo o teléfono/i).fill("e2e@example.com");
   await page.getByLabel(/qué producto buscas/i).fill("Prueba automatizada");
+  await page.waitForTimeout(3500);
   await page.getByRole("button", { name: /enviar consulta/i }).click();
   await expect(page.getByText(/recibimos tu consulta/i)).toBeVisible();
 });

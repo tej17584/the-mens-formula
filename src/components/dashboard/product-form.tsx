@@ -53,6 +53,65 @@ type ProductValues = {
 const initialState: DashboardActionState = {};
 const maxUploadBytes = 5 * 1024 * 1024;
 
+function ProductVisibilityFields({
+  initialAvailable,
+  initialActive,
+  labels,
+}: {
+  initialAvailable: boolean;
+  initialActive: boolean;
+  labels: {
+    availability: string;
+    availabilityHelp: string;
+    visible: string;
+    visibilityHelp: string;
+    section: string;
+    sectionHelp: string;
+  };
+}) {
+  const [isAvailable, setIsAvailable] = useState(initialAvailable);
+  const [isActive, setIsActive] = useState(initialActive);
+
+  return (
+    <section className="dashboard-form-section dashboard-visibility-section">
+      <header>
+        <h2>{labels.section}</h2>
+        <p>{labels.sectionHelp}</p>
+      </header>
+      <div className="dashboard-toggle-grid">
+        <label className="dashboard-toggle-card">
+          <span>
+            <strong>{labels.availability}</strong>
+            <small>{labels.availabilityHelp}</small>
+          </span>
+          <input
+            type="hidden"
+            name="isAvailable"
+            value={isAvailable ? "on" : ""}
+          />
+          <Switch
+            checked={isAvailable}
+            onCheckedChange={setIsAvailable}
+            aria-label={labels.availability}
+          />
+        </label>
+        <label className="dashboard-toggle-card">
+          <span>
+            <strong>{labels.visible}</strong>
+            <small>{labels.visibilityHelp}</small>
+          </span>
+          <input type="hidden" name="isActive" value={isActive ? "on" : ""} />
+          <Switch
+            checked={isActive}
+            onCheckedChange={setIsActive}
+            aria-label={labels.visible}
+          />
+        </label>
+      </div>
+    </section>
+  );
+}
+
 export function ProductForm({
   brands,
   categories,
@@ -71,14 +130,43 @@ export function ProductForm({
   const [files, setFiles] = useState<File[]>([]);
   const [imageError, setImageError] = useState<string>();
   const [isDraggingImages, setIsDraggingImages] = useState(false);
-  const action = product
-    ? updateProductAction.bind(null, product.id)
-    : createProductAction;
-  const [state, formAction, pending] = useActionState(action, initialState);
+  const syncFiles = useCallback((nextFiles: File[]) => {
+    setFiles(nextFiles);
+    const transfer = new DataTransfer();
+    nextFiles.forEach((file) => transfer.items.add(file));
+    if (imageInput.current) imageInput.current.files = transfer.files;
+  }, []);
+  const submitProduct = useCallback(
+    async (
+      previousState: DashboardActionState,
+      formData: FormData,
+    ): Promise<DashboardActionState> => {
+      const result = product
+        ? await updateProductAction(product.id, previousState, formData)
+        : await createProductAction(previousState, formData);
+      if (!result.success) return result;
+      if (product) {
+        syncFiles([]);
+        setRemoved([]);
+        router.refresh();
+        notify.success(t("dashboard.flashProductUpdated"), {
+          id: "dashboard-product-updated",
+        });
+        return result;
+      }
+      router.push(withDashboardFlashStatus(inventoryListPath, "created"));
+      return result;
+    },
+    [product, router, inventoryListPath, t, syncFiles],
+  );
+  const [state, formAction, pending] = useActionState(
+    submitProduct,
+    initialState,
+  );
   const [, startTransition] = useTransition();
-  const handledActionState = useRef(initialState);
-  const [isAvailable, setIsAvailable] = useState(product?.is_available ?? true);
-  const [isActive, setIsActive] = useState(product?.is_active ?? true);
+  const visibilityKey = product
+    ? `${product.id}-${product.is_available}-${product.is_active}`
+    : "new";
   const remainingImages =
     product?.images.filter((image) => !removed.includes(image.id)) ?? [];
   const totalImages = remainingImages.length + files.length;
@@ -96,30 +184,6 @@ export function ProductForm({
     () => () => previews.forEach((preview) => URL.revokeObjectURL(preview.url)),
     [previews],
   );
-
-  const syncFiles = useCallback((nextFiles: File[]) => {
-    setFiles(nextFiles);
-    const transfer = new DataTransfer();
-    nextFiles.forEach((file) => transfer.items.add(file));
-    if (imageInput.current) imageInput.current.files = transfer.files;
-  }, []);
-
-  useEffect(() => {
-    if (handledActionState.current === state) return;
-    handledActionState.current = state;
-    if (!state.success) return;
-
-    if (product) {
-      syncFiles([]);
-      setRemoved([]);
-      router.refresh();
-      notify.success(t("dashboard.flashProductUpdated"), {
-        id: "dashboard-product-updated",
-      });
-      return;
-    }
-    router.push(withDashboardFlashStatus(inventoryListPath, "created"));
-  }, [state, product, router, inventoryListPath, t, syncFiles]);
 
   const addImages = (selected: File[]) => {
     const invalidType = selected.some(
@@ -409,42 +473,19 @@ export function ProductForm({
       {removed.map((id) => (
         <input key={id} type="hidden" name="removeImageId" value={id} />
       ))}
-      <section className="dashboard-form-section dashboard-visibility-section">
-        <header>
-          <h2>{t("dashboard.visibilitySection")}</h2>
-          <p>{t("dashboard.visibilitySectionHelp")}</p>
-        </header>
-        <div className="dashboard-toggle-grid">
-          <label className="dashboard-toggle-card">
-            <span>
-              <strong>{t("dashboard.availability")}</strong>
-              <small>{t("dashboard.availabilityHelp")}</small>
-            </span>
-            <input
-              type="hidden"
-              name="isAvailable"
-              value={isAvailable ? "on" : ""}
-            />
-            <Switch
-              checked={isAvailable}
-              onCheckedChange={setIsAvailable}
-              aria-label={t("dashboard.availability")}
-            />
-          </label>
-          <label className="dashboard-toggle-card">
-            <span>
-              <strong>{t("dashboard.visible")}</strong>
-              <small>{t("dashboard.visibilityHelp")}</small>
-            </span>
-            <input type="hidden" name="isActive" value={isActive ? "on" : ""} />
-            <Switch
-              checked={isActive}
-              onCheckedChange={setIsActive}
-              aria-label={t("dashboard.visible")}
-            />
-          </label>
-        </div>
-      </section>
+      <ProductVisibilityFields
+        key={visibilityKey}
+        initialAvailable={product?.is_available ?? true}
+        initialActive={product?.is_active ?? true}
+        labels={{
+          section: t("dashboard.visibilitySection"),
+          sectionHelp: t("dashboard.visibilitySectionHelp"),
+          availability: t("dashboard.availability"),
+          availabilityHelp: t("dashboard.availabilityHelp"),
+          visible: t("dashboard.visible"),
+          visibilityHelp: t("dashboard.visibilityHelp"),
+        }}
+      />
       {state.error ? (
         <Alert variant="destructive" className="dashboard-form-alert">
           <AlertDescription>{state.error}</AlertDescription>

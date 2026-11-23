@@ -43,8 +43,9 @@ export function DashboardMessageCard({ message }: { message: Message }) {
 
   const markRead = () =>
     startTransition(async () => {
-      await markContactReadAction(message.id);
-      router.refresh();
+      const result = await markContactReadAction(message.id);
+      if (result?.error) notify.error(t("dashboard.messageMarkReadFailed"));
+      else router.refresh();
     });
 
   const remove = () =>
