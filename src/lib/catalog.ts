@@ -95,12 +95,12 @@ export async function getCatalogProducts() {
       .order("name");
     if (error) {
       sentryErrorReport(error, "PRODUCTS_QUERY - LIST");
-      return preview;
+      return [];
     }
     return normalizeProducts(data as CatalogProduct[] | null);
   } catch (error) {
     sentryErrorReport(error, "PRODUCTS_QUERY - LIST");
-    return preview;
+    return [];
   }
 }
 
@@ -250,8 +250,9 @@ export async function getCatalogFilters() {
 }
 
 export const getCatalogProduct = cache(async (slug: string) => {
-  const fromPreview = preview.find((product) => product.slug === slug) ?? null;
-  if (!isSupabaseConfigured()) return fromPreview;
+  if (!isSupabaseConfigured()) {
+    return preview.find((product) => product.slug === slug) ?? null;
+  }
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
@@ -260,13 +261,15 @@ export const getCatalogProduct = cache(async (slug: string) => {
       .eq("slug", slug)
       .eq("is_active", true)
       .maybeSingle();
-    if (error) sentryErrorReport(error, "PRODUCTS_QUERY - DETAIL");
-    return error || !data
-      ? fromPreview
-      : (normalizeProducts([data as CatalogProduct])[0] ?? null);
+    if (error) {
+      sentryErrorReport(error, "PRODUCTS_QUERY - DETAIL");
+      return null;
+    }
+    if (!data) return null;
+    return normalizeProducts([data as CatalogProduct])[0] ?? null;
   } catch (error) {
     sentryErrorReport(error, "PRODUCTS_QUERY - DETAIL");
-    return fromPreview;
+    return null;
   }
 });
 

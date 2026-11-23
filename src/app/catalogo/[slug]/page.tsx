@@ -102,18 +102,22 @@ export default async function ProductPage({ params }: Props) {
             {product.description ? (
               <p className="product-description">{product.description}</p>
             ) : null}
-            <div className="price-levels">
-              <h2>{translate("product.prices")}</h2>
-              {priceLevels.map((level) => (
-                <div className="price-level" key={level.label}>
-                  <span>{level.label}</span>
-                  <strong>
-                    {formatPrice(level.price)}
-                    {level.suffix}
-                  </strong>
-                </div>
-              ))}
-            </div>
+            {product.is_available ? (
+              <div className="price-levels">
+                <h2>{translate("product.prices")}</h2>
+                {priceLevels.map((level) => (
+                  <div className="price-level" key={level.label}>
+                    <span>{level.label}</span>
+                    <strong>
+                      {formatPrice(level.price)}
+                      {level.suffix}
+                    </strong>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="price-on-request">{translate("catalog.priceOnRequest")}</p>
+            )}
             {product.detail_points.length ? (
               <div className="detail-points">
                 <h2>{translate("product.details")}</h2>

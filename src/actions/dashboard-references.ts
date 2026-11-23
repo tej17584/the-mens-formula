@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { translate } from "@/i18n";
-import { requireAdmin } from "@/lib/admin-auth";
+import { guardAdminAction } from "@/lib/admin-auth";
 import { sentryErrorReport } from "@/lib/sentry";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -31,7 +31,8 @@ async function referenceAction(
   _previous: ReferenceActionState,
   formData: FormData,
 ): Promise<ReferenceActionState> {
-  await requireAdmin();
+  const authError = await guardAdminAction();
+  if (authError) return { error: authError };
   const intent = formData.get("intent");
   if (intent === "delete") return deleteReference(kind, formData);
 

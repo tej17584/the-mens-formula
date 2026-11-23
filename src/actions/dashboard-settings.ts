@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireAdmin } from "@/lib/admin-auth";
+import { guardAdminAction } from "@/lib/admin-auth";
 import { sentryErrorReport } from "@/lib/sentry";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -17,7 +17,8 @@ export async function updateSiteSettings(
   _previous: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  await requireAdmin();
+  const authError = await guardAdminAction();
+  if (authError) return { error: authError };
   const parsed = settingsSchema.safeParse({
     whatsappNumber: formData.get("whatsappNumber"),
     whatsappProductMessage: formData.get("whatsappProductMessage"),

@@ -30,7 +30,15 @@ export function sanitizeDashboardReturnTo(
   fallback = "/dashboard/products",
 ) {
   const path = stringParam(value);
-  if (!path || !path.startsWith("/dashboard")) return fallback;
+  if (!path) return fallback;
+  const pathname = path.split(/[?#]/, 1)[0] ?? path;
+  if (
+    !pathname.startsWith("/dashboard") ||
+    pathname.includes("..") ||
+    pathname.includes("\\")
+  ) {
+    return fallback;
+  }
   return path;
 }
 

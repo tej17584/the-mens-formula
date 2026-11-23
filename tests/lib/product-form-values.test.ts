@@ -70,6 +70,18 @@ describe("parseProductFormData", () => {
     expect(row.detail_points).toEqual(["Line one", "Line two"]);
   });
 
+  it("rejects invalid price values", () => {
+    const parsed = parseProductFormData(
+      form({
+        name: "Pomade",
+        brandId,
+        categoryId,
+        consumerPrice: "abc",
+      }),
+    );
+    expect(parsed.success).toBe(false);
+  });
+
   it("keeps only the first five detail lines", () => {
     const parsed = parseProductFormData(
       form({

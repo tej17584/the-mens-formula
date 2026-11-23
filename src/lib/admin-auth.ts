@@ -6,11 +6,28 @@ import { sentryErrorReport } from "@/lib/sentry";
 import { getVerifiedClaims } from "@/lib/supabase/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export async function requireAdmin() {
+export const adminSessionErrors = {
+  login: "Tu sesión expiró. Vuelve a iniciar sesión.",
+  denied: "No tienes permiso para realizar esta acción.",
+  expired: "Tu sesión del panel expiró. Vuelve a iniciar sesión.",
+  error: "No se pudo verificar tu sesión. Inténtalo otra vez.",
+} as const;
+
+export type AdminAuthResult =
+  | { ok: true; userId: string }
+  | {
+      ok: false;
+      error: string;
+      reason: "login" | "denied" | "expired" | "error";
+    };
+
+export async function verifyAdmin(): Promise<AdminAuthResult> {
   const claims = await getVerifiedClaims();
   const userId = claims?.sub;
   const sessionId = getSessionId(claims);
-  if (!userId || !sessionId) redirect("/dashboard/login");
+  if (!userId || !sessionId) {
+    return { ok: false, error: adminSessionErrors.login, reason: "login" };
+  }
 
   const supabase = createAdminClient();
   const { data, error } = await supabase
@@ -21,9 +38,11 @@ export async function requireAdmin() {
 
   if (error) {
     sentryErrorReport(error, "AUTH - ADMIN_VERIFICATION");
-    redirect("/dashboard/login?reason=error");
+    return { ok: false, error: adminSessionErrors.error, reason: "error" };
   }
-  if (!data) redirect("/dashboard/login?reason=denied");
+  if (!data) {
+    return { ok: false, error: adminSessionErrors.denied, reason: "denied" };
+  }
 
   const { data: dashboardSession, error: sessionError } = await supabase
     .from("dashboard_sessions")
@@ -35,8 +54,31 @@ export async function requireAdmin() {
 
   if (sessionError) {
     sentryErrorReport(sessionError, "AUTH - DASHBOARD_SESSION_VERIFICATION");
-    redirect("/dashboard/login?reason=error");
+    return { ok: false, error: adminSessionErrors.error, reason: "error" };
   }
-  if (!dashboardSession) redirect("/dashboard/login?reason=expired");
-  return { userId };
+  if (!dashboardSession) {
+    return { ok: false, error: adminSessionErrors.expired, reason: "expired" };
+  }
+  return { ok: true, userId };
+}
+
+/** Use in Server Actions and Route Handlers (returns an error string instead of redirect). */
+export async function guardAdminAction() {
+  const result = await verifyAdmin();
+  return result.ok ? null : result.error;
+}
+
+export async function requireAdmin() {
+  const result = await verifyAdmin();
+  if (result.ok) return { userId: result.userId };
+
+  const query =
+    result.reason === "denied"
+      ? "denied"
+      : result.reason === "expired"
+        ? "expired"
+        : result.reason === "error"
+          ? "error"
+          : undefined;
+  redirect(query ? `/dashboard/login?reason=${query}` : "/dashboard/login");
 }
