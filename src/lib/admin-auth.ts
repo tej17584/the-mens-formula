@@ -22,44 +22,49 @@ export type AdminAuthResult =
     };
 
 export async function verifyAdmin(): Promise<AdminAuthResult> {
-  const claims = await getVerifiedClaims();
-  const userId = claims?.sub;
-  const sessionId = getSessionId(claims);
-  if (!userId || !sessionId) {
-    return { ok: false, error: adminSessionErrors.login, reason: "login" };
-  }
+  try {
+    const claims = await getVerifiedClaims();
+    const userId = claims?.sub;
+    const sessionId = getSessionId(claims);
+    if (!userId || !sessionId) {
+      return { ok: false, error: adminSessionErrors.login, reason: "login" };
+    }
 
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("admin_users")
-    .select("user_id")
-    .eq("user_id", userId)
-    .maybeSingle();
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", userId)
+      .maybeSingle();
 
-  if (error) {
-    sentryErrorReport(error, "AUTH - ADMIN_VERIFICATION");
+    if (error) {
+      sentryErrorReport(error, "AUTH - ADMIN_VERIFICATION");
+      return { ok: false, error: adminSessionErrors.error, reason: "error" };
+    }
+    if (!data) {
+      return { ok: false, error: adminSessionErrors.denied, reason: "denied" };
+    }
+
+    const { data: dashboardSession, error: sessionError } = await supabase
+      .from("dashboard_sessions")
+      .select("session_id")
+      .eq("session_id", sessionId)
+      .eq("user_id", userId)
+      .gt("expires_at", new Date().toISOString())
+      .maybeSingle();
+
+    if (sessionError) {
+      sentryErrorReport(sessionError, "AUTH - DASHBOARD_SESSION_VERIFICATION");
+      return { ok: false, error: adminSessionErrors.error, reason: "error" };
+    }
+    if (!dashboardSession) {
+      return { ok: false, error: adminSessionErrors.expired, reason: "expired" };
+    }
+    return { ok: true, userId };
+  } catch (error) {
+    sentryErrorReport(error, "AUTH - VERIFY");
     return { ok: false, error: adminSessionErrors.error, reason: "error" };
   }
-  if (!data) {
-    return { ok: false, error: adminSessionErrors.denied, reason: "denied" };
-  }
-
-  const { data: dashboardSession, error: sessionError } = await supabase
-    .from("dashboard_sessions")
-    .select("session_id")
-    .eq("session_id", sessionId)
-    .eq("user_id", userId)
-    .gt("expires_at", new Date().toISOString())
-    .maybeSingle();
-
-  if (sessionError) {
-    sentryErrorReport(sessionError, "AUTH - DASHBOARD_SESSION_VERIFICATION");
-    return { ok: false, error: adminSessionErrors.error, reason: "error" };
-  }
-  if (!dashboardSession) {
-    return { ok: false, error: adminSessionErrors.expired, reason: "expired" };
-  }
-  return { ok: true, userId };
 }
 
 /** Use in Server Actions and Route Handlers (returns an error string instead of redirect). */
