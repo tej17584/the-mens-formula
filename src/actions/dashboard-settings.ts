@@ -1,15 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import { guardAdminAction } from "@/lib/admin-auth";
 import { sentryErrorReport } from "@/lib/sentry";
+import { parseSiteSettingsForm } from "@/lib/site-settings-form";
 import { createAdminClient } from "@/lib/supabase/admin";
-
-const settingsSchema = z.object({
-  whatsappNumber: z.string().trim().min(8).max(20),
-  whatsappProductMessage: z.string().trim().min(10).max(1000),
-});
 
 export type SettingsActionState = { success?: true; error?: string };
 
@@ -19,28 +14,24 @@ export async function updateSiteSettings(
 ): Promise<SettingsActionState> {
   const authError = await guardAdminAction();
   if (authError) return { error: authError };
-  const parsed = settingsSchema.safeParse({
-    whatsappNumber: formData.get("whatsappNumber"),
-    whatsappProductMessage: formData.get("whatsappProductMessage"),
-  });
-  if (!parsed.success) return { error: "Revisa el número y el mensaje." };
-
-  const digits = parsed.data.whatsappNumber.replace(/\D/g, "");
-  const whatsappNumber = digits.length === 8 ? `502${digits}` : digits;
-  if (whatsappNumber.length < 10 || whatsappNumber.length > 15)
-    return { error: "Revisa el número y el mensaje." };
+  const parsed = parseSiteSettingsForm(formData);
+  if (!parsed.success) return { error: parsed.error };
 
   const { error } = await createAdminClient().from("site_settings").upsert({
     id: 1,
-    whatsapp_number: whatsappNumber,
+    whatsapp_number: parsed.data.whatsappNumber,
     whatsapp_product_message: parsed.data.whatsappProductMessage,
+    instagram_url: parsed.data.instagramUrl,
+    facebook_url: parsed.data.facebookUrl,
+    tiktok_url: parsed.data.tiktokUrl,
   });
   if (error) {
     sentryErrorReport(error, "SITE_SETTINGS_ACTION - UPDATE");
     return { error: "No se pudo guardar la configuración." };
   }
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/catalogo");
+  revalidatePath("/contacto");
   revalidatePath("/dashboard/settings");
   return { success: true };
 }

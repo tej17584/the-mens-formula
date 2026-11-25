@@ -3,6 +3,7 @@ import { DashboardSettingsForm } from "@/components/dashboard/dashboard-settings
 import { translate } from "@/i18n";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getDashboardSiteSettings } from "@/lib/dashboard";
+import { DEFAULT_SOCIAL_URLS } from "@/lib/site-links";
 
 export default async function DashboardSettingsPage() {
   await requireAdmin();
@@ -19,6 +20,9 @@ export default async function DashboardSettingsPage() {
       <DashboardSettingsForm
         whatsappNumber={settings?.whatsapp_number ?? null}
         whatsappProductMessage={settings?.whatsapp_product_message ?? ""}
+        instagramUrl={settings?.instagram_url ?? DEFAULT_SOCIAL_URLS.instagram}
+        facebookUrl={settings?.facebook_url ?? DEFAULT_SOCIAL_URLS.facebook}
+        tiktokUrl={settings?.tiktok_url ?? DEFAULT_SOCIAL_URLS.tiktok}
       />
     </DashboardLayout>
   );

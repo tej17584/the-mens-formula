@@ -1,5 +1,13 @@
 import previewProducts from "@/data/catalog-preview.json";
 import { cache } from "react";
+import {
+  applyCatalogQuery,
+  paginateCatalog,
+  sortCatalogProducts,
+  type CatalogQuery,
+  normalizeCatalogSlug,
+} from "@/lib/catalog-query";
+import { DEFAULT_SOCIAL_URLS } from "@/lib/site-links";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { sentryErrorReport } from "@/lib/sentry";
 import { createClient } from "@/lib/supabase/server";
@@ -32,6 +40,9 @@ export type CatalogProduct = {
 export type SiteSettings = {
   whatsappNumber: string | null;
   whatsappProductMessage: string;
+  instagramUrl: string | null;
+  facebookUrl: string | null;
+  tiktokUrl: string | null;
 };
 
 const catalogSelect =
@@ -104,13 +115,7 @@ export async function getCatalogProducts() {
   }
 }
 
-export type CatalogQuery = {
-  q?: string;
-  category?: string;
-  brand?: string;
-  sort?: string;
-  page?: number;
-};
+export type { CatalogQuery };
 
 function normalizeCards(data: unknown) {
   return normalizeProducts((data ?? []) as CatalogProduct[]);
@@ -119,39 +124,32 @@ function normalizeCards(data: unknown) {
 export async function getCatalogPage(query: CatalogQuery) {
   const pageSize = 30;
   const requestedPage = Math.max(1, query.page ?? 1);
+  const brand = normalizeCatalogSlug(query.brand);
+  const category = normalizeCatalogSlug(query.category);
   if (!isSupabaseConfigured()) {
-    const sorted = [...preview].sort((first, second) =>
-      first.name.localeCompare(second.name, "es"),
-    );
-    const total = sorted.length;
-    const totalPages = Math.max(1, Math.ceil(total / pageSize));
-    const page = Math.min(requestedPage, totalPages);
-    return {
-      products: sorted.slice((page - 1) * pageSize, page * pageSize),
-      total,
-      page,
-      pageSize,
-    };
+    const filtered = applyCatalogQuery(preview, { ...query, brand, category });
+    const sorted = sortCatalogProducts(filtered, query.sort);
+    return paginateCatalog(sorted, pageSize, requestedPage);
   }
   try {
     const supabase = await createClient();
     let categoryId: string | undefined;
     let brandId: string | undefined;
-    if (query.category) {
+    if (category) {
       const { data, error } = await supabase
         .from("categories")
         .select("id")
-        .eq("slug", query.category)
+        .eq("slug", category)
         .maybeSingle();
       if (error) throw error;
       if (!data) return { products: [], total: 0, page: 1, pageSize };
       categoryId = data.id;
     }
-    if (query.brand) {
+    if (brand) {
       const { data, error } = await supabase
         .from("brands")
         .select("id")
-        .eq("slug", query.brand)
+        .eq("slug", brand)
         .maybeSingle();
       if (error) throw error;
       if (!data) return { products: [], total: 0, page: 1, pageSize };
@@ -240,9 +238,16 @@ export async function getCatalogFilters() {
         .eq("is_active", true)
         .order("name"),
     ]);
-    if (categories.error) throw categories.error;
-    if (brands.error) throw brands.error;
-    return { categories: categories.data ?? [], brands: brands.data ?? [] };
+    if (categories.error) {
+      sentryErrorReport(categories.error, "CATALOG_QUERY - CATEGORIES");
+    }
+    if (brands.error) {
+      sentryErrorReport(brands.error, "CATALOG_QUERY - BRANDS");
+    }
+    return {
+      categories: categories.error ? [] : (categories.data ?? []),
+      brands: brands.error ? [] : (brands.data ?? []),
+    };
   } catch (error) {
     sentryErrorReport(error, "CATALOG_QUERY - FILTERS");
     return { categories: [], brands: [] };
@@ -278,21 +283,52 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || null,
     whatsappProductMessage:
       'Hola, me interesa "{{product_name}}". Quisiera más información sobre este producto. {{product_url}}',
+    instagramUrl:
+      process.env.NEXT_PUBLIC_INSTAGRAM_URL || DEFAULT_SOCIAL_URLS.instagram,
+    facebookUrl: DEFAULT_SOCIAL_URLS.facebook,
+    tiktokUrl: DEFAULT_SOCIAL_URLS.tiktok,
   };
   if (!isSupabaseConfigured()) return fallback;
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("site_settings")
-      .select("whatsapp_number,whatsapp_product_message")
+      .select(
+        "whatsapp_number,whatsapp_product_message,instagram_url,facebook_url,tiktok_url",
+      )
       .eq("id", 1)
       .maybeSingle();
-    if (error) sentryErrorReport(error, "SITE_SETTINGS_QUERY");
-    return error || !data
+    if (error) {
+      const missingColumn =
+        error.code === "42703" ||
+        /instagram_url|facebook_url|tiktok_url|does not exist/i.test(
+          error.message,
+        );
+      if (!missingColumn) sentryErrorReport(error, "SITE_SETTINGS_QUERY");
+      const legacy = await supabase
+        .from("site_settings")
+        .select("whatsapp_number,whatsapp_product_message")
+        .eq("id", 1)
+        .maybeSingle();
+      if (legacy.error || !legacy.data) {
+        if (legacy.error)
+          sentryErrorReport(legacy.error, "SITE_SETTINGS_QUERY");
+        return fallback;
+      }
+      return {
+        ...fallback,
+        whatsappNumber: legacy.data.whatsapp_number,
+        whatsappProductMessage: legacy.data.whatsapp_product_message,
+      };
+    }
+    return !data
       ? fallback
       : {
           whatsappNumber: data.whatsapp_number,
           whatsappProductMessage: data.whatsapp_product_message,
+          instagramUrl: data.instagram_url || fallback.instagramUrl,
+          facebookUrl: data.facebook_url || fallback.facebookUrl,
+          tiktokUrl: data.tiktok_url || fallback.tiktokUrl,
         };
   } catch (error) {
     sentryErrorReport(error, "SITE_SETTINGS_QUERY");

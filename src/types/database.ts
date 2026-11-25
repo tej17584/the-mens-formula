@@ -331,19 +331,28 @@ export type Database = {
       };
       site_settings: {
         Row: {
+          facebook_url: string | null;
           id: number;
+          instagram_url: string | null;
+          tiktok_url: string | null;
           updated_at: string;
           whatsapp_number: string | null;
           whatsapp_product_message: string;
         };
         Insert: {
+          facebook_url?: string | null;
           id?: number;
+          instagram_url?: string | null;
+          tiktok_url?: string | null;
           updated_at?: string;
           whatsapp_number?: string | null;
           whatsapp_product_message?: string;
         };
         Update: {
+          facebook_url?: string | null;
           id?: number;
+          instagram_url?: string | null;
+          tiktok_url?: string | null;
           updated_at?: string;
           whatsapp_number?: string | null;
           whatsapp_product_message?: string;

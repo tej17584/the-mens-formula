@@ -164,16 +164,37 @@ export async function getDashboardReferences() {
 }
 
 export async function getDashboardSiteSettings() {
-  const { data, error } = await createAdminClient()
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select(
+      "whatsapp_number,whatsapp_product_message,instagram_url,facebook_url,tiktok_url",
+    )
+    .eq("id", 1)
+    .maybeSingle();
+  if (!error) return data;
+  const missingColumn =
+    error.code === "42703" ||
+    /instagram_url|facebook_url|tiktok_url|does not exist/i.test(error.message);
+  if (!missingColumn)
+    sentryErrorReport(error, "SITE_SETTINGS_QUERY - DASHBOARD");
+  const legacy = await supabase
     .from("site_settings")
     .select("whatsapp_number,whatsapp_product_message")
     .eq("id", 1)
     .maybeSingle();
-  if (error) {
-    sentryErrorReport(error, "SITE_SETTINGS_QUERY - DASHBOARD");
+  if (legacy.error) {
+    sentryErrorReport(legacy.error, "SITE_SETTINGS_QUERY - DASHBOARD_LEGACY");
     return null;
   }
-  return data;
+  return legacy.data
+    ? {
+        ...legacy.data,
+        instagram_url: null,
+        facebook_url: null,
+        tiktok_url: null,
+      }
+    : null;
 }
 
 export async function getDashboardProduct(id: string) {
