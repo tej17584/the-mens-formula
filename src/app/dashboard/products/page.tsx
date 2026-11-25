@@ -101,7 +101,7 @@ export default async function DashboardProductsPage({
                         alt=""
                         fill
                         sizes="52px"
-                        quality={70}
+                        unoptimized
                       />
                     ) : (
                       "TMF"

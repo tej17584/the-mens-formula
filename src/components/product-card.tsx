@@ -25,8 +25,8 @@ export function ProductCard({
             src={product.main_image_url}
             alt={product.name}
             fill
-            sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, (max-width: 1279px) 26vw, 18vw"
-            quality={80}
+            sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 256px"
+            unoptimized
             priority={priority}
           />
         ) : (

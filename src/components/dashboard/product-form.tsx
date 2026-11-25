@@ -427,7 +427,7 @@ export function ProductForm({
                 alt={image.alt_text ?? ""}
                 fill
                 sizes="96px"
-                quality={70}
+                unoptimized
               />
               {index === 0 ? (
                 <span className="dashboard-image-primary">
