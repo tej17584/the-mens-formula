@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
 import { translate } from "@/i18n";
+import { catalogSearchParam } from "@/lib/catalog-query";
 import { getCatalogFilters, getCatalogPage } from "@/lib/catalog";
 
 export const metadata: Metadata = {
@@ -15,24 +16,20 @@ export const metadata: Metadata = {
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
-function param(value: string | string[] | undefined) {
-  return typeof value === "string" ? value : undefined;
-}
-
 export default async function CatalogPage({ searchParams }: Props) {
   const raw = await searchParams;
   const query = {
-    q: param(raw.q),
-    category: param(raw.categoria),
-    brand: param(raw.marca),
-    sort: param(raw.sort),
-    page: Number(param(raw.page)) || 1,
+    q: catalogSearchParam(raw.q),
+    category: catalogSearchParam(raw.categoria),
+    brand: catalogSearchParam(raw.marca),
+    sort: catalogSearchParam(raw.sort),
+    page: Number(catalogSearchParam(raw.page)) || 1,
   };
   const [result, filters] = await Promise.all([
     getCatalogPage(query),
     getCatalogFilters(),
   ]);
-  const rawPage = param(raw.page);
+  const rawPage = catalogSearchParam(raw.page);
   const shouldNormalizePage =
     result.page !== query.page || rawPage === "1" || rawPage === "0";
   if (shouldNormalizePage) {
@@ -63,20 +60,20 @@ export default async function CatalogPage({ searchParams }: Props) {
           </div>
         </div>
         <div className="shell storefront-shell catalog-page-body">
-        <ProductGrid
-          products={result.products}
-          categories={filters.categories}
-          brands={filters.brands}
-          total={result.total}
-          page={page}
-          totalPages={totalPages}
-          query={{
-            q: query.q,
-            categoria: query.category,
-            marca: query.brand,
-            sort: query.sort,
-          }}
-        />
+          <ProductGrid
+            products={result.products}
+            categories={filters.categories}
+            brands={filters.brands}
+            total={result.total}
+            page={page}
+            totalPages={totalPages}
+            query={{
+              q: query.q,
+              categoria: query.category,
+              marca: query.brand,
+              sort: query.sort,
+            }}
+          />
         </div>
       </main>
       <SiteFooter />

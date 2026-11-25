@@ -25,9 +25,15 @@ const initialState: SettingsActionState = {};
 export function DashboardSettingsForm({
   whatsappNumber,
   whatsappProductMessage,
+  instagramUrl,
+  facebookUrl,
+  tiktokUrl,
 }: {
   whatsappNumber: string | null;
   whatsappProductMessage: string;
+  instagramUrl: string | null;
+  facebookUrl: string | null;
+  tiktokUrl: string | null;
 }) {
   const t = useTranslations();
   const notified = useRef(false);
@@ -55,7 +61,9 @@ export function DashboardSettingsForm({
       <CardContent>
         <form className="dashboard-settings-form" action={action}>
           <div className="dashboard-settings-field">
-            <Label htmlFor="whatsappNumber">{t("dashboard.whatsappNumber")}</Label>
+            <Label htmlFor="whatsappNumber">
+              {t("dashboard.whatsappNumber")}
+            </Label>
             <Input
               id="whatsappNumber"
               name="whatsappNumber"
@@ -63,7 +71,9 @@ export function DashboardSettingsForm({
               required
               defaultValue={whatsappNumber ?? ""}
             />
-            <p className="dashboard-field-help">{t("dashboard.whatsappHelp")}</p>
+            <p className="dashboard-field-help">
+              {t("dashboard.whatsappHelp")}
+            </p>
           </div>
           <div className="dashboard-settings-field">
             <Label htmlFor="whatsappProductMessage">
@@ -76,6 +86,47 @@ export function DashboardSettingsForm({
               required
               defaultValue={whatsappProductMessage}
             />
+          </div>
+          <div className="dashboard-settings-socials">
+            <p className="dashboard-settings-socials-title">
+              {t("dashboard.socialsSection")}
+            </p>
+            <p className="dashboard-field-help">{t("dashboard.socialsHelp")}</p>
+            <div className="dashboard-settings-field">
+              <Label htmlFor="instagramUrl">
+                {t("dashboard.instagramUrl")}
+              </Label>
+              <Input
+                id="instagramUrl"
+                name="instagramUrl"
+                type="url"
+                inputMode="url"
+                defaultValue={instagramUrl ?? ""}
+                placeholder="https://www.instagram.com/themensformulagt"
+              />
+            </div>
+            <div className="dashboard-settings-field">
+              <Label htmlFor="facebookUrl">{t("dashboard.facebookUrl")}</Label>
+              <Input
+                id="facebookUrl"
+                name="facebookUrl"
+                type="url"
+                inputMode="url"
+                defaultValue={facebookUrl ?? ""}
+                placeholder="https://www.facebook.com/"
+              />
+            </div>
+            <div className="dashboard-settings-field">
+              <Label htmlFor="tiktokUrl">{t("dashboard.tiktokUrl")}</Label>
+              <Input
+                id="tiktokUrl"
+                name="tiktokUrl"
+                type="url"
+                inputMode="url"
+                defaultValue={tiktokUrl ?? ""}
+                placeholder="https://www.tiktok.com/@themensformula"
+              />
+            </div>
           </div>
           {state.error ? (
             <Alert variant="destructive">

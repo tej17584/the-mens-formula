@@ -12,7 +12,7 @@ export default async function DashboardLoginPage({ searchParams }: PageProps) {
 
   return (
     <main className="dashboard-login">
-      <BrandLogo />
+      <BrandLogo inverted />
       <p className="eyebrow">{translate("dashboard.title")}</p>
       {sessionExpired ? (
         <p className="form-error" role="status">

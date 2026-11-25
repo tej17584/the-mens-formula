@@ -52,6 +52,9 @@
 html,
 body {
   overflow-x: clip;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  color-scheme: dark;
 }
 
 * {
@@ -193,8 +196,8 @@ h3 {
 
 .hero {
   position: relative;
-  background: var(--color-ink);
-  color: var(--color-on-brand);
+  background: var(--color-void);
+  color: var(--color-ink);
   overflow: clip;
 }
 .hero::after {
@@ -224,7 +227,7 @@ h3 {
   gap: var(--space-6);
 }
 .hero-copy .eyebrow {
-  color: var(--color-paper-warm);
+  color: var(--color-brand);
 }
 .hero h1 {
   font-size: var(--text-display);
@@ -234,7 +237,7 @@ h3 {
 }
 .hero-copy > p:not(.eyebrow) {
   max-width: 34rem;
-  color: color-mix(in oklch, var(--color-on-brand), transparent 20%);
+  color: color-mix(in oklch, var(--color-ink), transparent 18%);
   font-size: clamp(1rem, 2vw, 1.25rem);
   line-height: 1.6;
 }
@@ -680,8 +683,8 @@ h3 {
 
 .site-footer {
   margin-top: auto;
-  background: var(--color-ink);
-  color: var(--color-on-brand);
+  background: var(--color-void);
+  color: var(--color-ink);
   padding-top: var(--space-12);
 }
 .footer-grid {
@@ -710,7 +713,7 @@ h3 {
   white-space: nowrap;
 }
 .footer-links a:hover {
-  color: var(--color-paper-warm);
+  color: var(--color-brand);
 }
 .footer-bottom {
   border-top: var(--rule) solid
@@ -965,7 +968,9 @@ h3 {
   transition: border-color var(--dur-fast) var(--ease-out);
 }
 .search-field
-  [data-slot="input-group"]:has([data-slot="input-group-control"]:focus-visible),
+  [data-slot="input-group"]:has(
+    [data-slot="input-group-control"]:focus-visible
+  ),
 .search-field
   .catalog-search-group:has([data-slot="input-group-control"]:focus-visible) {
   border-color: var(--color-brand);
@@ -1390,11 +1395,11 @@ h3 {
   gap: var(--space-4);
   border: var(--rule) solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-ink);
+  background: var(--color-void);
   padding: var(--space-4);
   color: var(--color-on-brand);
   box-shadow: 0 1.2rem 2.8rem
-    color-mix(in oklch, var(--color-ink), transparent 83%);
+    color-mix(in oklch, var(--color-void), transparent 55%);
 }
 .dashboard-nav .brand-logo {
   width: auto;
@@ -1643,7 +1648,10 @@ h3 {
   gap: 0.35rem;
   justify-items: start;
 }
-.dashboard-row-actions button:not(.dashboard-action-button):not([data-slot="button"]):not([data-slot="dropdown-menu-trigger"]),
+.dashboard-row-actions
+  button:not(.dashboard-action-button):not([data-slot="button"]):not(
+    [data-slot="dropdown-menu-trigger"]
+  ),
 .dashboard-message button:not([data-slot="button"]) {
   border: 0;
   background: transparent;
@@ -1980,8 +1988,8 @@ h3 {
   outline-offset: 3px;
 }
 .dashboard-heading {
-  border-color: var(--color-ink);
-  background: var(--color-ink);
+  border-color: var(--color-void);
+  background: var(--color-void);
   color: var(--color-on-brand);
   padding: var(--space-8);
   box-shadow: 0 1.15rem 2.6rem
@@ -2049,7 +2057,7 @@ h3 {
   min-width: 68rem;
 }
 .dashboard-table th {
-  background: var(--color-ink);
+  background: var(--color-void);
 }
 .dashboard-product-form {
   background: color-mix(in oklch, var(--color-surface), var(--color-paper) 8%);
@@ -2351,7 +2359,7 @@ h3 {
   grid-column: 1 / -1;
   min-height: 12rem;
   border-right: 0;
-  background: var(--color-ink);
+  background: var(--color-void);
   color: var(--color-on-brand);
 }
 .dashboard-metric-all p,
@@ -2872,10 +2880,13 @@ h3 {
   transition: border-color var(--dur-fast) var(--ease-out);
 }
 .dashboard-search-field
-  [data-slot="input-group"]:has([data-slot="input-group-control"]:focus-visible),
+  [data-slot="input-group"]:has(
+    [data-slot="input-group-control"]:focus-visible
+  ),
 .dashboard-search-field
   .dashboard-search-group:has([data-slot="input-group-control"]:focus-visible),
-.dashboard-search-field .dashboard-search-group:focus-within:has(input:focus-visible) {
+.dashboard-search-field
+  .dashboard-search-group:focus-within:has(input:focus-visible) {
   border-color: var(--color-brand);
   box-shadow: none;
   outline: none;
@@ -2899,7 +2910,8 @@ h3 {
   --tw-ring-shadow: 0 0 #0000 !important;
   --tw-ring-offset-shadow: 0 0 #0000 !important;
 }
-.dashboard-search-field [data-slot="input-group-addon"][data-align="inline-end"] {
+.dashboard-search-field
+  [data-slot="input-group-addon"][data-align="inline-end"] {
   padding-right: 0.35rem;
 }
 .dashboard-search-field .dashboard-search-submit {
@@ -3763,7 +3775,7 @@ h3 {
   top: var(--space-2);
   left: var(--space-2);
   border-radius: var(--radius-pill);
-  background: var(--color-ink);
+  background: var(--color-void);
   padding: 0.2rem var(--space-2);
   color: var(--color-on-brand);
   font-size: 0.72rem;
@@ -3964,7 +3976,8 @@ h3 {
 }
 .dashboard-metric-grid a:hover .dashboard-stat-card,
 .dashboard-shortcut-grid a:hover .dashboard-shortcut-card {
-  box-shadow: 0 0.8rem 1.6rem color-mix(in oklch, var(--color-ink), transparent 92%);
+  box-shadow: 0 0.8rem 1.6rem
+    color-mix(in oklch, var(--color-ink), transparent 92%);
 }
 .dashboard-stat-value {
   font-size: clamp(2rem, 4vw, 2.8rem) !important;
@@ -4362,7 +4375,7 @@ h3 {
   --primary-foreground: var(--color-on-brand);
   --secondary: color-mix(in oklch, var(--color-brand), transparent 90%);
   --secondary-foreground: var(--color-brand-deep);
-  --muted: color-mix(in oklch, var(--color-paper-warm), white 35%);
+  --muted: color-mix(in oklch, var(--color-surface), white 8%);
   --muted-foreground: var(--color-muted);
   --accent: color-mix(in oklch, var(--color-brand), transparent 88%);
   --accent-foreground: var(--color-brand-deep);
@@ -4448,9 +4461,14 @@ h3 {
 .dashboard-more-trigger:hover,
 .dashboard-row-actions [data-slot="dropdown-menu-trigger"]:hover,
 .dashboard-more-trigger[data-popup-open],
-.dashboard-row-actions [data-slot="dropdown-menu-trigger"][aria-expanded="true"] {
+.dashboard-row-actions
+  [data-slot="dropdown-menu-trigger"][aria-expanded="true"] {
   border-color: var(--color-brand) !important;
-  background: color-mix(in oklch, var(--color-brand), transparent 88%) !important;
+  background: color-mix(
+    in oklch,
+    var(--color-brand),
+    transparent 88%
+  ) !important;
   color: var(--color-brand-deep) !important;
 }
 [data-slot="dropdown-menu-content"] {
@@ -4678,7 +4696,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
   font-size: 1.05rem;
 }
 .dashboard-nav {
-  background: var(--color-ink);
+  background: var(--color-void);
   color: var(--color-on-brand);
   border-color: transparent;
 }
@@ -5131,7 +5149,8 @@ body.dashboard-nav-locked .dashboard-menu-button {
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  border: var(--rule) solid color-mix(in oklch, var(--color-brand), transparent 65%);
+  border: var(--rule) solid
+    color-mix(in oklch, var(--color-brand), transparent 65%);
   border-radius: var(--radius-sm);
   background: color-mix(in oklch, var(--color-brand), transparent 92%);
   padding-inline: 0.95rem;
@@ -5248,8 +5267,9 @@ body.dashboard-nav-locked .dashboard-menu-button {
   }
 }
 .site-header {
-  background: color-mix(in oklch, var(--color-paper), transparent 4%);
-  border-bottom: var(--rule) solid var(--color-border);
+  background: color-mix(in oklch, var(--color-paper), transparent 12%);
+  border-bottom: var(--rule) solid
+    color-mix(in oklch, var(--color-border), transparent 20%);
 }
 .header-inner {
   min-height: 5rem;
@@ -5499,7 +5519,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 .home-stats {
   border-bottom: var(--rule) solid var(--color-border);
-  background: var(--color-paper-warm);
+  background: var(--color-paper);
   padding-block: var(--space-8);
 }
 .home-stats-grid {
@@ -5521,12 +5541,14 @@ body.dashboard-nav-locked .dashboard-menu-button {
   );
   padding: var(--space-6) var(--space-6) var(--space-5);
   color: var(--color-brand-deep);
-  box-shadow: 0 1rem 2.5rem color-mix(in oklch, var(--color-ink), transparent 92%);
+  box-shadow: 0 1rem 2.5rem
+    color-mix(in oklch, var(--color-ink), transparent 92%);
 }
 .home-stat-card-grid {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(
+  background-image:
+    linear-gradient(
       color-mix(in oklch, var(--color-brand), transparent 92%) 1px,
       transparent 1px
     ),
@@ -5587,7 +5609,8 @@ body.dashboard-nav-locked .dashboard-menu-button {
   gap: var(--space-2);
 }
 .home-stat-card-tiers span {
-  border: var(--rule) solid color-mix(in oklch, var(--color-brand), transparent 55%);
+  border: var(--rule) solid
+    color-mix(in oklch, var(--color-brand), transparent 55%);
   border-radius: var(--radius-pill);
   background: color-mix(in oklch, var(--color-brand), transparent 90%);
   padding: 0.35rem 0.75rem;
@@ -5621,7 +5644,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 .home-cta-band {
   border-bottom: var(--rule) solid var(--color-border);
-  background: color-mix(in oklch, var(--color-brand), transparent 94%);
+  background: color-mix(in oklch, var(--color-surface), var(--color-brand) 8%);
   padding-block: var(--space-10);
 }
 .home-cta-band-inner {
@@ -5693,7 +5716,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
   border-bottom: var(--rule) solid var(--color-border);
   background: linear-gradient(
     180deg,
-    var(--color-paper-warm),
+    color-mix(in oklch, var(--color-surface), var(--color-paper) 35%),
     var(--color-paper)
   );
   padding-block: var(--space-10) var(--space-8);
@@ -5717,7 +5740,8 @@ body.dashboard-nav-locked .dashboard-menu-button {
   gap: var(--space-8);
 }
 .catalog-storefront .catalog-filter-panel {
-  border: var(--rule) solid color-mix(in oklch, var(--color-brand), transparent 70%);
+  border: var(--rule) solid
+    color-mix(in oklch, var(--color-brand), transparent 70%);
   background: var(--color-surface);
   box-shadow: 0 12px 28px color-mix(in oklch, var(--color-ink), transparent 92%);
 }
@@ -5867,6 +5891,200 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 .storefront-contact-aside .contact-aside-link {
   font-size: 1.05rem;
+}
+.contact-page-layout-direct {
+  display: grid;
+  justify-items: stretch;
+  padding-top: var(--space-10);
+  padding-bottom: var(--space-4);
+}
+.contact-direct {
+  display: grid;
+  gap: var(--space-8);
+  width: min(100%, 42rem);
+  margin-inline: auto;
+}
+.contact-whatsapp-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-height: 6.5rem;
+  border: var(--rule) solid
+    color-mix(in oklch, var(--color-brand), transparent 45%);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklch, var(--color-brand), transparent 88%);
+  padding: var(--space-5) var(--space-6);
+  color: var(--color-ink);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.contact-whatsapp-card:hover {
+  transform: translateY(-2px);
+  background: color-mix(in oklch, var(--color-brand), transparent 78%);
+  border-color: var(--color-brand);
+}
+.contact-whatsapp-card:active {
+  transform: translateY(1px);
+}
+.contact-whatsapp-icon {
+  display: grid;
+  place-items: center;
+  width: 4.25rem;
+  height: 4.25rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+}
+.contact-whatsapp-icon svg {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+.contact-whatsapp-copy {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.contact-whatsapp-copy strong {
+  font-size: 0.82rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-brand-deep);
+}
+.contact-whatsapp-number {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.15rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+.contact-whatsapp-cta {
+  color: var(--color-ink-soft);
+  font-size: 1.02rem;
+  font-weight: 650;
+}
+.contact-socials {
+  display: grid;
+  gap: var(--space-4);
+}
+.contact-socials-title {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.contact-socials-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.contact-social-link {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  min-height: 7.5rem;
+  border: var(--rule) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  padding: var(--space-5) var(--space-3);
+  color: var(--color-ink);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+.contact-social-link svg {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+.contact-social-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-brand);
+  background: color-mix(in oklch, var(--color-brand), transparent 88%);
+  color: var(--color-brand-deep);
+}
+.contact-social-link:active {
+  transform: translateY(1px);
+}
+.contact-direct .contact-aside-link {
+  width: fit-content;
+  color: var(--color-brand-deep);
+  font-weight: 750;
+}
+.footer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.footer-socials a {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: var(--rule) solid
+    color-mix(in oklch, var(--color-on-brand), transparent 75%);
+  border-radius: var(--radius-pill);
+  color: var(--color-on-brand);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+.footer-socials a svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.footer-socials a:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+}
+.dashboard-settings-socials {
+  display: grid;
+  gap: var(--space-4);
+  padding-top: var(--space-2);
+  border-top: var(--rule) solid var(--color-border);
+}
+.dashboard-settings-socials-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 750;
+}
+@media (max-width: 414px) {
+  .contact-whatsapp-card {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .contact-socials-list {
+    grid-template-columns: 1fr;
+  }
+  .contact-social-link {
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    align-items: center;
+    min-height: 4.25rem;
+    padding-inline: var(--space-4);
+    text-align: left;
+  }
+  .contact-social-link svg {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 
 @layer base {
