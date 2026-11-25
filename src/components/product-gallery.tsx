@@ -25,7 +25,7 @@ export function ProductGallery({ product }: { product: CatalogProduct }) {
             alt={product.name}
             fill
             sizes="(max-width: 1023px) calc(100vw - 2rem), 38rem"
-            quality={82}
+            unoptimized
             priority
           />
         ) : (
@@ -42,7 +42,7 @@ export function ProductGallery({ product }: { product: CatalogProduct }) {
               onClick={() => setSelected(image)}
               aria-label={`${t("catalog.viewProduct")}: ${index + 1} de ${product.name}`}
             >
-              <Image src={image} alt="" fill sizes="72px" quality={70} />
+              <Image src={image} alt="" fill sizes="72px" unoptimized />
             </button>
           ))}
         </div>

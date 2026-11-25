@@ -61,7 +61,7 @@ export default async function Home() {
                     alt=""
                     fill
                     sizes="(min-width: 1024px) 260px, 1px"
-                    quality={82}
+                    unoptimized
                     priority={index === 0}
                   />
                 </div>
@@ -72,6 +72,8 @@ export default async function Home() {
                 alt=""
                 width={360}
                 height={360}
+                sizes="360px"
+                quality={75}
               />
             </div>
           </div>
