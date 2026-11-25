@@ -54,7 +54,7 @@ export function SiteHeaderNav() {
       </nav>
       <div className="header-actions">
         <Button
-          className="header-cta"
+          className="header-cta storefront-primary-cta"
           nativeButton={false}
           render={<Link href="/catalogo" />}
           size="lg"
@@ -116,7 +116,7 @@ export function SiteHeaderNav() {
             </nav>
             <div className="header-mobile-footer">
               <Button
-                className="header-mobile-cta"
+                className="header-mobile-cta storefront-primary-cta"
                 nativeButton={false}
                 onClick={closeMenu}
                 render={<Link href="/catalogo" />}

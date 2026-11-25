@@ -125,7 +125,10 @@ h3 {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--color-paper);
+  background: var(--color-canvas);
+}
+.site-page > main {
+  background: var(--color-canvas);
 }
 .site-page main {
   flex: 1;
@@ -156,9 +159,10 @@ h3 {
   z-index: 20;
   top: 0;
   border-bottom: var(--rule) solid
-    color-mix(in oklch, var(--color-border), transparent 28%);
-  background: color-mix(in oklch, var(--color-paper), transparent 7%);
-  backdrop-filter: blur(16px);
+    color-mix(in oklch, var(--color-brand), transparent 78%);
+  background: color-mix(in oklch, var(--color-chrome), transparent 6%);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 16px 40px color-mix(in oklch, var(--color-void), transparent 40%);
 }
 .header-inner {
   min-height: 4.5rem;
@@ -210,6 +214,49 @@ h3 {
   background: var(--color-brand);
   filter: blur(1px);
   opacity: 0.7;
+}
+.hero-catalog {
+  background:
+    radial-gradient(
+      ellipse 90% 70% at 82% 18%,
+      color-mix(in oklch, var(--color-brand), transparent 52%),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 70% 55% at 8% 95%,
+      color-mix(in oklch, var(--color-brand), transparent 78%),
+      transparent 52%
+    ),
+    linear-gradient(
+      158deg,
+      oklch(22% 0.07 148) 0%,
+      oklch(10% 0.035 152) 38%,
+      var(--color-void) 100%
+    );
+  border-bottom: var(--rule) solid
+    color-mix(in oklch, var(--color-brand), transparent 72%);
+}
+.hero-catalog::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -35% -15% -10% 25%;
+  background: linear-gradient(
+    112deg,
+    transparent 42%,
+    color-mix(in oklch, var(--color-brand), transparent 62%) 49%,
+    color-mix(in oklch, var(--color-brand), white 8%) 50.5%,
+    color-mix(in oklch, var(--color-brand), transparent 62%) 52%,
+    transparent 58%
+  );
+  transform: skewX(-14deg);
+  opacity: 0.85;
+  pointer-events: none;
+}
+.hero-catalog::after {
+  inset: auto -20% -65% auto;
+  opacity: 0.35;
+  filter: blur(40px);
 }
 .hero-grid {
   min-height: min(45rem, calc(100dvh - 4.5rem));
@@ -328,6 +375,7 @@ h3 {
 }
 .home-products {
   padding-block: var(--space-16);
+  background: var(--color-canvas);
 }
 .section-heading {
   display: flex;
@@ -683,9 +731,13 @@ h3 {
 
 .site-footer {
   margin-top: auto;
-  background: var(--color-void);
+  background: var(--color-chrome-deep);
   color: var(--color-ink);
   padding-top: var(--space-12);
+  border-top: var(--rule) solid
+    color-mix(in oklch, var(--color-brand), transparent 68%);
+  box-shadow: inset 0 1px 0
+    color-mix(in oklch, var(--color-ink), transparent 92%);
 }
 .footer-grid {
   display: grid;
@@ -847,14 +899,15 @@ h3 {
   gap: var(--space-3);
 }
 .hero-cta-secondary {
-  min-height: 3.25rem;
+  height: auto;
+  min-height: 3.65rem;
   border-color: color-mix(in oklch, var(--color-on-brand), transparent 55%);
   border-radius: var(--radius-pill);
   background: transparent;
-  padding-inline: 1.35rem;
+  padding-inline: 1.65rem;
   color: var(--color-on-brand);
-  font-size: 1.02rem;
-  font-weight: 700;
+  font-size: 1.12rem;
+  font-weight: 750;
 }
 .hero-cta-secondary:hover {
   border-color: var(--color-on-brand);
@@ -5070,17 +5123,29 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 
 .hero-cta {
-  min-height: 3.25rem;
+  height: auto;
+  min-height: 3.65rem;
   width: fit-content;
   border-radius: var(--radius-pill);
-  padding-inline: 1.5rem;
-  background: var(--color-brand);
+  padding-inline: 1.95rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-brand), white 12%),
+    var(--color-brand)
+  );
   color: var(--color-on-brand);
-  font-size: 1.05rem;
-  font-weight: 750;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow: 0 14px 36px
+    color-mix(in oklch, var(--color-brand), transparent 62%);
 }
 .hero-cta:hover {
-  background: color-mix(in oklch, var(--color-brand), var(--color-ink) 14%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-brand), white 18%),
+    color-mix(in oklch, var(--color-brand), var(--color-ink) 6%)
+  );
   color: var(--color-on-brand);
 }
 .home-products-rule,
@@ -5267,9 +5332,10 @@ body.dashboard-nav-locked .dashboard-menu-button {
   }
 }
 .site-header {
-  background: color-mix(in oklch, var(--color-paper), transparent 12%);
+  background: color-mix(in oklch, var(--color-chrome), transparent 4%);
   border-bottom: var(--rule) solid
-    color-mix(in oklch, var(--color-border), transparent 20%);
+    color-mix(in oklch, var(--color-brand), transparent 78%);
+  box-shadow: 0 18px 48px color-mix(in oklch, var(--color-void), transparent 35%);
 }
 .header-inner {
   min-height: 5rem;
@@ -5315,10 +5381,19 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 .header-cta {
   display: none;
-  min-height: 2.85rem;
+  height: auto;
+  min-height: 3.35rem;
   border-radius: var(--radius-pill);
-  padding-inline: 1.25rem;
-  font-weight: 750;
+  padding-inline: 1.65rem;
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-brand), white 10%),
+    var(--color-brand)
+  );
+  box-shadow: 0 10px 28px color-mix(in oklch, var(--color-brand), transparent 65%);
 }
 .header-menu-trigger {
   display: inline-flex;
@@ -5431,12 +5506,17 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 .header-mobile-cta {
   width: 100%;
-  min-height: 3rem;
+  height: auto;
+  min-height: 3.35rem;
   border-radius: var(--radius-pill);
-  background: var(--color-brand);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-brand), white 10%),
+    var(--color-brand)
+  );
   color: var(--color-on-brand);
-  font-size: 1rem;
-  font-weight: 750;
+  font-size: 1.1rem;
+  font-weight: 800;
 }
 .header-mobile-cta:hover {
   background: color-mix(in oklch, var(--color-brand), var(--color-ink) 10%);
@@ -5467,9 +5547,14 @@ body.dashboard-nav-locked .dashboard-menu-button {
   max-width: 26rem;
 }
 .footer-cta {
-  min-height: 3rem;
+  height: auto;
+  min-height: 3.35rem;
   border-radius: var(--radius-pill);
-  font-weight: 750;
+  padding-inline: 1.65rem;
+  font-size: 1.08rem;
+  font-weight: 800;
+  border-color: color-mix(in oklch, var(--color-ink), transparent 72%);
+  color: var(--color-ink);
 }
 .footer-columns {
   display: grid;
@@ -5477,7 +5562,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 .footer-column-title {
   margin: 0 0 var(--space-3);
-  color: color-mix(in oklch, var(--color-on-brand), transparent 38%);
+  color: color-mix(in oklch, var(--color-ink), transparent 42%);
   font-size: 0.75rem;
   font-weight: 750;
   letter-spacing: 0.08em;
@@ -5518,9 +5603,10 @@ body.dashboard-nav-locked .dashboard-menu-button {
   }
 }
 .home-stats {
-  border-bottom: var(--rule) solid var(--color-border);
-  background: var(--color-paper);
-  padding-block: var(--space-8);
+  border-bottom: var(--rule) solid
+    color-mix(in oklch, var(--color-border), transparent 35%);
+  background: var(--color-canvas);
+  padding-block: var(--space-10);
 }
 .home-stats-grid {
   display: grid;
@@ -5532,17 +5618,19 @@ body.dashboard-nav-locked .dashboard-menu-button {
   gap: var(--space-2);
   min-width: 0;
   overflow: hidden;
-  border: var(--rule) solid var(--color-border);
+  border: var(--rule) solid
+    color-mix(in oklch, var(--color-stat-ink), transparent 88%);
   border-radius: var(--radius-lg);
   background: linear-gradient(
-    145deg,
-    var(--color-surface),
-    color-mix(in oklch, var(--color-paper-warm), var(--color-surface) 40%)
+    148deg,
+    var(--color-stat-surface),
+    var(--color-stat-surface-end)
   );
   padding: var(--space-6) var(--space-6) var(--space-5);
-  color: var(--color-brand-deep);
-  box-shadow: 0 1rem 2.5rem
-    color-mix(in oklch, var(--color-ink), transparent 92%);
+  color: var(--color-stat-ink);
+  box-shadow:
+    0 1.25rem 3.25rem color-mix(in oklch, var(--color-void), transparent 72%),
+    inset 0 1px 0 color-mix(in oklch, white, transparent 25%);
 }
 .home-stat-card-grid {
   position: absolute;
@@ -5592,7 +5680,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
   font-weight: 700;
   letter-spacing: -0.06em;
   line-height: 0.95;
-  color: var(--color-ink);
+  color: var(--color-stat-ink);
 }
 .home-stat-card--volume .home-stat-card-value {
   display: flex;
@@ -5625,7 +5713,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
   z-index: 1;
   margin: var(--space-2) 0 0;
   max-width: 16rem;
-  color: var(--color-muted);
+  color: var(--color-stat-muted);
   font-size: 1.02rem;
   line-height: 1.5;
 }
@@ -5643,15 +5731,29 @@ body.dashboard-nav-locked .dashboard-menu-button {
   }
 }
 .home-cta-band {
-  border-bottom: var(--rule) solid var(--color-border);
-  background: color-mix(in oklch, var(--color-surface), var(--color-brand) 8%);
-  padding-block: var(--space-10);
+  border-bottom: var(--rule) solid
+    color-mix(in oklch, var(--color-border), transparent 35%);
+  background: var(--color-canvas);
+  padding-block: var(--space-12);
 }
 .home-cta-band-inner {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-5);
+  gap: var(--space-6);
+  width: 100%;
+  border: var(--rule) solid
+    color-mix(in oklch, var(--color-stat-ink), transparent 88%);
+  border-radius: calc(var(--radius-lg) + 0.35rem);
+  background: linear-gradient(
+    148deg,
+    var(--color-stat-surface),
+    var(--color-stat-surface-end)
+  );
+  padding: clamp(1.75rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.75rem);
+  box-shadow:
+    0 1.5rem 3.75rem color-mix(in oklch, var(--color-void), transparent 70%),
+    inset 0 1px 0 color-mix(in oklch, white, transparent 30%);
 }
 .home-cta-copy {
   max-width: 40rem;
@@ -5661,12 +5763,18 @@ body.dashboard-nav-locked .dashboard-menu-button {
   font-size: var(--text-title);
   letter-spacing: -0.05em;
   line-height: 1.05;
+  color: var(--color-stat-ink);
 }
 .home-cta-copy p {
   margin-top: var(--space-3);
-  color: var(--color-muted);
+  color: var(--color-stat-muted);
   font-size: 1.08rem;
   line-height: 1.6;
+}
+.home-cta-band .page-eyebrow-badge {
+  color: var(--color-brand-deep);
+  border-color: color-mix(in oklch, var(--color-brand), transparent 65%);
+  background: color-mix(in oklch, var(--color-brand), transparent 92%);
 }
 .home-cta-actions {
   flex-shrink: 0;
@@ -5674,9 +5782,18 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 .home-cta-band-button {
   width: 100%;
-  min-height: 3.15rem;
+  height: auto;
+  min-height: 3.65rem;
   border-radius: var(--radius-pill);
-  font-weight: 750;
+  padding-inline: 1.85rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--color-brand), white 12%),
+    var(--color-brand)
+  );
+  box-shadow: 0 12px 32px color-mix(in oklch, var(--color-brand), transparent 58%);
 }
 @media (min-width: 768px) {
   .home-cta-band-inner {
@@ -5699,10 +5816,23 @@ body.dashboard-nav-locked .dashboard-menu-button {
   gap: var(--space-5);
 }
 .section-heading-action {
-  min-height: 3rem;
+  height: auto;
+  min-height: 3.35rem;
   border-radius: var(--radius-pill);
-  padding-inline: 1.25rem;
-  font-weight: 700;
+  padding-inline: 1.65rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  border-color: color-mix(in oklch, var(--color-brand), transparent 55%);
+  color: var(--color-brand-deep);
+}
+.storefront-primary-cta[data-slot="button"],
+.hero-cta[data-slot="button"],
+.header-cta[data-slot="button"],
+.home-cta-band-button[data-slot="button"],
+.footer-cta[data-slot="button"],
+.section-heading-action[data-slot="button"] {
+  font-size: inherit;
+  line-height: 1.2;
 }
 @media (min-width: 768px) {
   .storefront-section-heading {
@@ -5713,12 +5843,19 @@ body.dashboard-nav-locked .dashboard-menu-button {
 }
 .catalog-hero-band,
 .contact-hero-band {
-  border-bottom: var(--rule) solid var(--color-border);
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklch, var(--color-surface), var(--color-paper) 35%),
-    var(--color-paper)
-  );
+  border-bottom: var(--rule) solid
+    color-mix(in oklch, var(--color-brand), transparent 72%);
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 90% 0%,
+      color-mix(in oklch, var(--color-brand), transparent 70%),
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--color-chrome), var(--color-brand) 6%),
+      var(--color-canvas)
+    );
   padding-block: var(--space-10) var(--space-8);
 }
 .catalog-page-header,

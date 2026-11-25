@@ -2,7 +2,7 @@
  * audience: barbers and clients · use: explore and consult products
  * theme: studied-DNA (source: image) · palette: carbon black / lime green / white ink
  * nav: N5 Floating pill · footer: Ft5 Statement · enrichment: supplied product photography
- * Hallmark · pre-emit critique: P5 H4 E4 S5 R5 V4
+ * Hallmark · pre-emit critique: P5 H5 E4 S5 R5 V4
  */
 :root {
   --color-ink: oklch(97% 0.008 90);
@@ -13,6 +13,13 @@
   --color-paper-warm: oklch(12% 0.012 155);
   --color-surface: oklch(15% 0.01 155);
   --color-void: oklch(4% 0.006 155);
+  --color-canvas: oklch(5.5% 0.007 155);
+  --color-chrome: oklch(8.5% 0.014 152);
+  --color-chrome-deep: oklch(3.5% 0.006 155);
+  --color-stat-surface: oklch(94% 0.012 95);
+  --color-stat-surface-end: oklch(88% 0.016 92);
+  --color-stat-ink: oklch(24% 0.02 155);
+  --color-stat-muted: oklch(46% 0.025 155);
   --color-muted: oklch(72% 0.02 90);
   --color-border: oklch(28% 0.02 155);
   --color-focus: oklch(72% 0.17 145);

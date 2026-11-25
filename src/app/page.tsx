@@ -29,7 +29,7 @@ export default async function Home() {
               <p>{translate("home.description")}</p>
               <div className="hero-actions">
                 <Button
-                  className="hero-cta"
+                  className="hero-cta storefront-primary-cta"
                   nativeButton={false}
                   render={<Link href="/catalogo" />}
                   size="lg"
@@ -121,7 +121,7 @@ export default async function Home() {
             </div>
             <div className="home-cta-actions">
               <Button
-                className="home-cta-band-button"
+                className="home-cta-band-button storefront-primary-cta"
                 nativeButton={false}
                 render={<Link href="/contacto" />}
                 size="lg"
@@ -147,7 +147,7 @@ export default async function Home() {
               <p>{translate("home.catalogDescription")}</p>
             </div>
             <Button
-              className="section-heading-action"
+              className="section-heading-action storefront-primary-cta"
               nativeButton={false}
               render={<Link href="/catalogo" />}
               size="lg"
