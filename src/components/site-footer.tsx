@@ -23,7 +23,7 @@ export async function SiteFooter() {
           <BrandLogo inverted />
           <p className="footer-statement">{translate("footer.statement")}</p>
           <Button
-            className="footer-cta"
+            className="footer-cta storefront-primary-cta"
             nativeButton={false}
             render={<Link href="/catalogo" />}
             size="lg"
