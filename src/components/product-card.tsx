@@ -55,11 +55,13 @@ export function ProductCard({
               <span>{translate("catalog.unitPrice")}</span>
               <strong>{formatPrice(product.consumer_price)}</strong>
             </div>
-            {hasVolumePrices ? (
-              <Badge className="product-volume-badge" variant="outline">
-                {translate("catalog.volumePrices")}
-              </Badge>
-            ) : null}
+            <div className="product-volume-row">
+              {hasVolumePrices ? (
+                <Badge className="product-volume-badge" variant="outline">
+                  {translate("catalog.volumePrices")}
+                </Badge>
+              ) : null}
+            </div>
           </>
         ) : (
           <p className="card-price-muted">{translate("catalog.priceOnRequest")}</p>

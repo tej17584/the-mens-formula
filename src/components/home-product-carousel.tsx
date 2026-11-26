@@ -73,28 +73,30 @@ export function HomeProductCarousel({
       </div>
       {showControls ? (
         <div className="home-product-carousel-controls">
-          <Button
-            type="button"
-            size="icon"
-            variant="outline"
-            disabled={!canPrev}
-            className="home-product-carousel-control"
-            onClick={() => emblaApi?.scrollPrev()}
-            aria-label="Producto anterior"
-          >
-            <ChevronLeftIcon data-icon="inline-start" />
-          </Button>
-          <Button
-            type="button"
-            size="icon"
-            variant="outline"
-            disabled={!canNext}
-            className="home-product-carousel-control"
-            onClick={() => emblaApi?.scrollNext()}
-            aria-label="Siguiente producto"
-          >
-            <ChevronRightIcon data-icon="inline-start" />
-          </Button>
+          <div className="home-product-carousel-control-row">
+            <Button
+              type="button"
+              size="icon-lg"
+              variant="outline"
+              disabled={!canPrev}
+              className="home-product-carousel-control"
+              onClick={() => emblaApi?.scrollPrev()}
+              aria-label="Producto anterior"
+            >
+              <ChevronLeftIcon data-icon="inline-start" />
+            </Button>
+            <Button
+              type="button"
+              size="icon-lg"
+              variant="outline"
+              disabled={!canNext}
+              className="home-product-carousel-control"
+              onClick={() => emblaApi?.scrollNext()}
+              aria-label="Siguiente producto"
+            >
+              <ChevronRightIcon data-icon="inline-start" />
+            </Button>
+          </div>
         </div>
       ) : null}
     </div>
