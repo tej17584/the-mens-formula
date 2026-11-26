@@ -26,7 +26,7 @@ export async function SiteFooter() {
             className="footer-cta storefront-primary-cta"
             nativeButton={false}
             render={<Link href="/catalogo" />}
-            size="lg"
+            size="storefront"
             variant="secondary"
           >
             {translate("footer.exploreCatalog")}

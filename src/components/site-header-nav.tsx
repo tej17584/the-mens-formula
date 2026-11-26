@@ -57,7 +57,7 @@ export function SiteHeaderNav() {
           className="header-cta storefront-primary-cta"
           nativeButton={false}
           render={<Link href="/catalogo" />}
-          size="lg"
+          size="storefront"
         >
           {t("header.catalogCta")}
         </Button>
@@ -120,7 +120,7 @@ export function SiteHeaderNav() {
                 nativeButton={false}
                 onClick={closeMenu}
                 render={<Link href="/catalogo" />}
-                size="lg"
+                size="storefront"
               >
                 {t("header.catalogCta")}
               </Button>

@@ -162,13 +162,18 @@ export function CatalogControls({
   return (
     <div className="catalog-layout catalog-storefront">
       <aside className="catalog-sidebar">{filterPanel}</aside>
-      <details className="mobile-filters">
-        <summary>
-          {t("catalog.filters")}{" "}
-          <span>{hasFilters ? t("catalog.filtersActive") : ""}</span>
-        </summary>
-        <div>{renderFilterFields()}</div>
-      </details>
+      <section
+        className="mobile-filters"
+        aria-label={t("catalog.filters")}
+      >
+        <div className="mobile-filters-heading">
+          <span>{t("catalog.filters")}</span>
+          {hasFilters ? (
+            <span className="mobile-filters-active">{t("catalog.filtersActive")}</span>
+          ) : null}
+        </div>
+        <div className="mobile-filters-body">{renderFilterFields()}</div>
+      </section>
       <RouteLoadingRegion
         pending={isPending}
         label={t("common.loading")}

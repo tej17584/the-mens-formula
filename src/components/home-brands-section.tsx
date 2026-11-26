@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { CatalogProduct } from "@/lib/catalog";
-import { Badge } from "@/components/ui/badge";
 
 function featuredBrands(products: CatalogProduct[]) {
   const counts = new Map<string, { name: string; slug: string; count: number }>();
@@ -32,18 +31,12 @@ export function HomeBrandsSection({
   return (
     <section className="home-brands" aria-labelledby="home-brands-title">
       <div className="shell storefront-shell home-brands-inner">
-        <h2 className="sr-only" id="home-brands-title">
-          {eyebrow}
+        <h2 className="home-brands-title" id="home-brands-title">
+          <span className="home-brands-title-label">{eyebrow}</span>
         </h2>
-        <Badge className="page-eyebrow-badge home-brands-eyebrow" variant="outline">
-          {eyebrow}
-        </Badge>
         <ul className="home-brands-list">
-          {brands.map((brand, index) => (
+          {brands.map((brand) => (
             <li key={brand.slug}>
-              {index > 0 ? (
-                <span aria-hidden="true" className="home-brands-divider" />
-              ) : null}
               <Link className="home-brands-link" href={`/catalogo?marca=${brand.slug}`}>
                 {brand.name}
               </Link>
