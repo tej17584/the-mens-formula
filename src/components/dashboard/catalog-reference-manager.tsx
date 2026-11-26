@@ -1,6 +1,12 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import {
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { notify } from "@/lib/notify";
 import {
   manageBrandAction,
@@ -90,7 +96,11 @@ function ReferencePanel({
         </p>
       </CardHeader>
       <CardContent className="grid gap-4">
-        <form ref={form} className="dashboard-reference-create" action={formAction}>
+        <form
+          ref={form}
+          className="dashboard-reference-create"
+          action={formAction}
+        >
           <input name="intent" type="hidden" value="create" />
           <Input
             name="name"
@@ -156,18 +166,23 @@ function ReferencePanel({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-            <form action={formAction}>
-              <input name="id" type="hidden" value={pendingDelete?.id ?? ""} />
-              <input name="intent" type="hidden" value="delete" />
-              <AlertDialogAction
-                variant="destructive"
-                disabled={pending}
-                type="submit"
-                onClick={() => setPendingDelete(null)}
-              >
-                {t("common.delete")}
-              </AlertDialogAction>
-            </form>
+            <AlertDialogAction
+              variant="destructive"
+              disabled={pending}
+              type="button"
+              onClick={() => {
+                if (!pendingDelete) return;
+                const formData = new FormData();
+                formData.set("id", pendingDelete.id);
+                formData.set("intent", "delete");
+                setPendingDelete(null);
+                startTransition(() => {
+                  formAction(formData);
+                });
+              }}
+            >
+              {t("common.delete")}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

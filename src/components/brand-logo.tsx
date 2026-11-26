@@ -14,6 +14,7 @@ export function BrandLogo({ inverted = false }: { inverted?: boolean }) {
         width={1332}
         height={853}
         sizes="160px"
+        quality={75}
         priority
       />
     </Link>

@@ -11,10 +11,12 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    // Optimized remote product images are versioned by their Storage path and URL.
-    // Keep Next's derivative cache long-lived without adding a custom proxy.
+    // Product photos are already webp from sharp. Keep Vercel optimization for
+    // local logos only, with a tiny srcset so Hobby stays under 5K transforms.
     minimumCacheTTL: 31536000,
-    qualities: [70, 75, 80, 82],
+    qualities: [75],
+    imageSizes: [96, 256],
+    deviceSizes: [640, 1080],
     remotePatterns: [
       {
         protocol: "https",

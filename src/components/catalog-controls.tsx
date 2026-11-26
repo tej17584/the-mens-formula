@@ -1,23 +1,13 @@
 "use client";
 
-import {
-  useState,
-  useTransition,
-  type FormEvent,
-  type ReactNode,
-} from "react";
+import { useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BrandLoader } from "@/components/ui/brand-loader";
 import { RouteLoadingRegion } from "@/components/ui/route-loading-overlay";
 import { SearchIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   InputGroup,
   InputGroupAddon,
@@ -49,9 +39,7 @@ function CatalogSearchField({
 
   return (
     <form className="search-field" onSubmit={search}>
-      <InputGroup
-        className="catalog-search-group shadow-none has-[[data-slot=input-group-control]:focus-visible]:!border-[var(--color-brand)] has-[[data-slot=input-group-control]:focus-visible]:!ring-0 has-[[data-slot=input-group-control]:focus-visible]:!shadow-none"
-      >
+      <InputGroup className="catalog-search-group shadow-none has-[[data-slot=input-group-control]:focus-visible]:!border-[var(--color-brand)] has-[[data-slot=input-group-control]:focus-visible]:!shadow-none has-[[data-slot=input-group-control]:focus-visible]:!ring-0">
         <InputGroupAddon>
           <SearchIcon />
         </InputGroupAddon>
@@ -96,9 +84,7 @@ export function CatalogControls({
     const next = new URLSearchParams(params.toString());
     Object.entries(updates).forEach(([key, value]) => {
       const isDefault =
-        !value ||
-        value === "all" ||
-        (key === "sort" && value === "relevance");
+        !value || value === "all" || (key === "sort" && value === "relevance");
       if (isDefault) next.delete(key);
       else next.set(key, value);
     });
@@ -113,12 +99,14 @@ export function CatalogControls({
     });
   };
 
-  const filters = (
+  const categoria = params.get("categoria") ?? "all";
+  const marca = params.get("marca") ?? "all";
+  const renderFilterFields = () => (
     <>
       <label className="select-field catalog-filter-field">
         <span>{t("catalog.category")}</span>
         <select
-          value={params.get("categoria") ?? "all"}
+          value={categoria}
           onChange={(event) => update({ categoria: event.target.value })}
         >
           <option value="all">{t("catalog.allCategories")}</option>
@@ -132,7 +120,7 @@ export function CatalogControls({
       <label className="select-field catalog-filter-field">
         <span>{t("catalog.brand")}</span>
         <select
-          value={params.get("marca") ?? "all"}
+          value={marca}
           onChange={(event) => update({ marca: event.target.value })}
         >
           <option value="all">{t("catalog.allBrands")}</option>
@@ -166,19 +154,26 @@ export function CatalogControls({
           <Badge variant="secondary">{t("catalog.filtersActive")}</Badge>
         ) : null}
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">{filters}</CardContent>
+      <CardContent className="flex flex-col gap-4">
+        {renderFilterFields()}
+      </CardContent>
     </Card>
   );
   return (
     <div className="catalog-layout catalog-storefront">
       <aside className="catalog-sidebar">{filterPanel}</aside>
-      <details className="mobile-filters">
-        <summary>
-          {t("catalog.filters")}{" "}
-          <span>{hasFilters ? t("catalog.filtersActive") : ""}</span>
-        </summary>
-        <div>{filters}</div>
-      </details>
+      <section
+        className="mobile-filters"
+        aria-label={t("catalog.filters")}
+      >
+        <div className="mobile-filters-heading">
+          <span>{t("catalog.filters")}</span>
+          {hasFilters ? (
+            <span className="mobile-filters-active">{t("catalog.filtersActive")}</span>
+          ) : null}
+        </div>
+        <div className="mobile-filters-body">{renderFilterFields()}</div>
+      </section>
       <RouteLoadingRegion
         pending={isPending}
         label={t("common.loading")}

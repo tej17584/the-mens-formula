@@ -1,92 +1,79 @@
 import Link from "next/link";
-import { MailIcon, MessageCircleIcon, Share2Icon } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { SocialNetworkIcon, WhatsAppIcon } from "@/components/social-icons";
 import { translate } from "@/i18n";
-import { siteConfig } from "@/lib/site-config";
+import type { SiteSettings } from "@/lib/catalog";
+import {
+  formatWhatsappNumber,
+  socialLinksFromSettings,
+  whatsappHref,
+} from "@/lib/site-links";
 
-function whatsappHref(number: string) {
-  const digits = number.replace(/\D/g, "");
-  return digits ? `https://wa.me/${digits}` : null;
-}
-
-export function ContactAside() {
-  const { email, whatsapp, instagram } = siteConfig.contact;
-  const wa = whatsapp ? whatsappHref(whatsapp) : null;
+export function ContactAside({ settings }: { settings: SiteSettings }) {
+  const wa = settings.whatsappNumber
+    ? whatsappHref(settings.whatsappNumber)
+    : null;
+  const socials = socialLinksFromSettings(settings);
+  const displayNumber = settings.whatsappNumber
+    ? formatWhatsappNumber(settings.whatsappNumber)
+    : "";
 
   return (
-    <aside
-      className="contact-aside storefront-contact-aside"
+    <section
+      className="contact-direct"
       aria-label={translate("contact.channelsTitle")}
     >
-      <Card className="contact-aside-card storefront-contact-aside-card">
-        <CardHeader>
-          <CardTitle>{translate("contact.channelsTitle")}</CardTitle>
-          <CardDescription>{translate("contact.responseNote")}</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          {email ? (
-            <a className="contact-channel" href={`mailto:${email}`}>
-              <span className="contact-channel-icon" aria-hidden="true">
-                <MailIcon />
-              </span>
-              <span className="contact-channel-copy">
-                <strong>{translate("contact.emailLabel")}</strong>
-                <span>{email}</span>
-              </span>
-            </a>
-          ) : null}
-          {wa ? (
-            <a
-              className="contact-channel"
-              href={wa}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <span className="contact-channel-icon" aria-hidden="true">
-                <MessageCircleIcon />
-              </span>
-              <span className="contact-channel-copy">
-                <strong>{translate("contact.whatsappLabel")}</strong>
-                <span>{whatsapp}</span>
-              </span>
-            </a>
-          ) : null}
-          {instagram ? (
-            <a
-              className="contact-channel"
-              href={instagram}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <span className="contact-channel-icon" aria-hidden="true">
-                <Share2Icon />
-              </span>
-              <span className="contact-channel-copy">
-                <strong>{translate("contact.instagramLabel")}</strong>
-                <span>{translate("contact.instagramCta")}</span>
-              </span>
-            </a>
-          ) : null}
-          {!email && !wa && !instagram ? (
-            <p className="contact-channel-fallback">{translate("contact.description")}</p>
-          ) : null}
-        </CardContent>
-      </Card>
-      <Card className="contact-aside-card contact-aside-tip" size="sm">
-        <CardContent>
-          <p>{translate("contact.tip")}</p>
-          <Link className="contact-aside-link" href="/catalogo">
-            {translate("footer.exploreCatalog")}
-            <span aria-hidden="true"> →</span>
-          </Link>
-        </CardContent>
-      </Card>
-    </aside>
+      {wa ? (
+        <a
+          className="contact-whatsapp-card"
+          href={wa}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <span className="contact-whatsapp-icon" aria-hidden="true">
+            <WhatsAppIcon />
+          </span>
+          <span className="contact-whatsapp-copy">
+            <strong>{translate("contact.whatsappLabel")}</strong>
+            <span className="contact-whatsapp-number">{displayNumber}</span>
+            <span className="contact-whatsapp-cta">
+              {translate("contact.whatsappCta")}
+            </span>
+          </span>
+        </a>
+      ) : (
+        <p className="contact-channel-fallback">
+          {translate("contact.description")}
+        </p>
+      )}
+
+      {socials.length ? (
+        <div className="contact-socials">
+          <p className="contact-socials-title">
+            {translate("contact.socialsTitle")}
+          </p>
+          <ul className="contact-socials-list">
+            {socials.map((social) => (
+              <li key={social.network}>
+                <a
+                  className={`contact-social-link contact-social-link-${social.network}`}
+                  href={social.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  aria-label={social.label}
+                >
+                  <SocialNetworkIcon network={social.network} />
+                  <span>{social.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <Link className="contact-aside-link" href="/catalogo">
+        {translate("footer.exploreCatalog")}
+        <span aria-hidden="true"> →</span>
+      </Link>
+    </section>
   );
 }

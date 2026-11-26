@@ -5,7 +5,7 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <div className="shell storefront-shell header-inner">
-        <BrandLogo />
+        <BrandLogo inverted />
         <SiteHeaderNav />
       </div>
     </header>

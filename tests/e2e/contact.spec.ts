@@ -1,12 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-test("contact form submits successfully", async ({ page }) => {
+test("contact page highlights WhatsApp and social networks", async ({
+  page,
+}) => {
   await page.goto("/contacto");
-  const name = `Consulta E2E ${Date.now()}`;
-  await page.getByLabel(/nombre/i).fill(name);
-  await page.getByLabel(/correo o teléfono/i).fill("e2e@example.com");
-  await page.getByLabel(/qué producto buscas/i).fill("Prueba automatizada");
-  await page.waitForTimeout(3500);
-  await page.getByRole("button", { name: /enviar consulta/i }).click();
-  await expect(page.getByText(/recibimos tu consulta/i)).toBeVisible();
+  const main = page.getByRole("main");
+  await expect(main.getByRole("heading", { name: /whatsapp/i })).toBeVisible();
+  await expect(main.getByRole("link", { name: /instagram/i })).toBeVisible();
+  await expect(main.getByRole("link", { name: /facebook/i })).toBeVisible();
+  await expect(main.getByRole("link", { name: /tiktok/i })).toBeVisible();
+  await expect(page.getByLabel(/nombre/i)).toHaveCount(0);
 });

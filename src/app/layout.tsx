@@ -18,6 +18,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#050807",
+};
+
 export const metadata: Metadata = {
   title: {
     default: "The Men's Formula",

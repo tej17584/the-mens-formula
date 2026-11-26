@@ -1,22 +1,50 @@
-import Image from "next/image";
 import Link from "next/link";
+import { HeroShowcaseStage } from "@/components/hero-showcase-collage";
+import { HomeBrandsSection } from "@/components/home-brands-section";
+import { HomeProductCarousel } from "@/components/home-product-carousel";
 import { HomeStatCard } from "@/components/home-stat-card";
-import { ProductCard } from "@/components/product-card";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { WhatsAppIcon } from "@/components/social-icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { translate } from "@/i18n";
-import { getCatalogProducts, getDiverseProducts } from "@/lib/catalog";
+import { getCatalogProducts, getDiverseProducts, getSiteSettings } from "@/lib/catalog";
+import { whatsappHref } from "@/lib/site-links";
+
+const HERO_PRODUCT_COUNT = 8;
+
+function pickHeroProducts(
+  products: Awaited<ReturnType<typeof getCatalogProducts>>,
+) {
+  const withImages = products.filter((product) => product.main_image_url);
+  const diverse = getDiverseProducts(withImages, HERO_PRODUCT_COUNT);
+  if (diverse.length >= HERO_PRODUCT_COUNT) return diverse;
+  const seen = new Set(diverse.map((product) => product.id));
+  for (const product of withImages) {
+    if (seen.has(product.id)) continue;
+    diverse.push(product);
+    seen.add(product.id);
+    if (diverse.length >= HERO_PRODUCT_COUNT) break;
+  }
+  return diverse;
+}
 
 export default async function Home() {
-  const products = await getCatalogProducts();
-  const selection = getDiverseProducts(products);
-  const heroProducts = selection
-    .filter((product) => product.main_image_url)
-    .slice(0, 4);
+  const [products, settings] = await Promise.all([
+    getCatalogProducts(),
+    getSiteSettings(),
+  ]);
+  const selection = getDiverseProducts(products, 8);
+  const heroProducts = pickHeroProducts(products);
   const brands = new Set(products.map((product) => product.brand.id)).size;
+  const waHref = settings.whatsappNumber
+    ? whatsappHref(settings.whatsappNumber)
+    : null;
+  const contactHref = waHref ?? "/contacto";
+  const contactIsExternal = contactHref.startsWith("http");
+
   return (
     <div className="site-page">
       <SiteHeader />
@@ -29,10 +57,10 @@ export default async function Home() {
               <p>{translate("home.description")}</p>
               <div className="hero-actions">
                 <Button
-                  className="hero-cta"
+                  className="hero-cta storefront-primary-cta"
                   nativeButton={false}
                   render={<Link href="/catalogo" />}
-                  size="lg"
+                  size="storefront"
                 >
                   {translate("home.explore")}
                   <span aria-hidden="true" data-icon="inline-end">
@@ -40,39 +68,20 @@ export default async function Home() {
                   </span>
                 </Button>
                 <Button
-                  className="hero-cta-secondary"
+                  className="hero-cta-secondary storefront-ghost-cta"
                   nativeButton={false}
                   render={<Link href="/contacto" />}
-                  size="lg"
+                  size="storefront"
                   variant="outline"
                 >
                   {translate("home.contactCta")}
                 </Button>
               </div>
             </div>
-            <div className="hero-product-composition" aria-hidden="true">
-              {heroProducts.map((product, index) => (
-                <div
-                  className={`hero-product hero-product-${index + 1}`}
-                  key={product.id}
-                >
-                  <Image
-                    src={product.main_image_url!}
-                    alt=""
-                    fill
-                    sizes="(min-width: 1024px) 260px, 1px"
-                    quality={82}
-                    priority={index === 0}
-                  />
-                </div>
-              ))}
-              <Image
-                className="hero-watermark"
-                src="/mark.png"
-                alt=""
-                width={360}
-                height={360}
-              />
+            <div className="hero-showcase" aria-hidden="true">
+              <div className="hero-showcase-beam" />
+              <div className="hero-showcase-beam hero-showcase-beam--alt" />
+              <HeroShowcaseStage products={heroProducts} />
             </div>
           </div>
         </section>
@@ -104,34 +113,19 @@ export default async function Home() {
                 </>
               }
               variant="volume"
-              wide
+            />
+            <HomeStatCard
+              kicker={translate("home.statShippingKicker")}
+              label={translate("home.shippingLabel")}
+              value={translate("home.shippingHeadline")}
+              variant="shipping"
             />
           </div>
         </section>
-        <section className="home-cta-band">
-          <div className="shell storefront-shell home-cta-band-inner">
-            <div className="home-cta-copy">
-              <Badge className="page-eyebrow-badge" variant="secondary">
-                {translate("home.ctaEyebrow")}
-              </Badge>
-              <h2>{translate("home.ctaTitle")}</h2>
-              <p>{translate("home.ctaDescription")}</p>
-            </div>
-            <div className="home-cta-actions">
-              <Button
-                className="home-cta-band-button"
-                nativeButton={false}
-                render={<Link href="/contacto" />}
-                size="lg"
-              >
-                {translate("home.contactCta")}
-                <span aria-hidden="true" data-icon="inline-end">
-                  →
-                </span>
-              </Button>
-            </div>
-          </div>
-        </section>
+        <HomeBrandsSection
+          products={products}
+          eyebrow={translate("home.brandsEyebrow")}
+        />
         <section
           className="shell storefront-shell home-products"
           aria-labelledby="products-title"
@@ -145,11 +139,10 @@ export default async function Home() {
               <p>{translate("home.catalogDescription")}</p>
             </div>
             <Button
-              className="section-heading-action"
+              className="section-heading-action storefront-primary-cta"
               nativeButton={false}
               render={<Link href="/catalogo" />}
-              size="lg"
-              variant="outline"
+              size="storefront"
             >
               {translate("home.viewCatalog")}
               <span aria-hidden="true" data-icon="inline-end">
@@ -158,14 +151,43 @@ export default async function Home() {
             </Button>
           </div>
           <Separator className="home-products-rule" />
-          <div className="product-grid home-grid">
-            {selection.map((product, index) => (
-              <ProductCard
-                product={product}
-                priority={index < 2}
-                key={product.id}
-              />
-            ))}
+          <HomeProductCarousel products={selection} />
+        </section>
+        <section className="home-cta-band">
+          <div className="shell storefront-shell home-cta-band-shell">
+            <div className="home-cta-band-inner">
+              <span className="home-cta-whatsapp-mark" aria-hidden="true">
+                <WhatsAppIcon />
+              </span>
+              <span className="home-cta-divider" aria-hidden="true" />
+              <div className="home-cta-copy">
+                <Badge className="page-eyebrow-badge" variant="secondary">
+                  {translate("home.ctaEyebrow")}
+                </Badge>
+                <h2>{translate("home.ctaTitle")}</h2>
+                <p>{translate("home.ctaDescription")}</p>
+              </div>
+              <div className="home-cta-actions">
+                <Button
+                  className="home-cta-band-button storefront-primary-cta"
+                  nativeButton={false}
+                  render={
+                    <Link
+                      href={contactHref}
+                      rel={contactIsExternal ? "noopener noreferrer" : undefined}
+                      target={contactIsExternal ? "_blank" : undefined}
+                    />
+                  }
+                  size="storefront"
+                >
+                  <WhatsAppIcon data-icon="inline-start" />
+                  {translate("home.contactCta")}
+                  <span aria-hidden="true" data-icon="inline-end">
+                    →
+                  </span>
+                </Button>
+              </div>
+            </div>
           </div>
         </section>
       </main>

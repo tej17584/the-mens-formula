@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { ContactAside } from "@/components/contact-aside";
-import { ContactForm } from "@/components/contact-form";
 import { Badge } from "@/components/ui/badge";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { translate } from "@/i18n";
+import { getSiteSettings } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: translate("contact.metaTitle"),
   description: translate("contact.metaDescription"),
 };
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
   return (
     <div className="site-page">
       <SiteHeader />
@@ -26,9 +27,8 @@ export default function ContactPage() {
             </header>
           </div>
         </div>
-        <div className="shell storefront-shell contact-page-layout">
-          <ContactForm />
-          <ContactAside />
+        <div className="shell storefront-shell contact-page-layout contact-page-layout-direct">
+          <ContactAside settings={settings} />
         </div>
       </main>
       <SiteFooter />
