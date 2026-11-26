@@ -16,10 +16,12 @@
   --color-canvas: oklch(5.5% 0.007 155);
   --color-chrome: oklch(8.5% 0.014 152);
   --color-chrome-deep: oklch(3.5% 0.006 155);
-  --color-stat-surface: oklch(94% 0.012 95);
-  --color-stat-surface-end: oklch(88% 0.016 92);
-  --color-stat-ink: oklch(24% 0.02 155);
-  --color-stat-muted: oklch(46% 0.025 155);
+  --color-stat-surface: oklch(84% 0.009 262);
+  --color-stat-surface-end: oklch(76% 0.011 260);
+  --color-stat-ink: oklch(26% 0.02 262);
+  --color-stat-muted: oklch(44% 0.018 260);
+  --color-stone: oklch(20% 0.011 258);
+  --color-stone-highlight: oklch(28% 0.014 255);
   --color-muted: oklch(72% 0.02 90);
   --color-border: oklch(28% 0.02 155);
   --color-focus: oklch(72% 0.17 145);
