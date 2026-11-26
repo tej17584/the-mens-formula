@@ -415,8 +415,8 @@ h3 {
   overflow: clip;
   background: color-mix(
     in oklch,
-    var(--color-paper-warm),
-    var(--color-surface) 50%
+    var(--color-stone),
+    var(--color-surface) 55%
   );
 }
 .product-media {
@@ -847,7 +847,7 @@ h3 {
 .hero-catalog .hero-copy {
   max-width: 45rem;
 }
-.hero-product-composition {
+.hero-showcase {
   display: none;
 }
 .catalog-facts {
@@ -1107,8 +1107,8 @@ h3 {
 .product-media {
   background: color-mix(
     in oklch,
-    var(--color-paper-warm),
-    var(--color-surface) 35%
+    var(--color-stone),
+    var(--color-surface) 40%
   );
 }
 .product-media img {
@@ -1297,72 +1297,135 @@ h3 {
     position: relative;
     z-index: 2;
   }
-  .hero-product-composition {
+  .hero-showcase {
     position: relative;
-    display: block;
+    display: grid;
+    align-items: center;
     min-height: 31rem;
+    padding: var(--space-6);
+    border: var(--rule) solid
+      color-mix(in oklch, var(--color-brand), transparent 62%);
+    border-radius: calc(var(--radius-lg) + 0.25rem);
+    background:
+      radial-gradient(
+        ellipse 85% 60% at 15% 0%,
+        color-mix(in oklch, var(--color-brand), transparent 82%),
+        transparent 55%
+      ),
+      linear-gradient(
+        155deg,
+        var(--color-stone-highlight),
+        var(--color-stone) 46%,
+        var(--color-chrome-deep)
+      );
+    box-shadow:
+      0 1.75rem 4rem color-mix(in oklch, var(--color-void), transparent 58%),
+      inset 0 1px 0 color-mix(in oklch, var(--color-ink), transparent 88%);
+    overflow: hidden;
   }
-  .hero-product {
+  .hero-showcase-beam {
+    position: absolute;
+    z-index: 0;
+    inset: -20% 35% 45% -25%;
+    background: linear-gradient(
+      118deg,
+      transparent 42%,
+      color-mix(in oklch, var(--color-brand), transparent 58%) 49%,
+      color-mix(in oklch, var(--color-brand), white 5%) 50%,
+      color-mix(in oklch, var(--color-brand), transparent 58%) 51%,
+      transparent 58%
+    );
+    transform: skewX(-16deg);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+  .hero-showcase-beam--alt {
+    inset: 50% -30% -40% 20%;
+    opacity: 0.35;
+    transform: skewX(-10deg) scale(0.92);
+  }
+  .hero-showcase-stage {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 30rem);
+    min-height: 27rem;
+    margin-inline: auto;
+  }
+  .hero-showcase-stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(
+        color-mix(in oklch, var(--color-ink), transparent 94%) 0.7px,
+        transparent 0.7px
+      );
+    background-size: 3px 3px;
+    opacity: 0.35;
+    pointer-events: none;
+    mix-blend-mode: soft-light;
+  }
+  .hero-showcase-piece {
     position: absolute;
     display: grid;
     place-items: center;
-    overflow: hidden;
-    border: var(--rule) solid
-      color-mix(in oklch, var(--color-on-brand), transparent 70%);
-    border-radius: var(--radius-lg);
-    background: color-mix(
-      in oklch,
-      var(--color-paper-warm),
-      var(--color-surface) 25%
-    );
-    box-shadow: 0 1.5rem 3.5rem
-      color-mix(in oklch, var(--color-ink), transparent 45%);
+    overflow: visible;
+    filter: drop-shadow(0 1.1rem 1.65rem
+        color-mix(in oklch, var(--color-void), transparent 45%))
+      drop-shadow(0 0.35rem 0.75rem
+        color-mix(in oklch, var(--color-void), transparent 62%));
   }
-  .hero-product img {
+  .hero-showcase-piece img {
     object-fit: contain;
-    padding: var(--space-4);
+    padding: var(--space-2);
   }
-  .hero-product-1 {
-    z-index: 3;
-    right: 8%;
-    bottom: 8%;
-    width: 14.5rem;
-    aspect-ratio: 0.8;
-    transform: rotate(5deg);
-  }
-  .hero-product-2 {
-    z-index: 2;
-    left: 3%;
-    bottom: 2%;
-    width: 11.5rem;
-    aspect-ratio: 0.78;
-    transform: rotate(-10deg);
-  }
-  .hero-product-3 {
-    z-index: 1;
-    right: 1%;
-    top: 3%;
-    width: 10rem;
+  .hero-showcase-piece-1 {
+    z-index: 4;
+    left: 2%;
+    bottom: 6%;
+    width: 42%;
     aspect-ratio: 0.85;
+    transform: rotate(-7deg);
+  }
+  .hero-showcase-piece-2 {
+    z-index: 3;
+    right: 4%;
+    bottom: 14%;
+    width: 34%;
+    aspect-ratio: 0.82;
+    transform: rotate(8deg);
+  }
+  .hero-showcase-piece-3 {
+    z-index: 2;
+    left: 34%;
+    top: 4%;
+    width: 30%;
+    aspect-ratio: 0.9;
+    transform: rotate(-4deg);
+  }
+  .hero-showcase-piece-4 {
+    z-index: 5;
+    right: 1%;
+    top: 8%;
+    width: 36%;
+    aspect-ratio: 0.78;
     transform: rotate(11deg);
   }
-  .hero-product-4 {
-    z-index: 2;
-    left: 35%;
-    top: 2%;
-    width: 8rem;
+  .hero-showcase-piece-5 {
+    z-index: 1;
+    left: 8%;
+    top: 32%;
+    width: 26%;
     aspect-ratio: 0.88;
-    transform: rotate(-2deg);
+    transform: rotate(-12deg);
   }
-  .hero-watermark {
-    position: absolute;
-    z-index: 0;
-    top: 9%;
-    left: 14%;
-    width: 23rem;
-    height: auto;
-    opacity: 0.13;
-    transform: rotate(-8deg);
+  .hero-showcase-piece-6 {
+    z-index: 2;
+    left: 48%;
+    bottom: 2%;
+    width: 28%;
+    aspect-ratio: 0.95;
+    transform: rotate(5deg);
   }
   .catalog-layout {
     grid-template-columns: minmax(16rem, 17.5rem) minmax(0, 1fr);
@@ -5630,24 +5693,24 @@ body.dashboard-nav-locked .dashboard-menu-button {
   color: var(--color-stat-ink);
   box-shadow:
     0 1.25rem 3.25rem color-mix(in oklch, var(--color-void), transparent 72%),
-    inset 0 1px 0 color-mix(in oklch, white, transparent 25%);
+    inset 0 1px 0 color-mix(in oklch, white, transparent 35%);
 }
 .home-stat-card-grid {
   position: absolute;
   inset: 0;
   background-image:
     linear-gradient(
-      color-mix(in oklch, var(--color-brand), transparent 92%) 1px,
+      color-mix(in oklch, var(--color-brand), transparent 84%) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      color-mix(in oklch, var(--color-brand), transparent 92%) 1px,
+      color-mix(in oklch, var(--color-brand), transparent 84%) 1px,
       transparent 1px
     );
   background-size: 1.25rem 1.25rem;
   mask-image: linear-gradient(135deg, transparent 35%, black 85%);
-  opacity: 0.55;
+  opacity: 0.35;
   pointer-events: none;
 }
 .home-stat-card-art {
@@ -5702,7 +5765,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
   border-radius: var(--radius-pill);
   background: color-mix(in oklch, var(--color-brand), transparent 90%);
   padding: 0.35rem 0.75rem;
-  color: var(--color-brand-deep);
+  color: var(--color-stat-ink);
   font-family: var(--font-mono), monospace;
   font-size: 0.82rem;
   font-weight: 700;
@@ -5743,7 +5806,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
   gap: var(--space-6);
   width: 100%;
   border: var(--rule) solid
-    color-mix(in oklch, var(--color-stat-ink), transparent 88%);
+    color-mix(in oklch, var(--color-stat-ink), transparent 86%);
   border-radius: calc(var(--radius-lg) + 0.35rem);
   background: linear-gradient(
     148deg,
@@ -5753,7 +5816,7 @@ body.dashboard-nav-locked .dashboard-menu-button {
   padding: clamp(1.75rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.75rem);
   box-shadow:
     0 1.5rem 3.75rem color-mix(in oklch, var(--color-void), transparent 70%),
-    inset 0 1px 0 color-mix(in oklch, white, transparent 30%);
+    inset 0 1px 0 color-mix(in oklch, white, transparent 32%);
 }
 .home-cta-copy {
   max-width: 40rem;
@@ -5772,9 +5835,9 @@ body.dashboard-nav-locked .dashboard-menu-button {
   line-height: 1.6;
 }
 .home-cta-band .page-eyebrow-badge {
-  color: var(--color-brand-deep);
-  border-color: color-mix(in oklch, var(--color-brand), transparent 65%);
-  background: color-mix(in oklch, var(--color-brand), transparent 92%);
+  color: var(--color-stat-ink);
+  border-color: color-mix(in oklch, var(--color-stat-ink), transparent 78%);
+  background: color-mix(in oklch, var(--color-stat-ink), transparent 92%);
 }
 .home-cta-actions {
   flex-shrink: 0;

@@ -13,9 +13,9 @@ import { getCatalogProducts, getDiverseProducts } from "@/lib/catalog";
 export default async function Home() {
   const products = await getCatalogProducts();
   const selection = getDiverseProducts(products);
-  const heroProducts = selection
+  const heroProducts = products
     .filter((product) => product.main_image_url)
-    .slice(0, 4);
+    .slice(0, 6);
   const brands = new Set(products.map((product) => product.brand.id)).size;
   return (
     <div className="site-page">
@@ -50,31 +50,26 @@ export default async function Home() {
                 </Button>
               </div>
             </div>
-            <div className="hero-product-composition" aria-hidden="true">
-              {heroProducts.map((product, index) => (
-                <div
-                  className={`hero-product hero-product-${index + 1}`}
-                  key={product.id}
-                >
-                  <Image
-                    src={product.main_image_url!}
-                    alt=""
-                    fill
-                    sizes="(min-width: 1024px) 260px, 1px"
-                    unoptimized
-                    priority={index === 0}
-                  />
-                </div>
-              ))}
-              <Image
-                className="hero-watermark"
-                src="/mark.png"
-                alt=""
-                width={360}
-                height={360}
-                sizes="360px"
-                quality={75}
-              />
+            <div className="hero-showcase" aria-hidden="true">
+              <div className="hero-showcase-beam" />
+              <div className="hero-showcase-beam hero-showcase-beam--alt" />
+              <div className="hero-showcase-stage">
+                {heroProducts.map((product, index) => (
+                  <div
+                    className={`hero-showcase-piece hero-showcase-piece-${index + 1}`}
+                    key={product.id}
+                  >
+                    <Image
+                      src={product.main_image_url!}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 220px, 1px"
+                      unoptimized
+                      priority={index === 0}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
