@@ -9,6 +9,8 @@
   --color-ink-soft: oklch(84% 0.015 90);
   --color-brand: oklch(64% 0.18 145);
   --color-brand-deep: oklch(78% 0.15 145);
+  --color-brand-strong: oklch(46% 0.16 145);
+  --color-brand-highlight: oklch(78% 0.15 145);
   --color-paper: oklch(7% 0.008 155);
   --color-paper-warm: oklch(12% 0.012 155);
   --color-surface: oklch(15% 0.01 155);

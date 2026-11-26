@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { HomeBrandsSection } from "@/components/home-brands-section";
 import { HomeStatCard } from "@/components/home-stat-card";
 import { ProductCard } from "@/components/product-card";
 import { SiteFooter } from "@/components/site-footer";
@@ -15,7 +16,7 @@ export default async function Home() {
   const selection = getDiverseProducts(products);
   const heroProducts = products
     .filter((product) => product.main_image_url)
-    .slice(0, 6);
+    .slice(0, 4);
   const brands = new Set(products.map((product) => product.brand.id)).size;
   return (
     <div className="site-page">
@@ -40,7 +41,7 @@ export default async function Home() {
                   </span>
                 </Button>
                 <Button
-                  className="hero-cta-secondary"
+                  className="hero-cta-secondary storefront-ghost-cta"
                   nativeButton={false}
                   render={<Link href="/contacto" />}
                   size="lg"
@@ -54,18 +55,17 @@ export default async function Home() {
               <div className="hero-showcase-beam" />
               <div className="hero-showcase-beam hero-showcase-beam--alt" />
               <div className="hero-showcase-stage">
-                {heroProducts.map((product, index) => (
-                  <div
-                    className={`hero-showcase-piece hero-showcase-piece-${index + 1}`}
-                    key={product.id}
-                  >
+                {heroProducts.map((product) => (
+                  <div className="hero-showcase-piece" key={product.id}>
                     <Image
                       src={product.main_image_url!}
                       alt=""
-                      fill
-                      sizes="(min-width: 1024px) 220px, 1px"
+                      width={360}
+                      height={420}
+                      className="hero-showcase-image"
+                      sizes="(min-width: 1024px) 200px, 40vw"
                       unoptimized
-                      priority={index === 0}
+                      priority
                     />
                   </div>
                 ))}
@@ -101,34 +101,19 @@ export default async function Home() {
                 </>
               }
               variant="volume"
-              wide
+            />
+            <HomeStatCard
+              kicker={translate("home.statShippingKicker")}
+              label={translate("home.shippingLabel")}
+              value={translate("home.shippingHeadline")}
+              variant="shipping"
             />
           </div>
         </section>
-        <section className="home-cta-band">
-          <div className="shell storefront-shell home-cta-band-inner">
-            <div className="home-cta-copy">
-              <Badge className="page-eyebrow-badge" variant="secondary">
-                {translate("home.ctaEyebrow")}
-              </Badge>
-              <h2>{translate("home.ctaTitle")}</h2>
-              <p>{translate("home.ctaDescription")}</p>
-            </div>
-            <div className="home-cta-actions">
-              <Button
-                className="home-cta-band-button storefront-primary-cta"
-                nativeButton={false}
-                render={<Link href="/contacto" />}
-                size="lg"
-              >
-                {translate("home.contactCta")}
-                <span aria-hidden="true" data-icon="inline-end">
-                  →
-                </span>
-              </Button>
-            </div>
-          </div>
-        </section>
+        <HomeBrandsSection
+          products={products}
+          eyebrow={translate("home.brandsEyebrow")}
+        />
         <section
           className="shell storefront-shell home-products"
           aria-labelledby="products-title"
@@ -142,7 +127,7 @@ export default async function Home() {
               <p>{translate("home.catalogDescription")}</p>
             </div>
             <Button
-              className="section-heading-action storefront-primary-cta"
+              className="section-heading-action storefront-ghost-cta"
               nativeButton={false}
               render={<Link href="/catalogo" />}
               size="lg"
@@ -163,6 +148,32 @@ export default async function Home() {
                 key={product.id}
               />
             ))}
+          </div>
+        </section>
+        <section className="home-cta-band">
+          <div className="shell storefront-shell home-cta-band-shell">
+            <div className="home-cta-band-inner">
+              <div className="home-cta-copy">
+                <Badge className="page-eyebrow-badge" variant="secondary">
+                  {translate("home.ctaEyebrow")}
+                </Badge>
+                <h2>{translate("home.ctaTitle")}</h2>
+                <p>{translate("home.ctaDescription")}</p>
+              </div>
+              <div className="home-cta-actions">
+                <Button
+                  className="home-cta-band-button storefront-primary-cta"
+                  nativeButton={false}
+                  render={<Link href="/contacto" />}
+                  size="lg"
+                >
+                  {translate("home.contactCta")}
+                  <span aria-hidden="true" data-icon="inline-end">
+                    →
+                  </span>
+                </Button>
+              </div>
+            </div>
           </div>
         </section>
       </main>

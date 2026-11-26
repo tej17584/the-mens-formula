@@ -54,7 +54,11 @@
     "statProductsKicker": "Inventario",
     "statBrandsKicker": "Portafolio",
     "statVolumeKicker": "Mayoreo",
-    "volumeTierBox": "Caja"
+    "volumeTierBox": "Caja",
+    "statShippingKicker": "Envíos",
+    "shippingHeadline": "Guatemala",
+    "shippingLabel": "A toda Guatemala",
+    "brandsEyebrow": "Nuestras marcas principales"
   },
   "catalog": {
     "metaTitle": "Catálogo",
